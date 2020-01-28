@@ -65,7 +65,7 @@ let sushiUrls = ['https://i.imgur.com/d9eAFpv.png', 'https://i.imgur.com/OgYpn5g
 
 let mouseImages = ['https://i.imgur.com/NYu9p6I.png','https://i.imgur.com/DgTx4Wg.png']
 
-let kirbyUrl = ['https://i.imgur.com/eIrsFm5.png']
+let kirbyUrl = ['https://i.imgur.com/DLZ92wC.png']
 
 let images = ["https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png"].concat(sushiUrls, mouseImages, kirbyUrl)
 
