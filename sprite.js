@@ -25,7 +25,7 @@ class Sprite {
 
             if (this.once && idx >= max) {
                 this.done = true;
-                return;
+                return this.done;
             }
         }
         else {
@@ -41,7 +41,7 @@ class Sprite {
         else {
             x += frame * this.size[0];
         }
-
+        
         ctx.drawImage(resources.get(this.url),
             x, y,
             this.size[0], this.size[1],

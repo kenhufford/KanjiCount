@@ -14,6 +14,6 @@ class Mouse{
 
     render(ctx) {
         let cursor = this.closed ? this.closedImg : this.openImg;
-        ctx.drawImage(resources.get(cursor), this.x, this.y)
+        ctx.drawImage(resources.get(cursor), this.x-20, this.y-110)
     }
 }
