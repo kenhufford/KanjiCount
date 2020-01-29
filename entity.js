@@ -21,25 +21,26 @@ class Sushi{
         this.hit = false;
         this.vector = [0,0];
         this.degrees = 1;
+        this.speed = 10;
     }
 
     update(dt, speed, mousePos){
         if(this.dropped){
-            this.pos[1] += speed * dt * 10;
+            this.pos[1] += speed * dt * this.speed;
         } else if (this.grabbed){
             this.pos[0] = mousePos[0] - 35;
             this.pos[1] = mousePos[1] - 30;
         } else if (this.flying){
             this.degrees +=  dt * 4;
-            this.pos[0] -= speed * dt * 10 * this.degrees * this.vector[0];
-            this.pos[1] -= speed * dt * 10 * this.degrees * this.vector[1];
+            this.pos[0] -= speed * dt * this.speed * this.degrees * this.vector[0];
+            this.pos[1] -= speed * dt * this.speed * this.degrees * this.vector[1];
         } else {
             if (this.pos[0] > 110 && this.pos[1]<460) {
-                this.pos[0] -= speed * dt * 10;
+                this.pos[0] -= speed * dt * this.speed;
             } else if (this.pos[1] > 460 && this.pos[0] < 680){
-                this.pos[0] += speed * dt * 10;
+                this.pos[0] += speed * dt * this.speed;
             } else {
-                this.pos[1] += speed * dt * 10;
+                this.pos[1] += speed * dt * this.speed;
             }
         }
     }
@@ -48,7 +49,7 @@ class Sushi{
         let destPos = [...pos2]
         destPos[1] -= 10;
         let xVector = pos1[0] - destPos[0];
-        let yVector = pos1[1] - destPos[1] + 10;
+        let yVector = pos1[1] - destPos[1];
         let distance = Math.sqrt(Math.pow(xVector, 2) + Math.pow(yVector, 2))
         let normalVector = [(xVector / distance * 1.0), (yVector / distance * 1.0)]
         return normalVector;

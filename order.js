@@ -26,8 +26,6 @@ class Order{
         ctx.stroke();
         ctx.fillStyle = "#000000";
         ctx.fillRect(10, 10, (this.time * 100/this.startTime), 20);
-        
-
 
         ctx.font = "20px Arial";
         ctx.fillText(this.number, 55, 50);
