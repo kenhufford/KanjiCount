@@ -69,16 +69,3 @@ let kirbyUrl = ['https://i.imgur.com/Csvj6I1.png']
 
 let images = ["https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png"].concat(sushiUrls, mouseImages, kirbyUrl)
 
-const kanji = {
-    '0': '0',
-    '1': '\u4e00',
-    '2': '\u4e8c',
-    '3': '\u4e09',
-    '4': '\u56db',
-    '5': '\u4e94',
-    '6': '\u516d',
-    '7': '\u4e03',
-    '8': '\u516b',
-    '9': '\u4e5d',
-    '10': '\u5341'
-}

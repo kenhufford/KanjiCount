@@ -20,9 +20,10 @@ let sushis = {};
 let answers = {};
 let orders = [];
 let orderPositions = [];
-let sushiCooldown = 2;
+let sushiCooldown = 2.5;
 let orderCooldown = 10;
-let endGameScore = 10;
+let soundCooldown = 1;
+let endGameScore = 4;
 let newGameScore = 2;
 let isGameOver = false;
 let isGameEnding = false;
@@ -38,8 +39,9 @@ function reset(){
     answers = {};
     orders = [];
     orderPositions = [];
-    sushiCooldown = 2;
+    sushiCooldown = 2.5;
     orderCooldown = 10;
+    soundCooldown = 1;
     endGameScore = 10;
     newGameScore = 2;
     isGameOver = false;
@@ -54,17 +56,17 @@ function reset(){
 let conveyorSprite = new Sprite("https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png", [0, 0], [605, 60], 4, [0, 1, 2, 3], 'vertical', false);
 let conveyorSprite2 = new Sprite("https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png", [0, 0], [605, 60], 4, [3, 2, 1, 0], 'vertical', false);
 let kirbySpriteURL = 'https://i.imgur.com/Csvj6I1.png'
-let kirbyOpeningSprite = () => new Sprite(kirbySpriteURL, [0, 0], [75, 75], 0.5, [0, 1, 2, 2, 2], "horizontal", true)
+let kirbyOpeningSprite = () => new Sprite(kirbySpriteURL, [0, 0], [75, 75], 0.5, [0, 1, 2, 2, 2], "horizontal", true);
 let kirbyClosingSprite = () => new Sprite(kirbySpriteURL, [150, 0], [75, 75], 0.5, [2, 3, 4], "horizontal", true)
 let kirbyIdleSprite = () => new Sprite(kirbySpriteURL, [0, 75], [75, 75], 10, Array.from(Array(34).keys()), "horizontal", false)
-let kirbySadSprite = () => new Sprite(kirbySpriteURL, [0, 150], [75, 75], 0.5, [0, 1, 2], "horizontal", true)
-let kirbyHappySprite = () => new Sprite(kirbySpriteURL, [0, 225], [75, 75], 0.5, [0, 1], "horizontal", true)
-let kirbyAttackFwd = () => new Sprite(kirbySpriteURL, [0, 600], [150, 75], 20, [0, 1, 2, 3], "horizontal", true)
-let kirbyAttackDown = () => new Sprite(kirbySpriteURL, [0, 900], [150, 150], 20, [0, 1, 2, 3, 4, 5], "horizontal", true)
-let kirbyAttackUp = () => new Sprite(kirbySpriteURL, [0, 1050], [150, 150], 20, [0, 1, 2, 3, 4], "horizontal", true)
+let kirbySadSprite = () => new Sprite(kirbySpriteURL, [0, 150], [75, 75], 0.5, [0, 1, 2], "horizontal", true, () => playSound('disappointed'))
+let kirbyHappySprite = () => new Sprite(kirbySpriteURL, [0, 225], [75, 75], 0.5, [0, 1], "horizontal", true, () => playSound('haumph'))
+let kirbyAttackFwd = () => new Sprite(kirbySpriteURL, [0, 600], [150, 75], 20, [0, 1, 2, 3], "horizontal", true, () => playSound('attackfwd'))
+let kirbyAttackDown = () => new Sprite(kirbySpriteURL, [0, 900], [150, 150], 20, [0, 1, 2, 3, 4, 5], "horizontal", true, () => playSound('attackdown'))
+let kirbyAttackUp = () => new Sprite(kirbySpriteURL, [0, 1050], [150, 150], 20, [0, 1, 2, 3, 4], "horizontal", true, () => playSound('attackup'))
 let chefSprite = () => new Sprite(kirbySpriteURL, [0, 525], [150, 75], 3.2, [0, 1, 2, 3], "horizontal", false)
 let chefHurtSprite = () => new Sprite(kirbySpriteURL, [0, 750], [105, 105], 12, Array.from(Array(8).keys()), "horizontal", true)
-let windSprite = () => new Sprite(kirbySpriteURL, [0, 1200], [225, 225], 25, Array.from(Array(11).keys()), "horizontal", true);
+let windSprite = () => new Sprite(kirbySpriteURL, [0, 1200], [225, 225], 25, Array.from(Array(11).keys()), "horizontal", true, () => playSound('suck'));
 let noWindSprite = () => new Sprite(kirbySpriteURL, [0, 0], [0, 0], 0, Array.from(Array(1).keys()), "horizontal", false);
 let conveyor = new Entity([150, 350], conveyorSprite, "https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png")
 let conveyor2 = new Entity([110, 500], conveyorSprite2, "https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png")
@@ -75,7 +77,9 @@ let score = new Score(newGameScore, [600,10], endGameScore)
 let mouse = new Mouse(false, 0, 0, mouseImages[0], mouseImages[1])
 
 let attackSprites = [
-    { sprite: kirbyAttackDown, vector: [0, -1] }, { sprite: kirbyAttackUp, vector: [0, 1] }, { sprite: kirbyAttackFwd, vector: "find" }
+    { sprite: kirbyAttackDown, vector: [0, -1], sound: (() => playSound('attackdown')) }, 
+    { sprite: kirbyAttackUp, vector: [0, 1], sound: (() => playSound('attackup')) }, 
+    { sprite: kirbyAttackFwd, vector: "find", sound: (() => playSound('attackfwd'))}
 ];
 let entities = {
     kirby, conveyor, conveyor2, chef, wind
@@ -85,10 +89,7 @@ let init = () => {
     lastTime = Date.now();
     gameLoop();
     generateOrderPositions(8, 120, 10)
-    setTimeout(() => {
-        sushis[1] = generateSushi();
-        generateOrder(0);
-    }, 1000);
+    generateOrder(0);
 }
 
 resources.loadSelector(images);
@@ -102,11 +103,13 @@ canvas.addEventListener('click', (e) => {
     Object.keys(sushis).forEach((id) => {
         // if (sushis[id].hit) return null
         if (mouse.closed && sushis[id].clickInside(pos)) {//grabbed sushi with chops
+            playSound('pickupsushi')
             sushis[id].grabbed = true;
             sushis[id].dropped = false;
         } else if (!mouse.closed && sushis[id].clickInside(pos)){
             if (sushis[id].nearby(kirby.pos, 250)){
                 wind.sprite = windSprite();
+                wind.sprite.sound();
                 sushis[id].flying = true;
                 sushis[id].vector = sushis[id].findNormalizedVector(pos, kirby.pos)
                 sushis[id].grabbed = false;
@@ -149,6 +152,14 @@ let getMousePosition = (e) => {
 
 canvas.onmousemove = (e) => {
     let pos = getMousePosition(e);
+    orders.forEach( order => {
+        if (order.within(pos)){
+            if (soundCooldown < 0){
+                playSound(order.number, language)
+            }
+            soundCooldown = 1;
+        }
+    })
     mouse.update(pos[0], pos[1])
 }
 
@@ -178,6 +189,7 @@ let generateSushi = (end) => {
     let startPos = [700, 320];
     if (end) {
         startPos = [...kirby.pos];
+        startPos[0] += 30;
     }
     let randSushiUrl = sushiUrls[Math.floor(Math.random() * sushiUrls.length)];
     let randSushiNum = generateRandomNumber("sushi");
@@ -244,6 +256,7 @@ let gameLoop = () => {
 let update = (dt) => {
     if(!isGameOver){
         gameTime += dt;
+        updateCooldowns(dt)
         updateEntities(dt);
     }
 };
@@ -254,9 +267,14 @@ let updateEntities = (dt) => {
     updateSushis(dt);
 }
 
+let updateCooldowns = (dt) => {
+    orderCooldown -= dt;
+    sushiCooldown -= dt;
+    soundCooldown -= dt;
+}
+
 let updateOrders = (dt) => {
     let removeOrderIndex= -1;
-    orderCooldown -= dt;
     if (orderCooldown < 0) {
         orderCooldown = 15;
         generateOrder(orders.length);
@@ -269,6 +287,7 @@ let updateOrders = (dt) => {
             orderShelf.push(order.number)
             removeOrderIndex = i;
             kirby.sprite = kirbySadSprite();
+            kirby.sprite.sound();
         }
     })
     if (removeOrderIndex!== -1){
@@ -287,7 +306,7 @@ let updateSprites = (dt) => {
 let updateSushis = (dt) => {
     sushiCooldown -= dt;
     if (sushiCooldown < 0) {
-        sushiCooldown = 1.5;
+        sushiCooldown = 2.5;
         let sushi = generateSushi()
         sushis[sushi.id] = sushi;
     }
@@ -302,6 +321,7 @@ let updateSushis = (dt) => {
                 sushiShelf.push(sushis[id].number)
                 orderShelf.push(orders[sushis[id].match(orders)].number)
                 kirby.sprite = kirbyHappySprite();
+                kirby.sprite.sound();
                 orders.splice(sushis[id].match(orders), 1);
                 shiftOrders();
                 generateOrder(orders.length);
@@ -312,9 +332,12 @@ let updateSushis = (dt) => {
                     let attack = attackSprites[2]
                     sushis[id].vector = sushis[id].findNormalizedVector(sushis[id].pos, chef.pos)
                     kirby.sprite = attack.sprite();
+                    kirby.sprite.sound();
                 } else if (isGameEnding && score.score >= endGameScore){
-                    kirby.sprite = kirbyOpeningSprite();
                     orders.splice(sushis[id].match(orders), 1);
+                    kirby.sprite = kirbyOpeningSprite();
+                    wind.sprite = windSprite();
+                    delete sushis[id];
                 } else {
                     score.update(-1);
                     if (score.score === 0) endGame();
@@ -327,6 +350,7 @@ let updateSushis = (dt) => {
                         sushis[id].vector = sushis[id].findNormalizedVector(sushis[id].pos, chef.pos)
                     }
                     kirby.sprite = attack.sprite();
+                    kirby.sprite.sound();
                 }
             }
         } else if (sushis[id].nearby(chef.pos, 30)) {
@@ -359,8 +383,9 @@ let endGame = () => {
         }, 2000)
     } else if (!isGameEnding) {
         isGameEnding = true;
-        wind.sprite = windSprite();
         kirby.sprite = kirbyOpeningSprite();
+        wind.sprite = windSprite();
+        wind.sprite.sound();
         Object.keys(sushis).forEach(id => {
             sushis[id].grabbed = false;
             sushis[id].dropped = false;

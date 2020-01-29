@@ -8,7 +8,7 @@ class Score {
     update(change){
         this.score += change;
         if (this.score < 0) this.score = 0;
-        if (this.score >= endScore) this.score = endScore;
+        if (this.score >= this.endScore) this.score = this.endScore;
     }
 
     render(ctx) {

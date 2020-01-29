@@ -1,14 +1,37 @@
-function playSound(number, language){
-    if (language == 'japanese') {
-        let newAudio = new Audio(audioJapaneseFiles[number]);
-        newAudio.play();
+function playSound(key, language){
+    switch (language) {
+        case 'japanese':
+            newAudio = new Audio(audioJapaneseFiles[key]);
+            break;
+        case 'cantonese':
+            newAudio = new Audio(audioCantoneseFiles[key]);
+            break;
+        default:
+            newAudio = new Audio(gameSoundFiles[key])
+            break;
     }
-
-    if (language == 'cantonese') {
-        let newAudio = new Audio(audioCantoneseFiles[number]);
         newAudio.play();
-    }
 }
+
+let playNumberSound = (number) => {
+    let audioArray = convertNumberToSoundArray(number);
+    let index = -1;
+    let playSound = () => {
+        index++;
+        if (index === audioArray.length) {
+            return;
+        }
+        if (languageToggle === 'cantonese') {
+            newAudio = new Audio(audioCantoneseFiles[audioArray[index]]);
+        } else if (languageToggle === 'japanese') {
+            newAudio = new Audio(audioJapaneseFiles[audioArray[index]]);
+        };
+
+    playSound();
+    newAudio.addEventListener('ended', playSound);
+    newAudio.play();
+    }
+};
 
 const audioJapaneseFiles = {
     '0': 'japaneseAudio/0.mp3',
@@ -59,112 +82,18 @@ const audioCantoneseFiles = {
     'minus': 'cantoneseAudio/minus.mp3'
 };
 
-
-
-function convertNumberToSoundArray(i, language) {
-    let array = Array.from(i.toString()).map(String);
-    let piecesArray = [];
-    let orderNumber;
-
-    let order = {
-        '5': '10000',
-        '4': '1000',
-        '3': '100',
-        '2': '10',
-    };
-
-    if (language == 'japanese') {
-
-        for (let i = 0; i < array.length; i++) {
-            orderNumber = array.length - i;
-            if (array[i] == 0) {
-                continue;
-            } else if (orderNumber == 5 && array[i] == 1) {
-                piecesArray.push('10000a')
-            } else if (orderNumber == 4 && array[i] == 8) {
-                piecesArray.push('8000')
-            } else if (orderNumber == 4 && array[i] == 3) {
-                piecesArray.push('3000')
-            } else if (orderNumber == 3 && array[i] == 3) {
-                piecesArray.push('300')
-            } else if (orderNumber == 3 && array[i] == 6) {
-                piecesArray.push('600')
-            } else if (orderNumber == 3 && array[i] == 8) {
-                piecesArray.push('800')
-            } else if (array[i] == 1 && orderNumber != 1) {
-                piecesArray.push(order[orderNumber]);
-            } else if (orderNumber == 1) {
-                piecesArray.push(array[i]);
-            } else {
-                piecesArray.push(array[i]);
-                piecesArray.push(order[orderNumber]);
-            };
-        }
-    };
-
-    if (language == 'cantonese') {
-
-        for (let i = 0; i < array.length; i++) {
-            orderNumber = array.length - i;
-            if (array[i] == 0) {
-                continue;
-            } else if (orderNumber == 5 && array[i] == 1) {
-                piecesArray.push('10000a')
-            } else if (orderNumber == 4 && array[i] == 1) {
-                piecesArray.push('1000a')
-            } else if (orderNumber == 3 && array[i] == 1) {
-                piecesArray.push('1000a')
-            } else if (array[i] == 1 && orderNumber != 1) {
-                piecesArray.push(order[orderNumber]);
-            } else if (orderNumber == 1) {
-                piecesArray.push(array[i]);
-            } else {
-                piecesArray.push(array[i]);
-                piecesArray.push(order[orderNumber]);
-            };
-        }
-    };
-
-    return piecesArray;
-};
-
-
-function convertNumberToKanjiArray(i) {
-    let array = Array.from(i.toString()).map(String);
-    let piecesArray = [];
-    let orderNumber;
-
-    let order = {
-        '5': '10000',
-        '4': '1000',
-        '3': '100',
-        '2': '10',
-    };
-
-    for (let i = 0; i < array.length; i++) {
-        orderNumber = array.length - i;
-        if (array[i] == 0 && array.length == 1) {
-            piecesArray.push(array[i]);
-        } else if (array[i] == 0) {
-            continue;
-        } else if (array[i] == 1 && orderNumber != 1) {
-            piecesArray.push(order[orderNumber]);
-        } else if (orderNumber == 1 && array[i] != 0) {
-            piecesArray.push(array[i]);
-        } else {
-            piecesArray.push(array[i]);
-            piecesArray.push(order[orderNumber]);
-        };
-    }
-
-    return piecesArray;
-};
-
-function convertToKanji(array, language) {
-
-    let kanjiNumber = "";
-    for (let i = 0; i < array.length; i++) {
-        kanjiNumber += kanji[array[i]];
-    }
-    return kanjiNumber;
-};
+const gameSoundFiles = {
+    'attackup': 'GameSound/attackup.mp3',
+    'attackdown': 'GameSound/attackdown.mp3',
+    'attackfwd': 'GameSound/attackfwd.mp3',
+    'kirbysong': 'GameSound/kirbysong.mp3',
+    'hi': 'GameSound/hi.mp3',
+    'disappointed': 'GameSound/disappointed.mp3',
+    'gross': 'GameSound/gross.mp3',
+    'gross2': 'GameSound/gross2.mp3',
+    'haumph': 'GameSound/haumph.mp3',
+    'suck': 'GameSound/suck.mp3',
+    'pickupsushi': 'GameSound/pickupsushi.mp3',
+    'happy': 'GameSound/happy.mp3',
+    'hit': 'GameSound/hit.mp3',
+}

@@ -5,6 +5,8 @@ class Order{
         this.time = time;
         this.pos = pos;
         this.startTime = time;
+        this.width = 120;
+        this.height = 60;
     }
 
     update(dt){
@@ -15,10 +17,19 @@ class Order{
         return this.time <= 0 ? true : false;
     }
 
+    within(mousePos){
+        if ((mousePos[0] < this.pos[0] + this.width && mousePos[0] >= this.pos[0]) &&
+            (mousePos[1] < this.pos[1] + this.height && mousePos[1] >= this.pos[1])){
+                return true;
+            } else {
+                return false;
+            }
+    }
+
 
     render(ctx) {
         ctx.beginPath();
-        ctx.rect(0, 0, 120, 60)
+        ctx.rect(0, 0, this.width, this.height)
         ctx.stroke();
 
         ctx.beginPath();

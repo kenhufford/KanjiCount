@@ -1,6 +1,6 @@
 
 class Sprite {
-    constructor(url, pos, size, speed, frames, dir, once) {
+    constructor(url, pos, size, speed, frames, dir, once, sound) {
         this.url = url; //url of image
         this.pos = pos; //x and y coordinate in image
         this.size = size; //size of sprite (one frame)
@@ -9,6 +9,7 @@ class Sprite {
         this.dir = dir || 'horizontal'; //vert or horizontal frames
         this.once = once; //true to run once, otherwise false
         this._index = 0; //what index we are on 
+        this.sound = sound;
     }
 
     update(dt) {
