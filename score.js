@@ -1,12 +1,14 @@
 class Score {
-    constructor(score, pos) {
-        this.score = score;
+    constructor(startScore, pos, endScore) {
+        this.score = startScore;
         this.pos = pos;
+        this.endScore = endScore;
     }
 
     update(change){
         this.score += change;
         if (this.score < 0) this.score = 0;
+        if (this.score >= endScore) this.score = endScore;
     }
 
     render(ctx) {

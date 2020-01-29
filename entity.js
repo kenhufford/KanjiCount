@@ -1,5 +1,5 @@
 
-class EntitySprite {
+class Entity {
     constructor(pos, sprite, url, spriteFunc) {
         this.pos = pos;
         this.sprite = sprite;
