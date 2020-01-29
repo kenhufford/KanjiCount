@@ -46,8 +46,10 @@ class Sushi{
     }
 
     findNormalizedVector(pos1, pos2){
+        console.log(pos1)
+        console.log(pos2)
         let destPos = [...pos2]
-        destPos[1] -= 10;
+        destPos[1] += 30;
         let xVector = pos1[0] - destPos[0];
         let yVector = pos1[1] - destPos[1];
         let distance = Math.sqrt(Math.pow(xVector, 2) + Math.pow(yVector, 2))

@@ -21,9 +21,10 @@ let orders = [];
 let orderPositions = [];
 let sushiCooldown = 2;
 let orderCooldown = 10;
-let endGameScore = 3;
+let endGameScore = 6;
 let isGameOver = false;
 let isGameEnding = false;
+let language = 'japanese';
 let orderShelf = Array.from(Array(11).keys()).concat(Array.from(Array(11).keys()))
 let sushiShelf = Array.from(Array(11).keys()).concat(Array.from(Array(11).keys()))
 
@@ -91,9 +92,11 @@ function generateOrderPositions(numPos, x, y){
 function init() {
     lastTime = Date.now();
     main();
-    sushis[1] = generateSushi();
     generateOrderPositions(8, 120, 10)
-    generateOrder(0);
+    setTimeout( () =>{
+        sushis[1] = generateSushi();
+        generateOrder(0);
+    }, 1000);
 }
 
 function generateOrder(index){
@@ -107,7 +110,10 @@ function generateOrder(index){
         orderPositions[index]
     );
     orders.push(order);
+    playSound(randNum, language)
 }
+
+
 
 function reorderOrders(){
     orders.forEach((order, i) => {
@@ -302,8 +308,9 @@ function updateSushis(dt){
 
     Object.keys(sushis).forEach((id) => {
         sushis[id].update(dt, 8, [mouse.x, mouse.y])
-        if (sushis[id].nearby(kirby.pos, 10)) {
-            if (sushis[id].match(orders) !== -1 && !sushis[id].hit && !isGameEnding) {
+        if (sushis[id].nearby(kirby.pos, 30)) {
+            if (sushis[id].match(orders) !== -1 && !sushis[id].hit && 
+                (!isGameEnding || score.score >= endGameScore)) {
                 score.update(1);
                 if (score.score === endGameScore) endGame();
                 sushiShelf.push(sushis[id].number)
@@ -314,11 +321,14 @@ function updateSushis(dt){
                 generateOrder(orders.length);
                 delete sushis[id];
             } else if (!sushis[id].hit) {
-                if (isGameEnding){
+                if (isGameEnding && score.score < endGameScore){
                     sushis[id].hit = true;
                     let attack = attackSprites[2]
                     sushis[id].vector = sushis[id].findNormalizedVector(sushis[id].pos, chef.pos)
                     kirby.sprite = attack.sprite();
+                } else if (isGameEnding && score.score >= endGameScore){
+                    kirby.sprite = kirbyOpeningSprite();
+                    orders.splice(sushis[id].match(orders), 1);
                 } else {
                     score.update(-1);
                     if (score.score === 0) endGame();
@@ -333,7 +343,7 @@ function updateSushis(dt){
                     kirby.sprite = attack.sprite();
                 }
             }
-        } else if (sushis[id].nearby(chef.pos, 10)) {
+        } else if (sushis[id].nearby(chef.pos, 30)) {
             sushis[id].dropped = true;
             sushis[id].flying = false;
             chef.sprite = chefHurtSprite();
