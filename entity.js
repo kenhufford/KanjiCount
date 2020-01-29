@@ -12,17 +12,18 @@ class Sushi{
     constructor(id, pos, url, character, number) {
         this.id = id;
         this.pos = pos;
+        this.platePos = [];
         this.url = url;
         this.number = number;
         this.character = character;
+        this.vector = [0,0];
+        this.degrees = 1;
+        this.speed = 10;
         this.grabbed = false;
         this.dropped = false;
         this.flying = false;
         this.plated = false;
         this.hit = false;
-        this.vector = [0,0];
-        this.degrees = 1;
-        this.speed = 10;
     }
 
     plate(){
@@ -76,7 +77,7 @@ class Sushi{
             ctx.drawImage(img, -img.width / 2, -img.height / 2);
             ctx.restore();
         } else if (this.plated) {
-            ctx.drawImage(img, this.pos[0], this.pos[1])
+            ctx.drawImage(img, this.platePos[0], this.platePos[1])
         } else {
             ctx.font = "20px Arial";
             ctx.fillText(this.character, 25, 0);

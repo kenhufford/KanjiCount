@@ -19,17 +19,20 @@ let gameModes = {
     easy: {
         orderShelf: Array.from(Array(11).keys()),
         sushiShelf: Array.from(Array(11).keys()).concat(Array.from(Array(11).keys())),
-        orderTime: 25
+        orderTime: 25,
+        orderCooldown: 20
     },
     medium: {
-        orderShelf: Array.from(Array(1000).keys()),
-        sushiShelf: Array.from(Array(11).keys()).concat([10, 100, 100]),
-        orderTime: 25
+        orderShelf: Array.from(Array(100).keys()),
+        sushiShelf: Array.from(Array(11).keys()).concat([10, 10]),
+        orderTime: 25,
+        orderCooldown: 25
     },
     hard: {
-        orderShelf: Array.from(Array(99999).keys()),
-        sushiShelf: Array.from(Array(11).keys()).concat([10, 100, 100, 100, 1000, 1000, 10000, 10000]),
-        orderTime: 25
+        orderShelf: Array.from(Array(1000).keys()),
+        sushiShelf: Array.from(Array(11).keys()).concat([10, 10, 10, 10, 100, 100, 100, 100]),
+        orderTime: 25,
+        orderCooldown: 30
     }
 }
 let mode = "medium";
@@ -40,7 +43,6 @@ let answers = {};
 let orders = [];
 let orderPositions = [];
 let sushiCooldown = 2.5;
-let orderCooldown = 10;
 let soundCooldown = 1;
 let endGameScore = 4;
 let newGameScore = 2;
@@ -48,6 +50,7 @@ let isGameOver = false;
 let isGameEnding = false;
 let language = 'cantonese';
 let lastTime = Date.now();
+let orderCooldown = gameModes[mode].orderCooldown;
 let orderShelf = gameModes[mode].orderShelf;
 let sushiShelf = gameModes[mode].sushiShelf;
 let orderTime = gameModes[mode].orderTime;
@@ -116,25 +119,20 @@ resources.loadSelector(images);
 resources.onReady(init);
 
 
+
 canvas.addEventListener('click', (e) => {
     e.preventDefault();
     let pos = getMousePosition(e);
     mouse.closed = !mouse.closed;
     Object.keys(sushis).forEach((id) => {
-        // if (sushis[id].hit) return null
         if (mouse.closed && sushis[id].clickInside(pos)) {//grabbed sushi with chops
             playSound('pickupsushi')
             sushis[id].grabbed = true;
             sushis[id].dropped = false;
         } else if (!mouse.closed && sushis[id].clickInside(pos)){
-            if (sushis[id].nearby(kirby.pos, 250)){
-                wind.sprite = windSprite();
-                wind.sprite.sound();
-                sushis[id].flying = true;
-                sushis[id].vector = sushis[id].findNormalizedVector(pos, kirby.pos)
-                sushis[id].grabbed = false;
-                sushis[id].dropped = false; 
-                kirby.sprite = kirbyOpeningSprite();
+            if (sushis[id].nearby(kirby.pos, 100)){
+                feedKirby(sushis[id]);
+
             } else {
                 sushis[id].grabbed = false;
                 sushis[id].dropped = true;    
@@ -223,6 +221,31 @@ let generateSushi = (end) => {
     return sushi
 }
 
+let feedKirby = (sushi) => {
+    wind.sprite = windSprite();
+    wind.sprite.sound();
+    kirby.sprite = kirbyOpeningSprite();
+    sushi.vector = sushi.findNormalizedVector(sushi.pos, kirby.pos)
+    sushi.flying = true;
+    sushi.grabbed = false;
+    sushi.dropped = false;
+    sushi.plated = false;
+}
+
+let kirbyEats = (sushi) => {
+    kirby.sprite = kirbyHappySprite();
+    kirby.sprite.sound();
+    sushiShelf.push(sushi.number)
+    delete sushis[sushi.id];
+}
+
+let completeOrder = (order) => {
+    
+    orderShelf.push(order.number)
+    orders.splice(order.index, 1);
+    shiftOrders();
+    generateOrder(orders.length);
+}
 
 //game functions
 
@@ -298,7 +321,6 @@ let updateCooldowns = (dt) => {
 }
 
 let updateOrders = (dt) => {
-    let removeOrderIndex= -1;
     if (orderCooldown < 0) {
         orderCooldown = 15;
         generateOrder(orders.length);
@@ -308,17 +330,19 @@ let updateOrders = (dt) => {
         if (order.timeUp()){
             score.update(-1);
             if (score.score === 0) endGame();
-            orderShelf.push(order.number)
-            removeOrderIndex = i;
             kirby.sprite = kirbySadSprite();
             kirby.sprite.sound();
+            completeOrder(order);
+        } else if (order.ready()) {
+            score.update(1);
+            if (score.score >= endGameScore) endGame();
+            order.sushis.forEach(sushi => {
+                sushis[sushi.id] = sushi;
+                feedKirby(sushi)
+            })
+            completeOrder(order);  
         }
     })
-    if (removeOrderIndex!== -1){
-        orderShelf.push(orders[removeOrderIndex].number)
-        orders.splice(removeOrderIndex, 1);
-        shiftOrders();
-    } 
 }
 
 let updateSprites = (dt) => {
@@ -336,69 +360,43 @@ let updateSushis = (dt) => {
     }
 
     Object.keys(sushis).forEach((id) => {
-        sushis[id].update(dt, 8, [mouse.x, mouse.y])
-        if (sushis[id].nearby(kirby.pos, 30)) {
-            if (sushis[id].match(orders) !== -1 && !sushis[id].hit && 
-                (!isGameEnding || score.score >= endGameScore)) {
-                score.update(1);
-                if (score.score >= endGameScore) endGame();
-                sushiShelf.push(sushis[id].number)
-                orderShelf.push(orders[sushis[id].match(orders)].number)
-                kirby.sprite = kirbyHappySprite();
-                kirby.sprite.sound();
-                orders.splice(sushis[id].match(orders), 1);
-                shiftOrders();
-                generateOrder(orders.length);
-                delete sushis[id];
-            } else if (!sushis[id].hit) {
-                if (isGameEnding && score.score < endGameScore){
-                    sushis[id].hit = true;
-                    let attack = attackSprites[2]
-                    sushis[id].vector = sushis[id].findNormalizedVector(sushis[id].pos, chef.pos)
-                    kirby.sprite = attack.sprite();
-                    kirby.sprite.sound();
-                } else if (isGameEnding && score.score >= endGameScore){
-                    orders.splice(sushis[id].match(orders), 1);
-                    kirby.sprite = kirbyOpeningSprite();
-                    wind.sprite = windSprite();
-                    delete sushis[id];
-                } else {
-                    score.update(-1);
-                    if (score.score === 0) endGame();
-                    sushiShelf.push(sushis[id].number)
-                    sushis[id].hit = true;
-                    let attack = attackSprites[randomIndex(attackSprites)]
-                    if (attack.vector !== "find") {
-                        sushis[id].vector = attack.vector;
-                    } else {
-                        sushis[id].vector = sushis[id].findNormalizedVector(sushis[id].pos, chef.pos)
-                    }
-                    kirby.sprite = attack.sprite();
-                    kirby.sprite.sound();
+        let sushi = sushis[id];
+        sushi.update(dt, 8, [mouse.x, mouse.y])
+        if (sushi.flying){
+            if (sushi.nearby(kirby.pos, 30)){
+                kirbyEats(sushi);
+            } else if(sushi.nearby(chef.pos, 30)){
+                sushi.dropped = true;
+                sushi.flying = false;
+                chef.sprite = chefHurtSprite();
+            } else if (isGameEnding){
+                if (sushi.nearby(kirby.pos, 30)){
+                    if (score.score < endGameScore) {
+                        sushi.hit = true;
+                        let attack = attackSprites[2]
+                        sushi.vector = sushi.findNormalizedVector(sushi.pos, chef.pos)
+                        kirby.sprite = attack.sprite();
+                        kirby.sprite.sound();
+                    } 
                 }
             }
-        } else if (sushis[id].nearby(chef.pos, 30)) {
-            sushis[id].dropped = true;
-            sushis[id].flying = false;
-            chef.sprite = chefHurtSprite();
-        } else if (sushis[id].offConveyor()) {
-            sushiShelf.push(sushis[id].number);
-            delete sushis[id];
-        } else if (sushis[id].grabbed){
-            let deleteSushi = false;
-            orders.forEach( order => {
-                if (order.within(sushis[id].pos) && 
-                order.charsArray.includes(sushis[id].character) &&
-                !order.collectedChars.includes(sushis[id].character)){
-                    sushiShelf.push(sushis[id].number);
-                    order.addSushi(sushis[id]);
-                    
-                    deleteSushi = true;
+        } else if (sushi.offConveyor()) {
+            sushiShelf.push(sushi.number);
+            delete sushis[sushi.id];
+        } else if (sushi.grabbed) {
+            orders.forEach(order => {
+                if (order.within(sushi.pos)
+                    && order.charsArray.includes(sushi.character)
+                    && !order.collectedChars.includes(sushi.character)) {
+                    order.addSushi(sushi);
+                    console.log(order.ready())
+                    console.log(order.character)
+                    sushiShelf.push(sushi.number);
+                    delete sushis[sushi.id]
                 }
             })
-            if (deleteSushi) delete sushis[id];
         }
-    })   
+    })
 }
 
 
@@ -424,10 +422,11 @@ let endGame = () => {
         wind.sprite = windSprite();
         wind.sprite.sound();
         Object.keys(sushis).forEach(id => {
-            sushis[id].grabbed = false;
-            sushis[id].dropped = false;
-            sushis[id].flying = true;
-            sushis[id].vector = sushis[id].findNormalizedVector(sushis[id].pos, kirby.pos)
+            let sushi = sushis[id];
+            sushi.grabbed = false;
+            sushi.dropped = false;
+            sushi.flying = true;
+            sushi.vector = sushi.findNormalizedVector(sushi.pos, kirby.pos)
         })
         setTimeout(() => isGameOver = true, 2000)
     }

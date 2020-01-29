@@ -12,7 +12,6 @@ class Order{
         this.plateHeight = 10;
         this.plateDistance = 150;
         this.charsArray = this.character.split("");
-        console.log(this.charsArray)
         this.collectedChars = [];
         this.sushis = [];
         this.sushiPositions = [[0, 120], [30, 120], [60, 120], [15, 100], [45, 100]]
@@ -20,17 +19,17 @@ class Order{
 
     addSushi(sushi){
         this.collectedChars.push(sushi.character);
-        debugger
         sushi.plate();
         this.sushis.push(sushi);
-        sushi.pos = this.sushiPositions[this.sushis.length-1]
+        sushi.platePos = this.sushiPositions[this.sushis.length-1]
         this.time += 5;
         if (this.time > this.startTime) this.time = this.startTime;
     }
 
-    orderReady(){
-        if(this.collectedChars === this.charsArray){
-            return this.sushis;
+    ready(){
+        debugger
+        if (this.collectedChars.sort().join("") == this.charsArray.sort().join("")){
+            return true;
         } else {
             return false;
         }
@@ -78,7 +77,6 @@ class Order{
         //render plate characters
         if (this.collectedChars.length !== 0){
             this.charsArray.forEach((char, i) => {
-                debugger
                 ctx.font = "20px Arial";
                 if (this.collectedChars.includes(char)) {
                     ctx.fillStyle = "#000000";
