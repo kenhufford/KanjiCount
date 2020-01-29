@@ -1,11 +1,11 @@
 class Plate{
-    constructor(x, y, characters){
-        this.x;
-        this.y;
-        this.characters = characters;
+    constructor(x, y, chars){
+        this.x = x;
+        this.y = y;
+        this.targetChars = targetChars;
         this.width = 100;
         this.height = 20;
-        this.number = [];
+        this.currentChars = [];
     }
 
     render(){

@@ -10,11 +10,14 @@ const kanji = {
     '7': '\u4e03',
     '8': '\u516b',
     '9': '\u4e5d',
-    '10': '\u5341'
+    '10': '\u5341',
+    '100': '\u767e',
+    '1000': '\u5343',
+    '10000': '\u4e07'
 }
 
 
-let convertNumberToKanjiArray = (num) => {
+let convertNumberToArray = (num) => {
     let digits = Array.from(num.toString()).map(String);
     let result = [];
     let orderNumber;

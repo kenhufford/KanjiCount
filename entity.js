@@ -18,15 +18,25 @@ class Sushi{
         this.grabbed = false;
         this.dropped = false;
         this.flying = false;
+        this.plated = false;
         this.hit = false;
         this.vector = [0,0];
         this.degrees = 1;
         this.speed = 10;
     }
 
+    plate(){
+        this.grabbed = false;
+        this.dropped = false;
+        this.flying = false;
+        this.plated = true;
+        this.hit = false; 
+        this.vector = [0, 0];
+    }
+
     update(dt, speed, mousePos){
         if(this.dropped){
-            this.pos[1] += speed * dt * this.speed;
+            this.pos[1] += speed * dt * this.speed * 2;
         } else if (this.grabbed){
             this.pos[0] = mousePos[0] - 35;
             this.pos[1] = mousePos[1] - 30;
@@ -40,7 +50,7 @@ class Sushi{
             } else if (this.pos[1] > 460 && this.pos[0] < 680){
                 this.pos[0] += speed * dt * this.speed;
             } else {
-                this.pos[1] += speed * dt * this.speed;
+                this.pos[1] += speed * dt * this.speed * 2;
             }
         }
     }
@@ -57,7 +67,6 @@ class Sushi{
         return normalVector;
     }
 
-    
     render(ctx){
         let img = resources.get(this.url);
         if (this.flying){
@@ -66,6 +75,8 @@ class Sushi{
             ctx.rotate(Math.PI * this.degrees)
             ctx.drawImage(img, -img.width / 2, -img.height / 2);
             ctx.restore();
+        } else if (this.plated) {
+            ctx.drawImage(img, this.pos[0], this.pos[1])
         } else {
             ctx.font = "20px Arial";
             ctx.fillText(this.character, 25, 0);

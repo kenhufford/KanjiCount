@@ -14,6 +14,25 @@ let requestAnimFrame = (function () {
 let kanjiArray = Object.values(kanji);
 
 //game variables
+
+let gameModes = {
+    easy: {
+        orderShelf: Array.from(Array(11).keys()),
+        sushiShelf: Array.from(Array(11).keys()).concat(Array.from(Array(11).keys())),
+        orderTime: 25
+    },
+    medium: {
+        orderShelf: Array.from(Array(1000).keys()),
+        sushiShelf: Array.from(Array(11).keys()).concat([10, 100, 100]),
+        orderTime: 25
+    },
+    hard: {
+        orderShelf: Array.from(Array(99999).keys()),
+        sushiShelf: Array.from(Array(11).keys()).concat([10, 100, 100, 100, 1000, 1000, 10000, 10000]),
+        orderTime: 25
+    }
+}
+let mode = "medium";
 let sushiID = 1;
 let gameTime = 0;
 let sushis = {};
@@ -29,8 +48,9 @@ let isGameOver = false;
 let isGameEnding = false;
 let language = 'cantonese';
 let lastTime = Date.now();
-let orderShelf = Array.from(Array(11).keys());
-let sushiShelf = Array.from(Array(11).keys()).concat(Array.from(Array(11).keys()))
+let orderShelf = gameModes[mode].orderShelf;
+let sushiShelf = gameModes[mode].sushiShelf;
+let orderTime = gameModes[mode].orderTime;
 
 function reset(){
     sushiID = 1;
@@ -49,7 +69,7 @@ function reset(){
     language = 'cantonese';
     lastTime = Date.now();
     orderShelf = Array.from(Array(11).keys());
-    sushiShelf = Array.from(Array(11).keys()).concat(Array.from(Array(11).keys()))
+    sushiShelf = Array.from(Array(20).keys());
 }
 
 //sprite and entity setup
@@ -73,7 +93,7 @@ let conveyor2 = new Entity([110, 500], conveyorSprite2, "https://obsoletegame.fi
 let kirby = new Entity([50, 200], kirbyIdleSprite(), kirbySpriteURL, kirbyIdleSprite)
 let chef = new Entity([750, 310], chefSprite(), kirbySpriteURL, chefSprite)
 let wind = new Entity([90, 110], noWindSprite(), kirbySpriteURL, noWindSprite)
-let score = new Score(newGameScore, [600,10], endGameScore)
+let score = new Score(newGameScore, [10,10], endGameScore)
 let mouse = new Mouse(false, 0, 0, mouseImages[0], mouseImages[1])
 
 let attackSprites = [
@@ -88,7 +108,7 @@ let entities = {
 let init = () => {
     lastTime = Date.now();
     gameLoop();
-    generateOrderPositions(8, 120, 10)
+    generateOrderPositions(4, 120, 10)
     generateOrder(0);
 }
 
@@ -139,7 +159,7 @@ let generateRandomNumber = (type) => {
 
 let generateOrderPositions = (numPos, x, y) =>{
     for (let i = 0; i < numPos; i++){
-        orderPositions.push([i*x + 10, y])
+        orderPositions.push([i*x + 400, y])
     }
 }
 
@@ -169,12 +189,15 @@ let generateOrder = (index) => {
     if (orders.length >= 4) return null
     shiftOrders();
     let randNum = generateRandomNumber("order");
+    let characters = convertToKanji(convertNumberToArray(randNum));
     let order = new Order(
-        kanjiArray[randNum],
+        index,
+        characters,
         randNum,
-        20,
+        orderTime,
         orderPositions[index]
     );
+    
     orders.push(order);
     playSound(randNum, language)
 }
@@ -182,6 +205,7 @@ let generateOrder = (index) => {
 let shiftOrders = () => {
     orders.forEach((order, i) => {
         order.pos = orderPositions[i];
+        order.index = i;
     });
 }
 
@@ -193,7 +217,7 @@ let generateSushi = (end) => {
     }
     let randSushiUrl = sushiUrls[Math.floor(Math.random() * sushiUrls.length)];
     let randSushiNum = generateRandomNumber("sushi");
-    let randSushiChar = kanjiArray[randSushiNum];
+    let randSushiChar = convertToKanji(convertNumberToArray(randSushiNum));
     let sushi = new Sushi(sushiID, startPos, randSushiUrl, randSushiChar, randSushiNum) //700, 370 start, 130 end
     sushiID++;
     return sushi
@@ -360,6 +384,19 @@ let updateSushis = (dt) => {
         } else if (sushis[id].offConveyor()) {
             sushiShelf.push(sushis[id].number);
             delete sushis[id];
+        } else if (sushis[id].grabbed){
+            let deleteSushi = false;
+            orders.forEach( order => {
+                if (order.within(sushis[id].pos) && 
+                order.charsArray.includes(sushis[id].character) &&
+                !order.collectedChars.includes(sushis[id].character)){
+                    sushiShelf.push(sushis[id].number);
+                    order.addSushi(sushis[id]);
+                    
+                    deleteSushi = true;
+                }
+            })
+            if (deleteSushi) delete sushis[id];
         }
     })   
 }
