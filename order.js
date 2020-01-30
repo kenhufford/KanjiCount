@@ -68,15 +68,23 @@ class Order{
     render(ctx) {
         ctx.beginPath();
         ctx.rect(0, 0, this.width, this.height)
+        ctx.fillStyle = "#0a005f"
+        ctx.fillRect(0, 0, this.width, this.height)
         ctx.stroke();
         //render order info
         ctx.beginPath();
         ctx.rect(10, 10, 100, 20)
         ctx.stroke();
-        ctx.fillStyle = "#000000";
+        let gradient = ctx.createLinearGradient(10, 10, 100, 0);
+        gradient.addColorStop(0, 'red');
+        gradient.addColorStop(1 / 3, 'orange');
+        gradient.addColorStop(2 / 3, 'yellow');
+        gradient.addColorStop(3 / 3, 'green');
+        ctx.fillStyle = gradient;
         ctx.fillRect(10, 10, (this.time * 100/this.startTime), 20);
         //render order number
         ctx.font = "20px Arial";
+        ctx.fillStyle = "#ffffff";
         ctx.fillText(this.number, 55, 50);
         //render plate
         if (this.charsArray.length !== 1){

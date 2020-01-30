@@ -1,4 +1,5 @@
 function playSound(key, language){
+    console.log("im playing something")
     let newAudio;
     switch (language) {
         case 'japanese':
@@ -15,6 +16,7 @@ function playSound(key, language){
 }
 
 let playNumberSound = (number, language) => {
+    console.log("im playing something")
     let audioArray = convertNumberToSoundArray(number, language);
     let newAudio;
     

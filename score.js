@@ -26,27 +26,29 @@ class Score {
         let text = `${10-this.score} more to go!`
         switch (true) {
             case this.score<2:
-                fillColor = '#E8350F';
                 text = `${10 - this.score} more to go!`
                 break;
             case this.score>=2 && this.score<4:
-                fillColor = '#E8E10F';
                 text = `Kirby's still hungry!`
                 break;
             case this.score>=4 && this.score<6:
-                fillColor = '#36E80F';
                 text = `He's filling up!`
                 break;
             case this.score>=6 && this.score<8:
-                fillColor = '#0FC7E8';
                 text = `Only room for ice cream!`
                 break;
             default:
-                fillColor = '#E80FE8';
                 text = `Victory!!!`
                 break;
         }
-        ctx.fillStyle = fillColor;
+        let gradient = ctx.createLinearGradient(10, 10, 200, 20);
+        gradient.addColorStop(0, '#93f7e1');
+        gradient.addColorStop(1 / 3, '#93caf7');
+        gradient.addColorStop(2 / 3, '#b693f7');
+        gradient.addColorStop(3 / 3, '#d827f0');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(10, 10, (this.time * 100 / this.startTime), 20);
+
         ctx.fillRect(10, 10, this.score * 18 + 20, 20);
 
         ctx.fillStyle = "#000000";
