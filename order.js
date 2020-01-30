@@ -15,14 +15,18 @@ class Order{
         this.collectedChars = [];
         this.sushis = [];
         this.sushiPositions = [[0, 120], [30, 120], [60, 120], [15, 100], [45, 100]]
+
+        for (let i = 0; i < this.charsArray.length; i++){
+            this.collectedChars.push("")
+        }
     }
 
     addSushi(sushi){
-        this.collectedChars.push(sushi.character);
+        let sushiIndex = this.charsArray.indexOf(sushi.character);
+        this.collectedChars[sushiIndex] = sushi.character;
         sushi.plate();
         this.sushis.push(sushi);
-
-        sushi.platePos = this.sushiPositions[this.charsArray.indexOf(sushi.character)]
+        sushi.platePos = this.sushiPositions[sushiIndex]
         this.time += 5;
         if (this.time > this.startTime) this.time = this.startTime;
     }
@@ -52,6 +56,14 @@ class Order{
             }
     }
 
+    withinBox(mousePos){
+        if ((mousePos[0] < this.pos[0] + this.width && mousePos[0] >= this.pos[0]) &&
+            (mousePos[1] < this.pos[1] + this.width && mousePos[1] >= this.pos[1])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     render(ctx) {
         ctx.beginPath();
@@ -69,24 +81,28 @@ class Order{
         //render plate
         if (this.charsArray.length !== 1){
             ctx.beginPath();
-            ctx.rect(0, this.plateHeight + this.plateDistance, this.plateWidth, 10)
+            ctx.fillStyle = "#663700";
+            ctx.rect(0, this.plateHeight + this.plateDistance, this.plateWidth, 15)
+            ctx.fillRect(0, this.plateHeight + this.plateDistance, this.plateWidth, 15)
+            ctx.rect(20, this.plateHeight + this.plateDistance+15, 20, 20)
+            ctx.fillRect(20, this.plateHeight + this.plateDistance + 15, 20, 20)
+            ctx.rect(80, this.plateHeight + this.plateDistance+15, 20, 20)
+            ctx.fillRect(80, this.plateHeight + this.plateDistance + 15, 20, 20)
             ctx.stroke();
 
             //only a single character
-            if (this.collectedChars.length >= 0) { 
-                this.charsArray.forEach((char, i) => {
-                    ctx.font = "20px Arial";
-                    if (this.collectedChars[i] === char) {
-                        ctx.fillStyle = "#000000";
-                    } else {
-                        ctx.fillStyle = "#fdd13e";
-                    }
-                    ctx.fillText(char, i * 25, 250);
-                })
-                this.sushis.forEach(sushi => {
-                    sushi.render(ctx)
-                })
-            }
+            this.charsArray.forEach((char, i) => {
+                ctx.font = "20px Arial";
+                if (this.collectedChars[i] === char) {
+                    ctx.fillStyle = "#000000";
+                } else {
+                    ctx.fillStyle = "#fdd13e";
+                }
+                ctx.fillText(char, i * 25, 250);
+            })
+            this.sushis.forEach(sushi => {
+                sushi.render(ctx)
+            })
         }
     }
 }

@@ -42,7 +42,7 @@ let answers = {};
 let orders = [];
 let orderPositions = [];
 let sushiCooldown = 2.5;
-let soundCooldown = 1;
+let soundCooldown = 3;
 let endGameScore = 10;
 let newGameScore = 2;
 let windCooldown = 1;
@@ -68,7 +68,7 @@ function reset(){
     orderPositions = [];
     sushiCooldown = 2.5;
     orderCooldown = 10;
-    soundCooldown = 1;
+    soundCooldown = 3;
     endGameScore = 10;
     newGameScore = 2;
     windCooldown = 1;
@@ -81,12 +81,12 @@ function reset(){
 //sprite and entity setup
 let conveyorSprite = new Sprite("https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png", [0, 0], [605, 60], 4, [0, 1, 2, 3], 'vertical', false);
 let conveyorSprite2 = new Sprite("https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png", [0, 0], [605, 60], 4, [3, 2, 1, 0], 'vertical', false);
-let kirbySpriteURL = 'https://i.imgur.com/Csvj6I1.png'
+let kirbySpriteURL = 'https://i.imgur.com/JD6rhR7.png'
 let kirbyOpeningSprite = () => new Sprite(kirbySpriteURL, [0, 0], [75, 75], 10, [0, 1, 2, 2, 2], "horizontal", true);
-let kirbyClosingSprite = () => new Sprite(kirbySpriteURL, [150, 0], [75, 75], 10, [2, 3, 4], "horizontal", true)
+let kirbyClosingSprite = () => new Sprite(kirbySpriteURL, [150, 0], [75, 75], 10, [0, 1, 2], "horizontal", true)
 let kirbyIdleSprite = () => new Sprite(kirbySpriteURL, [0, 75], [75, 75], 10, Array.from(Array(34).keys()), "horizontal", false)
-let kirbySadSprite = () => new Sprite(kirbySpriteURL, [0, 150], [75, 75], 5, [0, 1, 2], "horizontal", true, () => playSound('disappointed'))
-let kirbyHappySprite = () => new Sprite(kirbySpriteURL, [0, 225], [75, 75], 5, [0, 1], "horizontal", true, () => playSound('haumph'))
+let kirbySadSprite = () => new Sprite(kirbySpriteURL, [0, 150], [75, 75], 10, [0, 1, 2], "horizontal", true, () => playSound('disappointed'))
+let kirbyHappySprite = () => new Sprite(kirbySpriteURL, [0, 225], [75, 75], 5, [0, 1, 2, 3], "horizontal", true, () => playSound('haumph'))
 let kirbyAttackFwd = () => new Sprite(kirbySpriteURL, [0, 600], [150, 75], 20, [0, 1, 2, 3], "horizontal", true, () => playSound('attackfwd'))
 let kirbyAttackDown = () => new Sprite(kirbySpriteURL, [0, 900], [150, 150], 20, [0, 1, 2, 3, 4, 5], "horizontal", true, () => playSound('attackdown'))
 let kirbyAttackUp = () => new Sprite(kirbySpriteURL, [0, 1050], [150, 150], 20, [0, 1, 2, 3, 4], "horizontal", true, () => playSound('attackup'))
@@ -114,7 +114,7 @@ let entities = {
 let init = () => {
     lastTime = Date.now();
     gameLoop();
-    generateOrderPositions(4, 120, 10)
+    generateOrderPositions(4, 140, 10)
     generateOrder(0);
 }
 
@@ -139,6 +139,16 @@ canvas.addEventListener('click', (e) => {
             }
         }
     });
+    orders.forEach (order => {
+        if (order.withinBox(pos)) {
+            if (soundCooldown < 0) {
+                playNumberSound(order.number, language)
+                soundCooldown = 3;
+            }
+            
+        }
+    })
+
 })
 
 
@@ -187,21 +197,17 @@ let getMousePosition = (e) => {
 
 canvas.onmousemove = (e) => {
     let pos = getMousePosition(e);
-    orders.forEach( order => {
-        if (order.within(pos)){
-            if (soundCooldown < 0){
-                playSound(order.number, language)
-            }
-            soundCooldown = 1;
-        } else if (mouse.closed && windCooldown < 0 && kirby.nearby(pos)) {
-            kirby.sprite = kirbyOpeningSprite();
-            wind.sprite = windSprite();
-            wind.sprite.sound();
-            windCooldown = 1;
-        }
-    })
+    if (mouse.closed && windCooldown < 0 && kirby.nearby(pos)) {
+        kirby.sprite = kirbyOpeningSprite();
+        wind.sprite = windSprite();
+        wind.sprite.sound();
+        windCooldown = 1;
+    }
     mouse.update(pos[0], pos[1])
 }
+
+
+
 
 //game helper functions
 
@@ -219,7 +225,7 @@ let generateOrder = (index) => {
     );
     
     orders.push(order);
-    playSound(randNum, language)
+    playNumberSound(randNum, language)
 }
 
 let shiftOrders = () => {
@@ -435,7 +441,7 @@ let updateSushis = (dt) => {
             orders.forEach(order => {
                 if (order.within(sushi.pos)
                     && order.charsArray.includes(sushi.character)
-                    && !order.collectedChars.includes(sushi.character)) {
+                    && order.charsArray.length !== 1) {
                     order.addSushi(sushi);
                     delete sushis[sushi.id]
                 }
@@ -446,7 +452,6 @@ let updateSushis = (dt) => {
 
 
 let endGame = () => {
-    debugger
     score.gameEnd = true;
     if (score.score === 0 && !isGameEnding) {
         isGameEnding = true;

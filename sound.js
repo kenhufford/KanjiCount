@@ -1,4 +1,5 @@
 function playSound(key, language){
+    let newAudio;
     switch (language) {
         case 'japanese':
             newAudio = new Audio(audioJapaneseFiles[key]);
@@ -13,24 +14,25 @@ function playSound(key, language){
         newAudio.play();
 }
 
-let playNumberSound = (number) => {
-    let audioArray = convertNumberToSoundArray(number);
+let playNumberSound = (number, language) => {
+    let audioArray = convertNumberToSoundArray(number, language);
+    let newAudio;
+    
     let index = -1;
     let playSound = () => {
         index++;
         if (index === audioArray.length) {
             return;
         }
-        if (languageToggle === 'cantonese') {
+        if (language === 'cantonese') {
             newAudio = new Audio(audioCantoneseFiles[audioArray[index]]);
-        } else if (languageToggle === 'japanese') {
+        } else if (language === 'japanese') {
             newAudio = new Audio(audioJapaneseFiles[audioArray[index]]);
         };
-
-    playSound();
-    newAudio.addEventListener('ended', playSound);
-    newAudio.play();
+        newAudio.addEventListener('ended', playSound);
+        newAudio.play();
     }
+    playSound();
 };
 
 const audioJapaneseFiles = {

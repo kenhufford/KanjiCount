@@ -57,7 +57,7 @@ let convertToKanji = (digits) => {
 };
 
 
-let convertNumberToSoundArray = (num) => {
+let convertNumberToSoundArray = (num, language) => {
     let digits = Array.from(num.toString()).map(String);
     let results = [];
     let orderNumber;
@@ -69,7 +69,7 @@ let convertNumberToSoundArray = (num) => {
         '2': '10',
     };
 
-    if (languageToggle == 'japanese') {
+    if (language == 'japanese') {
 
         for (let i = 0; i < digits.length; i++) {
             orderNumber = digits.length - i;
@@ -98,7 +98,7 @@ let convertNumberToSoundArray = (num) => {
         }
     };
 
-    if (languageToggle == 'cantonese') {
+    if (language == 'cantonese') {
 
         for (let i = 0; i < digits.length; i++) {
             orderNumber = digits.length - i;
