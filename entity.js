@@ -6,6 +6,17 @@ class Entity {
         this.url = url;
         this.defaultSprite = spriteFunc;
     }
+
+    nearby(inputPos) {
+        let posX = this.pos[0];
+        let posY = this.pos[1];
+
+        if (posX < inputPos[0] + 50 && posX + 250 > inputPos[0] &&
+            posY < inputPos[1] + 50 && posY + 100 > inputPos[1]) {
+            return true
+        }
+        return false
+    }
 }
 
 class Sushi{
@@ -56,9 +67,8 @@ class Sushi{
         }
     }
 
+
     findNormalizedVector(pos1, pos2){
-        console.log(pos1)
-        console.log(pos2)
         let destPos = [...pos2]
         destPos[1] += 30;
         let xVector = pos1[0] - destPos[0];

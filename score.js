@@ -3,12 +3,15 @@ class Score {
         this.score = startScore;
         this.pos = pos;
         this.endScore = endScore;
+        this.gameEnd = false;
     }
 
     update(change){
+        if (this.gameEnd) return null
         this.score += change;
         if (this.score < 0) this.score = 0;
         if (this.score >= this.endScore) this.score = this.endScore;
+        console.log(this.score)
     }
 
     render(ctx) {
