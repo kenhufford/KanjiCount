@@ -18,7 +18,7 @@ class Button {
         } else if (this.slidePosX <= this.width / 2 & !this.flipped) {
             this.slidePosX = 0;
         } else {
-            this.flipped ? this.slidePosX += dt * 50 : this.slidePosX -= dt * 50 
+            this.flipped ? this.slidePosX += dt * 75 : this.slidePosX -= dt * 75;
         }
     }
 

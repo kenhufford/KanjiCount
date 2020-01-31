@@ -10,7 +10,9 @@ class Modaltext {
             "3": ["Orders will appear here.  Complete the order before" , "time runs out!  Click on the order to hear the word."],
             "4": ["Single character orders must be fed to Kirby! If you", "drop it near him he'll eat it."],
             "5": ["Multi-character orders must be plated. Holding a", "sushi near the plate will place it."],
-            "6": ["If an order runs out of time or if you feed Kirby incorrectly,", "he will lose a heart. Fill up Kirby's health bar to win!"]
+            "6": ["If an order runs out of time or if you feed Kirby incorrectly,", "he will lose a heart. Fill up Kirby's health bar to win!"],
+            "win": ["Great job! Kirby is pleased!", "Want to feed him again?"],
+            "lose": ["Oh no! You've angered Kirby", "Want to try feeding him again?"]
         }
         this.location = {
             "0": [[270, 50],[235, 135], [235, 235], [235, 335], [235, 435]],
@@ -20,6 +22,8 @@ class Modaltext {
             "4": [[270, 240], [270, 270]],
             "5": [[225, 300], [225, 330]],
             "6": [[255, 275], [255, 305]],
+            "win": [[250, 250], [250, 280]],
+            "lose": [[250, 250], [250, 280]]
         }
     }
 

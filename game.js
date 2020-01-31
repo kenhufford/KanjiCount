@@ -22,20 +22,22 @@ let gameModes = {
     easy: {
         sushiShelf: Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.random() * 1)),
         orderTime: 25,
-        orderCooldown: 10
+        orderCooldown: 10,
+        startScore: 3
     },
     medium: {
         sushiShelf: Array.from(Array(11).keys()).concat([10, 10]).sort((a, b) => (0.5 - Math.random() * 1)),
         orderTime: 25,
-        orderCooldown: 10
+        orderCooldown: 10,
+        startScore: 2,
     },
     hard: {
         sushiShelf: Array.from(Array(11).keys()).concat([10, 10, 10, 100, 100, 100]).sort((a, b) => (0.5 - Math.random() * 1)),
         orderTime: 25,
-        orderCooldown: 10
+        orderCooldown: 10,
+        startScore: 1
     }
 }
-let tutorialStep = 0;
 let tutorial = true;
 let isGameOver = false;
 let isGameEnding = false;
@@ -52,7 +54,6 @@ let orderPositions = [];
 let sushiCooldown = 2.5;
 let soundCooldown = 3;
 let endGameScore = 10;
-let newGameScore = 2;
 let windCooldown = 1;
 let sushiShelf;
 
@@ -68,39 +69,19 @@ let orderNumEasy = Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.rando
 let orderNumMed = Array.from(Array(100).keys()).sort((a, b) => (0.5 - Math.random() * 1));
 let orderNumHard = Array.from(Array(1000).keys()).sort((a, b) => (0.5 - Math.random() * 1));
 
-function reset(){
-    sushiShelf;
-    ordNumIndex = 0;
-    sushiID = 1;
-    gameTime = 0;
-    sushis = {};
-    answers = {};
-    orders = [];
-    orderPositions = [];
-    sushiCooldown = 2.5;
-    orderCooldown = 10;
-    soundCooldown = 3;
-    endGameScore = 10;
-    newGameScore = 2;
-    windCooldown = 1;
-    isGameOver = false;
-    isGameEnding = false;
-    language = 'cantonese';
-    lastTime = Date.now();
-    tutorialToggle = true;
-}
-
 //sprite and entity setup
 let conveyorSprite = new Sprite("https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png", [0, 0], [605, 60], 4, [0, 1, 2, 3], 'vertical', false);
 let conveyorSprite2 = new Sprite("https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png", [0, 0], [605, 60], 4, [3, 2, 1, 0], 'vertical', false);
-let kirbySpriteURL = 'https://i.imgur.com/92vQnc7.png';
+let kirbySpriteURL = 'https://i.imgur.com/L41WBdc.png';
 let heartsSpriteURL = 'https://i.imgur.com/yHVGEZl.png';
 let norinSpriteURL = "https://i.imgur.com/K6KU5Rs.png";
 let kirbyOpeningSprite = () => new Sprite(kirbySpriteURL, [0, 0], [75, 75], 10, [0, 1, 1, 2, 2, 3, 3, 4, 4], "horizontal", true);
 let kirbyClosingSprite = () => new Sprite(kirbySpriteURL, [150, 0], [75, 75], 10, [0, 1, 2], "horizontal", true)
 let kirbyIdleSprite = () => new Sprite(kirbySpriteURL, [0, 75], [75, 75], 10, Array.from(Array(34).keys()), "horizontal", false)
-let kirbySadSprite = () => new Sprite(kirbySpriteURL, [0, 150], [75, 75], 10, [0, 1, 2], "horizontal", true, () => playSound('disappointed'))
-let kirbyHappySprite = () => new Sprite(kirbySpriteURL, [0, 225], [75, 75], 5, [0, 1, 2, 3], "horizontal", true, () => playSound('haumph'))
+let kirbySadSprite = () => new Sprite(kirbySpriteURL, [0, 150], [75, 75], 10, [0, 1, 2], "horizontal", false, () => playSound('disappointed'))
+let kirbyHappySprite = () => new Sprite(kirbySpriteURL, [0, 225], [75, 75], 10, [0, 1, 2,3], "horizontal", false, () => playSound('haumph'))
+let kirbyWinSprite = () => new Sprite(kirbySpriteURL, [0, 2025], [75, 75], 10, Array.from(Array(13).keys()), "horizontal", false, () => playSound('hi'))
+let kirbyLoseSprite = () => new Sprite(kirbySpriteURL, [0, 1950], [75, 75], 10, Array.from(Array(14).keys()), "horizontal", false, () => playSound('wahhh'))
 let kirbyAttackFwd = () => new Sprite(kirbySpriteURL, [0, 600], [150, 75], 20, [0, 1, 2, 3], "horizontal", true, () => playSound('attackfwd'))
 let kirbyAttackDown = () => new Sprite(kirbySpriteURL, [0, 900], [150, 150], 20, [0, 1, 2, 3, 4, 5], "horizontal", true, () => playSound('attackdown'))
 let kirbyAttackUp = () => new Sprite(kirbySpriteURL, [0, 1050], [150, 150], 20, [0, 1, 2, 3, 4], "horizontal", true, () => playSound('attackup'))
@@ -115,7 +96,7 @@ let chefSprite = () => new Sprite(kirbySpriteURL, [0, 525], [150, 75], 3.2, [0, 
 let chefHurtSprite = () => new Sprite(kirbySpriteURL, [0, 750], [105, 105], 12, Array.from(Array(8).keys()), "horizontal", true)
 let windSprite = () => new Sprite(kirbySpriteURL, [0, 1200], [225, 225], 25, Array.from(Array(11).keys()), "horizontal", true, () => playSound('suck'));
 let noWindSprite = () => new Sprite(kirbySpriteURL, [0, 0], [0, 0], 0, Array.from(Array(1).keys()), "horizontal", false);
-let heartsSprite = () => new Sprite(heartsSpriteURL, [0, 0], [250, 50], 1, [10-newGameScore], "vertical", false);
+let heartsSprite = () => new Sprite(heartsSpriteURL, [0, 0], [250, 50], 1, [10 - gameModes[mode].startScore], "vertical", false);
 let norinSprite = () => new Sprite(norinSpriteURL, [100, 0], [900, 190], 1, [0], "vertical", false);
 let conveyor = new Entity([150, 350], conveyorSprite, "https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png")
 let conveyor2 = new Entity([110, 500], conveyorSprite2, "https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png")
@@ -123,13 +104,13 @@ let kirby = new Entity([50, 200], kirbyIdleSprite(), kirbySpriteURL, kirbyIdleSp
 let chef = new Entity([750, 310], chefSprite(), kirbySpriteURL, chefSprite)
 let wind = new Entity([90, 110], noWindSprite(), kirbySpriteURL, noWindSprite)
 let hearts = new Entity([10, 10], heartsSprite(), heartsSpriteURL, heartsSprite);
-let score = new Score(newGameScore, [10,10], endGameScore, hearts)
+let score = new Score(gameModes[mode].startScore, [10,10], endGameScore, hearts)
 let mouse = new Mouse(false, 0, 0, mouseImages[0], mouseImages[1])
 let spotlight = new Spotlight(kirby.pos[0] + kirby.sprite.size[0] / 2, kirby.pos[1] + kirby.sprite.size[1] / 2, 80)
-let languageButton = new Button([100, 100], 120, 50, 5, 30, "Cantonese", "Japanese")
-let difficultyButton = new Button([100, 200], 120, 50, 15, 30, "Easy", "Medium")
-let tutorialButton = new Button([100, 300], 120, 50, 20, 30, "Tutorial", "None")
-let readyButton = new Button([100, 400], 120, 50, 25, 30, "Not Yet", "Ready")
+let languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese")
+let difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Easy", "Medium")
+let tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None")
+let readyButton = new Button([100, 400], 120, 50, 4, 33, "Not Yet", "Ready")
 let norin = new Entity([0,0], norinSprite(), norinSpriteURL, norinSprite)
 
 let attackSprites = [
@@ -145,6 +126,36 @@ let buttons = {
     languageButton, difficultyButton,  tutorialButton, readyButton
 }
 
+let resetGame = () => {
+    debugger
+    step = 0;
+    tutorial = true;
+    isGameOver = false;
+    isGameEnding = false;
+    isGameStart = false;
+    score.score = gameModes[mode].startScore;
+    ordNumIndex = 0;
+    sushiNumIndex = 0;
+    sushiID = 1;
+    gameTime = 0;
+    sushis = {};
+    answers = {};
+    orders = [];
+    orderPositions = [];
+    sushiCooldown = 2.5;
+    soundCooldown = 3;
+    endGameScore = 10;
+    windCooldown = 1;
+    sushiShelf;
+    lastTime = Date.now();
+    now = Date.now();
+    dt = (now - lastTime) / 1000.0;
+    tutorialToggle = true;
+    orderNumEasy = Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.random() * 1));
+    orderNumMed = Array.from(Array(100).keys()).sort((a, b) => (0.5 - Math.random() * 1));
+    orderNumHard = Array.from(Array(1000).keys()).sort((a, b) => (0.5 - Math.random() * 1));
+    init();
+}
 
 let init = () => {
     now = Date.now();
@@ -165,9 +176,10 @@ let init = () => {
         modalCanvas.classList.add('front-canvas');
         tutorialLoop()
     } else {
+        orderCooldown = gameModes[mode].orderCooldown;
+        orderTime = gameModes[mode].orderTime;
         gameLoop();
     }
-
 }
 
 resources.loadSelector(images);
@@ -175,10 +187,18 @@ resources.onReady(init);
 
 modalCanvas.addEventListener('click', (e) =>{
     e.preventDefault();
-    
     if (!tutorial) return null
     mouse.closed = !mouse.closed;
     let pos = getMousePosition(e);
+    
+    if (step === "end") {
+        if (readyButton.inside(pos)) {
+            debugger
+            readyButton.flipped = !readyButton.flipped;
+            resetGame();
+        }
+    }
+    
     if (step === 0){
         if (readyButton.inside(pos)){
             readyButton.flipped = !readyButton.flipped;
@@ -209,7 +229,7 @@ modalCanvas.addEventListener('click', (e) =>{
         step += 1;
         change = true;
     }
-    if (step >= 6){
+    if (step > 6){
         tutorial = false;
         isGameStart = true;
         canvas.classList.add('front-canvas');
@@ -491,16 +511,14 @@ let gameLoop = () => {
     lastTime = now;
     update(dt);
     render();
-    requestAnimFrame(gameLoop);
+    if (step !== "end") requestAnimFrame(gameLoop);
 };
-
-
 
 let update = (dt) => {
     if(!isGameOver){
         if ((score.score === 0 || score.score === endGameScore )&& !isGameEnding) endGame();
         gameTime += dt;
-        updateCooldowns(dt)
+        updateCooldowns(dt);
         updateEntities(dt);
     }
 };
@@ -553,7 +571,6 @@ let updateSushis = (dt) => {
         if (sushi.flying){
             if (sushi.nearby(kirby.pos, 30)){
                 if(!sushi.hit){
-                    debugger
                     kirbyEats(sushi);
                 } else if (isGameEnding){
                     if (score.score < endGameScore) {
@@ -605,7 +622,8 @@ let endGame = () => {
         spit;
         setTimeout(() => {
             clearInterval(spit);
-            isGameOver = true;
+            switchToGameOver();
+            tutorialLoop();
         }, 2000)
     } else if (!isGameEnding) {
         isGameEnding = true;
@@ -619,8 +637,22 @@ let endGame = () => {
             sushi.flying = true;
             sushi.vector = sushi.findNormalizedVector(sushi.pos, kirby.pos)
         })
-        setTimeout(() => isGameOver = true, 2000)
+        setTimeout(() => { 
+            switchToGameOver();
+            tutorialLoop();
+        }, 2000)
     }
+}
+
+let switchToGameOver = () => {
+    canvas.classList.remove('front-canvas');
+    canvas.classList.add('back-canvas');
+    modalCanvas.classList.remove('back-canvas');
+    modalCanvas.classList.add('front-canvas');
+    isGameOver = true;
+    tutorial = true;
+    step = "end";
+    change = true;
 }
 
 
@@ -644,21 +676,21 @@ let tutorialLoop = () => {
                     spotlight.y = kirby.pos[1] + kirby.sprite.size[1] / 2;
                     spotlight.radius = 1;
                     spotlight.maxRadius = 80;
-                    modaltext.step = 1;
+                    modaltext.step = step;
                     break;
                 case 2:
                     spotlight.x = sushis[1].pos[0] + 30;
                     spotlight.y = sushis[1].pos[1] + 30;
                     spotlight.radius = 1;
                     spotlight.maxRadius = 80;
-                    modaltext.step = 2;
+                    modaltext.step = step;
                     break;
                 case 3:
                     spotlight.x = orders[0].pos[0] + orders[0].width / 2;
                     spotlight.y = orders[0].pos[1] + orders[0].height / 2;
                     spotlight.radius = 1;
                     spotlight.maxRadius = 80;
-                    modaltext.step = 3;
+                    modaltext.step = step;
                     break;
                 case 4:
                     spotlight.x = kirby.pos[0] + kirby.sprite.size[0] / 2 + 60;
@@ -678,21 +710,31 @@ let tutorialLoop = () => {
                         kirby.sprite = kirbyOpeningSprite();
                         wind.sprite.sound();
                     }, 2000);
-                    modaltext.step = 4;
+                    modaltext.step = step;
                     break;
                 case 5:
                     spotlight.x = orders[0].pos[0] + orders[0].width / 2;
                     spotlight.y = orders[1].pos[1] + 20 + orders[0].plateDistance;
                     spotlight.radius = 1;
                     spotlight.maxRadius = 80;
-                    modaltext.step = 5;
+                    modaltext.step = step;
                     break;
                 case 6:
                     spotlight.x = hearts.pos[0] + 80
                     spotlight.y = hearts.pos[1] + 25;
                     spotlight.radius = 1;
                     spotlight.maxRadius = 80;
-                    modaltext.step = 6;
+                    modaltext.step = step;
+                    break;
+                case "end":
+                    debugger;
+                    spotlight.x = kirby.pos[0] + kirby.sprite.size[0] / 2;
+                    spotlight.y = kirby.pos[1] + kirby.sprite.size[1] / 2;
+                    spotlight.radius = 1;
+                    spotlight.maxRadius = 80;
+                    modaltext.step = score.score === endGameScore ? "win" : "lose";
+                    kirby.sprite = score.score === endGameScore ? kirbyWinSprite() : kirbyLoseSprite();
+                    setTimeout(kirby.sprite.sound, 1000)
                     break;
             }
             change = false;
@@ -707,7 +749,6 @@ let updateTutorial = (dt) => {
     gameTime += dt;
     updateSprites(dt)
     spotlight.update(dt)
-    readyButton.update(dt);
     Object.keys(buttons).forEach(key => {
         buttons[key].update(dt)
     })
@@ -715,6 +756,7 @@ let updateTutorial = (dt) => {
 
 let renderTutorial = () => {
     modalCtx.clearRect(0, 0, canvas.width, canvas.height);
+    mouse.render(modalCtx);
     modalCtx.globalAlpha = 0.9;
     modalCtx.fillStyle = "#000000";
     modalCtx.fillRect(0, 0, canvas.width, canvas.height);
@@ -723,7 +765,11 @@ let renderTutorial = () => {
     modaltext.render(modalCtx);
     if (step === 0){
         Object.keys(buttons).forEach(key => {
-            buttons[key].render(modalCtx)
+            buttons[key].render(modalCtx);
         })
+    }
+    if (step === "end"){
+        readyButton.flipped = false;
+        readyButton.render(modalCtx);
     }
 };

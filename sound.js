@@ -88,7 +88,7 @@ const audioCantoneseFiles = {
 const gameSoundFiles = {
     'attackup': 'GameSound/attackup.mp3',
     'attackdown': 'GameSound/attackdown.mp3',
-    'attackfwd': 'GameSound/attackfwd.mp3',
+    'attackfwd': 'GameSound/punch.mp3',
     'kirbysong': 'GameSound/kirbysong.mp3',
     'hi': 'GameSound/hi.mp3',
     'disappointed': 'GameSound/disappointed.mp3',
@@ -99,4 +99,6 @@ const gameSoundFiles = {
     'pickupsushi': 'GameSound/pickupsushi.mp3',
     'happy': 'GameSound/happy.mp3',
     'hit': 'GameSound/hit.mp3',
+    'ahhh': 'GameSound/ahhh.mp3',
+    'wahhh': 'GameSound/wahhh.mp3',
 }

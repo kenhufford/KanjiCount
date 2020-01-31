@@ -99,7 +99,7 @@ canvas{
   position: absolute;
   width: 900px;
   height: 600px;
-  cursor: none;
+  cursor:none;
 }
 
 .front-canvas{
@@ -108,4 +108,8 @@ canvas{
 
 .back-canvas{
   z-index: 2;
+}
+
+.mouse-vis-canvas{
+  cursor: pointer;
 }
