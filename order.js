@@ -7,7 +7,7 @@ class Order{
         this.pos = pos;
         this.startTime = time;
         this.width = 120;
-        this.height = 60;
+        this.height = 65;
         this.plateWidth = 120;
         this.plateHeight = 10;
         this.plateDistance = 150;
@@ -66,30 +66,24 @@ class Order{
     }
 
     render(ctx) {
-        ctx.beginPath();
-        ctx.rect(0, 0, this.width, this.height)
-        ctx.fillStyle = "#0a005f"
-        ctx.fillRect(0, 0, this.width, this.height)
-        ctx.stroke();
+        roundRect(0, 0, this.width, this.height, 10, ctx, "#ff90f6")
         //render order info
         ctx.beginPath();
+        ctx.strokeStyle = "#ff90f6";
         ctx.rect(10, 10, 100, 20)
         ctx.stroke();
-        let gradient = ctx.createLinearGradient(10, 10, 100, 0);
-        gradient.addColorStop(0, 'red');
-        gradient.addColorStop(1 / 3, 'orange');
-        gradient.addColorStop(2 / 3, 'yellow');
-        gradient.addColorStop(3 / 3, 'green');
-        ctx.fillStyle = gradient;
+
+        ctx.fillStyle = this.time / this.startTime >= 0.25 ? "#1fbd00" : "red";
         ctx.fillRect(10, 10, (this.time * 100/this.startTime), 20);
         //render order number
-        ctx.font = "20px Arial";
-        ctx.fillStyle = "#ffffff";
-        ctx.fillText(this.number, 55, 50);
+        ctx.font = "bolder 24px Roboto";
+        ctx.fillStyle = "#000000";
+        ctx.fillText(this.number, 50, 55);
         //render plate
         if (this.charsArray.length !== 1){
             ctx.beginPath();
-            ctx.fillStyle = "#663700";
+            ctx.fillStyle = "#995201";
+            ctx.strokeStyle = "#663700";
             ctx.rect(0, this.plateHeight + this.plateDistance, this.plateWidth, 15)
             ctx.fillRect(0, this.plateHeight + this.plateDistance, this.plateWidth, 15)
             ctx.rect(20, this.plateHeight + this.plateDistance+15, 20, 20)
@@ -100,13 +94,13 @@ class Order{
 
             //only a single character
             this.charsArray.forEach((char, i) => {
-                ctx.font = "20px Arial";
+                ctx.font = "bold 24px Dosis";
                 if (this.collectedChars[i] === char) {
                     ctx.fillStyle = "#000000";
                 } else {
-                    ctx.fillStyle = "#fdd13e";
+                    ctx.fillStyle = "#9efcff";
                 }
-                ctx.fillText(char, i * 25, 250);
+                ctx.fillText(char, i * 25, 220);
             })
             this.sushis.forEach(sushi => {
                 sushi.render(ctx)

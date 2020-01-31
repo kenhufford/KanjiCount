@@ -1,0 +1,38 @@
+class Modaltext {
+    constructor(x, y, step) {
+        this.x = x;
+        this.y = y;
+        this.step = step;
+        this.text = {
+            "0": ["Kirby is hungry and ready to order some sushi"],
+            "1": ["Sushis will appear on the conveyor. Click to pick", "one up and click again to drop it."],
+            "2": ["Orders will appear here.  Complete the order before" , "time runs out!  Click on the order to hear the word."],
+            "3": ["Single character orders must be fed to Kirby! If you", "drop it near him he'll eat it."],
+            "4": ["Multi-character orders must be plated. Holding a", "sushi near the plate will place it."],
+            "5": ["If an order runs out of time or if you feed Kirby incorrectly,", "he will lose a heart. Fill up Kirby's health bar to win!"]
+        }
+        this.location = {
+            "0": [225, 255],
+            "1": [120, 340],
+            "2": [200, 170],
+            "3": [270, 240],
+            "4": [225, 300],
+            "5": [255, 275],
+        }
+    }
+
+    render(ctx) {
+            ctx.font = "bolder 28px Dosis";
+            ctx.fillStyle = "#FFFFFF";
+
+            this.text[this.step].forEach((string, i )=>{
+                ctx.fillText(string, this.location[this.step][0], this.location[this.step][1] + i * 25);
+            })
+            // ctx.save();
+            // ctx.globalAlpha = 0.9;
+            // ctx.fillStyle = "#663700";
+            // ctx.rect(this.x+80, this.y+130, 150, 50);
+            // ctx.fillRect(this.x+80, this.y+130, 150, 50);
+            // ctx.restore();
+    }
+}

@@ -89,7 +89,7 @@ class Sushi{
         } else if (this.plated) {
             ctx.drawImage(img, this.platePos[0], this.platePos[1])
         } else {
-            ctx.font = "20px Arial";
+            ctx.font = "bold 24px Dosis";
             ctx.fillText(this.character, 25, 0);
             ctx.drawImage(img, 0, 5)
         }

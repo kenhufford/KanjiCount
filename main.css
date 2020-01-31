@@ -47,7 +47,7 @@
 }
 
 .body-left{
-  border: 1px solid #ffffff;
+  border: 1px solid #d1ce00;
   width: 50%;
   height: 80vh;
   display: flex;
@@ -86,4 +86,26 @@
   align-items: center;
   justify-content: space-around;
   flex-grow: 3;
+}
+
+
+.canvas-div{
+  position:relative;
+  width: 900px;
+  height: 600px;
+}
+
+canvas{
+  position: absolute;
+  width: 900px;
+  height: 600px;
+  cursor: none;
+}
+
+.front-canvas{
+  z-index: 5;
+}
+
+.back-canvas{
+  z-index: 2;
 }
