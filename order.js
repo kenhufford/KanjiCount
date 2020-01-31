@@ -10,11 +10,11 @@ class Order{
         this.height = 65;
         this.plateWidth = 120;
         this.plateHeight = 10;
-        this.plateDistance = 150;
+        this.plateDistance = 170;
         this.charsArray = this.character.split("");
         this.collectedChars = [];
         this.sushis = [];
-        this.sushiPositions = [[0, 120], [30, 120], [60, 120], [15, 100], [45, 100]]
+        this.sushiPositions = [[0, 140], [30, 140], [60, 140], [15, 120], [45, 120]]
 
         for (let i = 0; i < this.charsArray.length; i++){
             this.collectedChars.push("")
@@ -100,7 +100,7 @@ class Order{
                 } else {
                     ctx.fillStyle = "#fdd13e";
                 }
-                ctx.fillText(char, i * 25, 220);
+                ctx.fillText(char, i * 25, 240);
             })
             this.sushis.forEach(sushi => {
                 sushi.render(ctx)

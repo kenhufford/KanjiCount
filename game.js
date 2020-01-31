@@ -78,8 +78,8 @@ let norinSpriteURL = "https://i.imgur.com/K6KU5Rs.png";
 let kirbyOpeningSprite = () => new Sprite(kirbySpriteURL, [0, 0], [75, 75], 10, [0, 1, 1, 2, 2, 3, 3, 4, 4], "horizontal", true);
 let kirbyClosingSprite = () => new Sprite(kirbySpriteURL, [150, 0], [75, 75], 10, [0, 1, 2], "horizontal", true)
 let kirbyIdleSprite = () => new Sprite(kirbySpriteURL, [0, 75], [75, 75], 10, Array.from(Array(34).keys()), "horizontal", false)
-let kirbySadSprite = () => new Sprite(kirbySpriteURL, [0, 150], [75, 75], 10, [0, 1, 2], "horizontal", false, () => playSound('disappointed'))
-let kirbyHappySprite = () => new Sprite(kirbySpriteURL, [0, 225], [75, 75], 10, [0, 1, 2,3], "horizontal", false, () => playSound('haumph'))
+let kirbySadSprite = () => new Sprite(kirbySpriteURL, [0, 150], [75, 75], 10, [0, 1, 2], "horizontal", true, () => playSound('disappointed'))
+let kirbyHappySprite = () => new Sprite(kirbySpriteURL, [0, 225], [75, 75], 10, [0, 1, 2,3], "horizontal", true, () => playSound('haumph'))
 let kirbyWinSprite = () => new Sprite(kirbySpriteURL, [0, 2025], [75, 75], 10, Array.from(Array(13).keys()), "horizontal", false, () => playSound('hi'))
 let kirbyLoseSprite = () => new Sprite(kirbySpriteURL, [0, 1950], [75, 75], 10, Array.from(Array(14).keys()), "horizontal", false, () => playSound('wahhh'))
 let kirbyAttackFwd = () => new Sprite(kirbySpriteURL, [0, 600], [150, 75], 20, [0, 1, 2, 3], "horizontal", true, () => playSound('attackfwd'))
@@ -107,11 +107,14 @@ let hearts = new Entity([10, 10], heartsSprite(), heartsSpriteURL, heartsSprite)
 let score = new Score(gameModes[mode].startScore, [10,10], endGameScore, hearts)
 let mouse = new Mouse(false, 0, 0, mouseImages[0], mouseImages[1])
 let spotlight = new Spotlight(kirby.pos[0] + kirby.sprite.size[0] / 2, kirby.pos[1] + kirby.sprite.size[1] / 2, 80)
-let languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese")
-let difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Easy", "Medium")
-let tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None")
-let readyButton = new Button([100, 400], 120, 50, 4, 33, "Not Yet", "Ready")
-let norin = new Entity([0,0], norinSprite(), norinSpriteURL, norinSprite)
+let languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese");
+let difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Easy", "Medium");
+let tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None");
+let tutorialMusicButton = new Button([100, 400], 120, 50, 4, 33, "Music Off", "Music On");
+let ingameMusicButton = new Button([760, 530], 120, 50, 4, 33, "Music Off", "Music On");
+let readyButton = new Button([100, 500], 120, 50, 4, 33, "Not Yet", "Ready");
+let norin = new Entity([0,0], norinSprite(), norinSpriteURL, norinSprite);
+let music = new Music(gameSoundFiles["kirbysong"]);
 
 let attackSprites = [
     { sprite: kirbyAttackDown, vector: [0, -1], sound: (() => playSound('attackdown')) }, 
@@ -123,12 +126,13 @@ let entities = {
 };
 
 let buttons = {
-    languageButton, difficultyButton,  tutorialButton, readyButton
+    languageButton, difficultyButton,  tutorialButton, readyButton, tutorialMusicButton
 }
 
 let resetGame = () => {
     debugger
     step = 0;
+    modaltext.step = step;
     tutorial = true;
     isGameOver = false;
     isGameEnding = false;
@@ -142,15 +146,11 @@ let resetGame = () => {
     answers = {};
     orders = [];
     orderPositions = [];
-    sushiCooldown = 2.5;
-    soundCooldown = 3;
-    endGameScore = 10;
-    windCooldown = 1;
     sushiShelf;
-    lastTime = Date.now();
-    now = Date.now();
-    dt = (now - lastTime) / 1000.0;
+    endGameScore = 10;
+    kirby.sprite = kirbyIdleSprite();
     tutorialToggle = true;
+    Object.keys(buttons).forEach(key=> buttons[key].flipped = false);
     orderNumEasy = Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.random() * 1));
     orderNumMed = Array.from(Array(100).keys()).sort((a, b) => (0.5 - Math.random() * 1));
     orderNumHard = Array.from(Array(1000).keys()).sort((a, b) => (0.5 - Math.random() * 1));
@@ -191,14 +191,11 @@ modalCanvas.addEventListener('click', (e) =>{
     mouse.closed = !mouse.closed;
     let pos = getMousePosition(e);
     
-    if (step === "end") {
-        if (readyButton.inside(pos)) {
-            debugger
-            readyButton.flipped = !readyButton.flipped;
-            resetGame();
-        }
+    if (step === "end" && readyButton.inside(pos)) {
+        readyButton.flipped = !readyButton.flipped;
+        setTimeout(resetGame, 1000);
     }
-    
+
     if (step === 0){
         if (readyButton.inside(pos)){
             readyButton.flipped = !readyButton.flipped;
@@ -220,10 +217,14 @@ modalCanvas.addEventListener('click', (e) =>{
             tutorialToggle = !tutorialToggle;
         } else if (difficultyButton.inside(pos)){
             difficultyButton.flipped = !difficultyButton.flipped;
-            mode === "medium" ? "easy" : "medium";
+            mode = mode === "medium" ? "easy" : "medium";
         } else if (languageButton.inside(pos)){
             languageButton.flipped = !languageButton.flipped;
-            language === "cantonese" ? "cantonese" : "japanese";
+            language = language === "cantonese" ? "japanese" : "cantonese";
+            debugger
+        } else if (tutorialMusicButton.inside(pos)){
+            tutorialMusicButton.flipped = !tutorialMusicButton.flipped;
+            music.play();
         }
     } else{
         step += 1;
@@ -267,7 +268,10 @@ canvas.addEventListener('click', (e) => {
             
         }
     })
-
+    if (ingameMusicButton.inside(pos)){
+        ingameMusicButton.flipped = !ingameMusicButton.flipped;
+        music.play();
+    }
 })
 
 
@@ -470,6 +474,7 @@ let render = () => {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     renderSprite(norin);
+    ingameMusicButton.render(ctx)
 
     orders.forEach(order => {
         renderStatic(order);
@@ -478,11 +483,12 @@ let render = () => {
     Object.keys(entities).forEach(key => {
         renderSprite(entities[key]);
     })
-    mouse.render(ctx);
 
     Object.keys(sushis).forEach((id) => {
         renderStatic(sushis[id]);
     })
+
+    mouse.render(ctx);
 
 };
 
@@ -520,6 +526,7 @@ let update = (dt) => {
         gameTime += dt;
         updateCooldowns(dt);
         updateEntities(dt);
+        ingameMusicButton.update(dt);
     }
 };
 
@@ -734,6 +741,7 @@ let tutorialLoop = () => {
                     spotlight.maxRadius = 80;
                     modaltext.step = score.score === endGameScore ? "win" : "lose";
                     kirby.sprite = score.score === endGameScore ? kirbyWinSprite() : kirbyLoseSprite();
+                    readyButton.flipped = false;
                     setTimeout(kirby.sprite.sound, 1000)
                     break;
             }
@@ -769,7 +777,6 @@ let renderTutorial = () => {
         })
     }
     if (step === "end"){
-        readyButton.flipped = false;
         readyButton.render(modalCtx);
     }
 };
