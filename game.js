@@ -35,7 +35,7 @@ let gameModes = {
         orderCooldown: 10
     }
 }
-let tutorialStep = 1;
+let tutorialStep = 0;
 let tutorial = true;
 let isGameOver = false;
 let isGameEnding = false;
@@ -60,6 +60,7 @@ let language = 'cantonese';
 let lastTime = Date.now();
 let now = Date.now();
 let dt = (now - lastTime) / 1000.0;
+let tutorialToggle = true;
 
 let orderCooldown = gameModes[mode].orderCooldown;
 let orderTime = gameModes[mode].orderTime;
@@ -86,14 +87,15 @@ function reset(){
     isGameEnding = false;
     language = 'cantonese';
     lastTime = Date.now();
+    tutorialToggle = true;
 }
 
 //sprite and entity setup
 let conveyorSprite = new Sprite("https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png", [0, 0], [605, 60], 4, [0, 1, 2, 3], 'vertical', false);
 let conveyorSprite2 = new Sprite("https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png", [0, 0], [605, 60], 4, [3, 2, 1, 0], 'vertical', false);
-let kirbySpriteURL = 'https://i.imgur.com/JD6rhR7.png';
+let kirbySpriteURL = 'https://i.imgur.com/92vQnc7.png';
 let heartsSpriteURL = 'https://i.imgur.com/yHVGEZl.png';
-let norinSpriteURL = "https://i.imgur.com/4Ornj5u.png";
+let norinSpriteURL = "https://i.imgur.com/K6KU5Rs.png";
 let kirbyOpeningSprite = () => new Sprite(kirbySpriteURL, [0, 0], [75, 75], 10, [0, 1, 1, 2, 2, 3, 3, 4, 4], "horizontal", true);
 let kirbyClosingSprite = () => new Sprite(kirbySpriteURL, [150, 0], [75, 75], 10, [0, 1, 2], "horizontal", true)
 let kirbyIdleSprite = () => new Sprite(kirbySpriteURL, [0, 75], [75, 75], 10, Array.from(Array(34).keys()), "horizontal", false)
@@ -102,6 +104,13 @@ let kirbyHappySprite = () => new Sprite(kirbySpriteURL, [0, 225], [75, 75], 5, [
 let kirbyAttackFwd = () => new Sprite(kirbySpriteURL, [0, 600], [150, 75], 20, [0, 1, 2, 3], "horizontal", true, () => playSound('attackfwd'))
 let kirbyAttackDown = () => new Sprite(kirbySpriteURL, [0, 900], [150, 150], 20, [0, 1, 2, 3, 4, 5], "horizontal", true, () => playSound('attackdown'))
 let kirbyAttackUp = () => new Sprite(kirbySpriteURL, [0, 1050], [150, 150], 20, [0, 1, 2, 3, 4], "horizontal", true, () => playSound('attackup'))
+let kirbyCombo = () => new Sprite(kirbySpriteURL, [0, 1800], [150, 150], 15, Array.from(Array(26).keys()), "horizontal", true, () => {
+    playSound('attackfwd');
+    setTimeout(() => playSound('attackdown'), 400);
+    setTimeout(() => playSound('attackfwd'), 800);
+    setTimeout(() => playSound('attackdown'), 1200);
+    setTimeout(() => playSound('attackup'), 1600);
+})
 let chefSprite = () => new Sprite(kirbySpriteURL, [0, 525], [150, 75], 3.2, [0, 1, 2, 3], "horizontal", false)
 let chefHurtSprite = () => new Sprite(kirbySpriteURL, [0, 750], [105, 105], 12, Array.from(Array(8).keys()), "horizontal", true)
 let windSprite = () => new Sprite(kirbySpriteURL, [0, 1200], [225, 225], 25, Array.from(Array(11).keys()), "horizontal", true, () => playSound('suck'));
@@ -117,7 +126,12 @@ let hearts = new Entity([10, 10], heartsSprite(), heartsSpriteURL, heartsSprite)
 let score = new Score(newGameScore, [10,10], endGameScore, hearts)
 let mouse = new Mouse(false, 0, 0, mouseImages[0], mouseImages[1])
 let spotlight = new Spotlight(kirby.pos[0] + kirby.sprite.size[0] / 2, kirby.pos[1] + kirby.sprite.size[1] / 2, 80)
+let languageButton = new Button([100, 100], 120, 50, 5, 30, "Cantonese", "Japanese")
+let difficultyButton = new Button([100, 200], 120, 50, 15, 30, "Easy", "Medium")
+let tutorialButton = new Button([100, 300], 120, 50, 20, 30, "Tutorial", "None")
+let readyButton = new Button([100, 400], 120, 50, 25, 30, "Not Yet", "Ready")
 let norin = new Entity([0,0], norinSprite(), norinSpriteURL, norinSprite)
+
 let attackSprites = [
     { sprite: kirbyAttackDown, vector: [0, -1], sound: (() => playSound('attackdown')) }, 
     { sprite: kirbyAttackUp, vector: [0, 1], sound: (() => playSound('attackup')) }, 
@@ -126,6 +140,11 @@ let attackSprites = [
 let entities = {
     kirby, conveyor, conveyor2, chef, wind, hearts
 };
+
+let buttons = {
+    languageButton, difficultyButton,  tutorialButton, readyButton
+}
+
 
 let init = () => {
     now = Date.now();
@@ -156,12 +175,41 @@ resources.onReady(init);
 
 modalCanvas.addEventListener('click', (e) =>{
     e.preventDefault();
+    
     if (!tutorial) return null
     mouse.closed = !mouse.closed;
-    step += 1;
-    change = true;
-    console.log(step)
-    if (step >= 5){
+    let pos = getMousePosition(e);
+    if (step === 0){
+        if (readyButton.inside(pos)){
+            readyButton.flipped = !readyButton.flipped;
+            setTimeout(()=>{
+                if (!tutorialToggle){
+                    tutorial = false;
+                    isGameStart = true;
+                    canvas.classList.add('front-canvas');
+                    canvas.classList.remove('back-canvas');
+                    modalCanvas.classList.add('back-canvas');
+                    modalCanvas.classList.remove('front-canvas');
+                } else {
+                    step += 1;
+                    change = true;
+                }
+            }, 1000)
+        } else if (tutorialButton.inside(pos)){
+            tutorialButton.flipped = !tutorialButton.flipped;
+            tutorialToggle = !tutorialToggle;
+        } else if (difficultyButton.inside(pos)){
+            difficultyButton.flipped = !difficultyButton.flipped;
+            mode === "medium" ? "easy" : "medium";
+        } else if (languageButton.inside(pos)){
+            languageButton.flipped = !languageButton.flipped;
+            language === "cantonese" ? "cantonese" : "japanese";
+        }
+    } else{
+        step += 1;
+        change = true;
+    }
+    if (step >= 6){
         tutorial = false;
         isGameStart = true;
         canvas.classList.add('front-canvas');
@@ -320,25 +368,37 @@ let feedKirby = (sushi) => {
     sushi.dropped = false;
 }
 
+let kirbySucks = () => {
+    kirby.sprite = kirbyOpeningSprite();
+    wind.sprite = windSprite();
+    wind.sprite.sound();
+}
+
 let kirbyEats = (sushi) => {
     let kirbyMood = "sad";
-    if (!sushi.plated){
+    if (!sushi.plated && !isGameEnding){
         orders.forEach(order => {
             if (order.charsArray.length === 1 && order.charsArray[0] === sushi.character){
-                
-                kirbyMood = "happy";
-                score.update(1);
-                completeOrder(order);
-                return;
+                completeOrder(order, true);
+                kirbyMood = "happy"
             }
         })
-    } else if (sushi.plated) kirbyMood = "happy";
-
+    } else {
+        kirbyMood = "happy";
+    }
     if (kirbyMood === "happy"){
         kirby.sprite = kirbyHappySprite();
         kirby.sprite.sound();
         delete sushis[sushi.id];
+    } else if (isGameEnding){
+        kirbySucks();
+        kirbyHappySprite().sound();
+        delete sushis[sushi.id];
+        setTimeout( () => {
+            kirby.sprite = kirbyHappySprite();
+        }, 1500)
     } else {
+        
         score.update(-1);
         sushi.hit = true;
         sushi.flying = true;
@@ -356,11 +416,25 @@ let kirbyEats = (sushi) => {
     }
 }
 
-let completeOrder = (order) => {
-    
+let completeOrder = (order, success) => {
+    if (success){
+        if (order.charsArray.length !==1){
+            score.update(1);
+            order.sushis.forEach(sushi => {
+                sushis[sushi.id] = sushi;
+                feedKirby(sushi)
+            }) 
+        } else {
+            kirbyMood = "happy";
+            score.update(1);
+        }
+    } else if (!success){
+        score.update(-1);
+        kirby.sprite = kirbySadSprite();
+        kirby.sprite.sound();
+    }
     orders.splice(order.index, 1);
     shiftOrders();
-    // generateOrder(orders.length);
 }
 
 //game functions
@@ -369,9 +443,9 @@ let completeOrder = (order) => {
 let render = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     let gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, '#59faa9');
-    gradient.addColorStop(1 / 2, '#3be8ff');
-    gradient.addColorStop(2 / 2, '#f699ff');
+    gradient.addColorStop(0, '#fdd13e');
+    gradient.addColorStop(1 / 2, '#fdd13e');
+    gradient.addColorStop(2 / 2, '#fdd13e');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -452,17 +526,9 @@ let updateOrders = (dt) => {
     orders.forEach( (order, i) => {
         order.update(dt)
         if (order.timeUp()){
-            score.update(-1);
-            kirby.sprite = kirbySadSprite();
-            kirby.sprite.sound();
-            completeOrder(order);
+            completeOrder(order, false);
         } else if (order.ready()) {
-            score.update(1);
-            order.sushis.forEach(sushi => {
-                sushis[sushi.id] = sushi;
-                feedKirby(sushi)
-            })
-            completeOrder(order);  
+            setTimeout(completeOrder(order, true), 2000)
         }
     })
 }
@@ -485,22 +551,23 @@ let updateSushis = (dt) => {
         let sushi = sushis[id];
         sushi.update(dt, 8, [mouse.x, mouse.y])
         if (sushi.flying){
-            if (sushi.nearby(kirby.pos, 30) && !sushi.hit){
-                kirbyEats(sushi);
-            } else if(sushi.nearby(chef.pos, 30)){
+            if (sushi.nearby(kirby.pos, 30)){
+                if(!sushi.hit){
+                    debugger
+                    kirbyEats(sushi);
+                } else if (isGameEnding){
+                    if (score.score < endGameScore) {
+                        sushi.hit = true;
+                        sushi.flying = true;
+                        sushi.vector = sushi.findNormalizedVector(sushi.pos, chef.pos)
+                    } else {
+                        kirbyEats(sushi);
+                    }
+                }
+            } else if (sushi.nearby(chef.pos, 30)) {
                 sushi.dropped = true;
                 sushi.flying = false;
                 chef.sprite = chefHurtSprite();
-            } else if (isGameEnding){
-                if (sushi.nearby(kirby.pos, 30)){
-                    if (score.score < endGameScore) {
-                        sushi.hit = true;
-                        let attack = attackSprites[2]
-                        sushi.vector = sushi.findNormalizedVector(sushi.pos, chef.pos)
-                        kirby.sprite = attack.sprite();
-                        // kirby.sprite.sound();
-                    } 
-                }
             }
         } else if (sushi.offConveyor()) {
             delete sushis[sushi.id];
@@ -518,18 +585,23 @@ let updateSushis = (dt) => {
 }
 
 
+
 let endGame = () => {
     score.gameEnd = true;
     if (score.score === 0 && !isGameEnding) {
         isGameEnding = true;
+        kirby.sprite = kirbyCombo();
+        kirby.sprite.sound();
         let spit = setInterval(() => {
             let sushi = generateSushi(true);
             sushi.grabbed = false;
             sushi.dropped = false;
+            sushi.plated = false;
+            sushi.hit = true;
             sushi.flying = true;
             sushi.speed = 20;
             sushis[sushi.id] = sushi;
-        }, 200);
+        }, 300);
         spit;
         setTimeout(() => {
             clearInterval(spit);
@@ -537,13 +609,13 @@ let endGame = () => {
         }, 2000)
     } else if (!isGameEnding) {
         isGameEnding = true;
-        kirby.sprite = kirbyOpeningSprite();
-        wind.sprite = windSprite();
-        wind.sprite.sound();
+        kirbySucks();
         Object.keys(sushis).forEach(id => {
             let sushi = sushis[id];
             sushi.grabbed = false;
             sushi.dropped = false;
+            sushi.plated = false;
+            sushi.hit = false;
             sushi.flying = true;
             sushi.vector = sushi.findNormalizedVector(sushi.pos, kirby.pos)
         })
@@ -568,20 +640,27 @@ let tutorialLoop = () => {
         if (change){
             switch (step) {
                 case 1:
-                    spotlight.x = sushis[1].pos[0] + 30;
-                    spotlight.y = sushis[1].pos[1] + 30;
+                    spotlight.x = kirby.pos[0] + kirby.sprite.size[0] / 2;
+                    spotlight.y = kirby.pos[1] + kirby.sprite.size[1] / 2;
                     spotlight.radius = 1;
                     spotlight.maxRadius = 80;
                     modaltext.step = 1;
                     break;
                 case 2:
-                    spotlight.x = orders[0].pos[0] + orders[0].width / 2;
-                    spotlight.y = orders[0].pos[1] + orders[0].height / 2;
+                    spotlight.x = sushis[1].pos[0] + 30;
+                    spotlight.y = sushis[1].pos[1] + 30;
                     spotlight.radius = 1;
                     spotlight.maxRadius = 80;
                     modaltext.step = 2;
                     break;
                 case 3:
+                    spotlight.x = orders[0].pos[0] + orders[0].width / 2;
+                    spotlight.y = orders[0].pos[1] + orders[0].height / 2;
+                    spotlight.radius = 1;
+                    spotlight.maxRadius = 80;
+                    modaltext.step = 3;
+                    break;
+                case 4:
                     spotlight.x = kirby.pos[0] + kirby.sprite.size[0] / 2 + 60;
                     spotlight.y = kirby.pos[1] + kirby.sprite.size[1] / 2;
                     spotlight.radius = 1;
@@ -599,21 +678,21 @@ let tutorialLoop = () => {
                         kirby.sprite = kirbyOpeningSprite();
                         wind.sprite.sound();
                     }, 2000);
-                    modaltext.step = 3;
+                    modaltext.step = 4;
                     break;
-                case 4:
+                case 5:
                     spotlight.x = orders[0].pos[0] + orders[0].width / 2;
                     spotlight.y = orders[1].pos[1] + 20 + orders[0].plateDistance;
                     spotlight.radius = 1;
                     spotlight.maxRadius = 80;
-                    modaltext.step = 4;
+                    modaltext.step = 5;
                     break;
-                case 5:
+                case 6:
                     spotlight.x = hearts.pos[0] + 80
                     spotlight.y = hearts.pos[1] + 25;
                     spotlight.radius = 1;
                     spotlight.maxRadius = 80;
-                    modaltext.step = 5;
+                    modaltext.step = 6;
                     break;
             }
             change = false;
@@ -628,6 +707,10 @@ let updateTutorial = (dt) => {
     gameTime += dt;
     updateSprites(dt)
     spotlight.update(dt)
+    readyButton.update(dt);
+    Object.keys(buttons).forEach(key => {
+        buttons[key].update(dt)
+    })
 };
 
 let renderTutorial = () => {
@@ -636,6 +719,11 @@ let renderTutorial = () => {
     modalCtx.fillStyle = "#000000";
     modalCtx.fillRect(0, 0, canvas.width, canvas.height);
     render()
-    spotlight.render(modalCtx, modalCanvas);
+    if(step !== 0) spotlight.render(modalCtx, modalCanvas);
     modaltext.render(modalCtx);
+    if (step === 0){
+        Object.keys(buttons).forEach(key => {
+            buttons[key].render(modalCtx)
+        })
+    }
 };

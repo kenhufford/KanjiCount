@@ -1,4 +1,3 @@
-
 class Entity {
     constructor(pos, sprite, url, spriteFunc) {
         this.pos = pos;
@@ -89,6 +88,7 @@ class Sushi{
         } else if (this.plated) {
             ctx.drawImage(img, this.platePos[0], this.platePos[1])
         } else {
+            ctx.fillStyle = "#000000";
             ctx.font = "bold 24px Dosis";
             ctx.fillText(this.character, 25, 0);
             ctx.drawImage(img, 0, 5)

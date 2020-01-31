@@ -98,7 +98,7 @@ class Order{
                 if (this.collectedChars[i] === char) {
                     ctx.fillStyle = "#000000";
                 } else {
-                    ctx.fillStyle = "#9efcff";
+                    ctx.fillStyle = "#fdd13e";
                 }
                 ctx.fillText(char, i * 25, 220);
             })

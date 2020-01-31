@@ -1,5 +1,4 @@
 function playSound(key, language){
-    console.log("im playing something")
     let newAudio;
     switch (language) {
         case 'japanese':
