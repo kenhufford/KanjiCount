@@ -34,7 +34,6 @@ class Lesson{
             if (this.number.circleSelected){
                 let circle = this.number.circleSelected;
                 if (this.number.circles[0].inside(pos)){
-                    alert("answer");
                     this.number.answer();
                 }
                 circle.grabbed = false;

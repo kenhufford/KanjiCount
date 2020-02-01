@@ -9,10 +9,15 @@ class Circle{
         this.content = content;
         this.immovable = false;
         this.pingRadius = radius+6;
-        this.maxRadius = 90;
+        this.maxPingRadius = 90;
+        this.maxTransRadius = 120;
         this.pinged = false;
         this.grabbed = false;
         this.answer = false;
+        this.shaking = false;
+        this.shakeSwitch = false;
+        this.transition = false;
+        this.transitionCount = 0;
     }
 
     update(dt, pos){
@@ -20,9 +25,24 @@ class Circle{
         if (this.grabbed){
             this.x = pos[0];
             this.y = pos[1];
+        } else if (this.shaking) { 
+            if (this.shakeSwitch){
+                this.x += 10;
+                this.shakeSwitch = false;
+            } else { 
+                this.x -= 10;
+                this.shakeSwitch = true;      
+            }
+        } else if (this.transition) {
+            this.transitionCount += dt;
+            if (this.radius< this.maxTransRadius) this.radius += dt * 200;
+            if (this.y < 300) this.y += dt * 500;
+            if (this.transitionCount > 2 ) this.y += dt * (this.transitionCount - 2) * 4000;
         } else {
+            this.x = this.originalX;
+            this.y = this.originalY;
             this.pingRadius += dt * 30;
-            if (this.pingRadius >= this.maxRadius) {
+            if (this.pingRadius >= this.maxPingRadius) {
                 this.pingRadius = this.radius;
                 this.pinged = false;
             };
@@ -58,7 +78,7 @@ class Circle{
         this.ctx.fill();
         this.ctx.stroke();
 
-        this.ping()
+        if(!this.transition) this.ping()
         this.ctx.font = "bold 32px Dosis";
         this.ctx.fillStyle = "#FFFFFF";
         this.content.forEach((word, i) => {
