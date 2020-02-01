@@ -15,4 +15,9 @@ class Score {
         if (this.score >= this.endScore) this.score = this.endScore;
         console.log(this.score)
     }
+
+    reset(score){
+        this.score = score;
+        this.entity.sprite.frames = [this.endScore-this.score];
+    }
 }

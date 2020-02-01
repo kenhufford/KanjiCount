@@ -19,19 +19,19 @@ let kanjiArray = Object.values(kanji);
 //game variables
 
 let gameModes = {
-    easy: {
+    "easy": {
         sushiShelf: Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.random() * 1)),
         orderTime: 25,
         orderCooldown: 10,
         startScore: 3
     },
-    medium: {
+    "medium": {
         sushiShelf: Array.from(Array(11).keys()).concat([10, 10]).sort((a, b) => (0.5 - Math.random() * 1)),
         orderTime: 25,
         orderCooldown: 10,
         startScore: 2,
     },
-    hard: {
+    "hard": {
         sushiShelf: Array.from(Array(11).keys()).concat([10, 10, 10, 100, 100, 100]).sort((a, b) => (0.5 - Math.random() * 1)),
         orderTime: 25,
         orderCooldown: 10,
@@ -108,7 +108,7 @@ let score = new Score(gameModes[mode].startScore, [10,10], endGameScore, hearts)
 let mouse = new Mouse(false, 0, 0, mouseImages[0], mouseImages[1])
 let spotlight = new Spotlight(kirby.pos[0] + kirby.sprite.size[0] / 2, kirby.pos[1] + kirby.sprite.size[1] / 2, 80)
 let languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese");
-let difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Easy", "Medium");
+let difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Medium", "Easy");
 let tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None");
 let tutorialMusicButton = new Button([100, 400], 120, 50, 4, 33, "Music Off", "Music On");
 let ingameMusicButton = new Button([760, 530], 120, 50, 4, 33, "Music Off", "Music On");
@@ -130,14 +130,15 @@ let buttons = {
 }
 
 let resetGame = () => {
-    debugger
     step = 0;
     modaltext.step = step;
+    mode = "medium";
+    language = "cantonese";
     tutorial = true;
     isGameOver = false;
     isGameEnding = false;
     isGameStart = false;
-    score.score = gameModes[mode].startScore;
+    score.gameEnd = false;
     ordNumIndex = 0;
     sushiNumIndex = 0;
     sushiID = 1;
@@ -149,8 +150,14 @@ let resetGame = () => {
     sushiShelf;
     endGameScore = 10;
     kirby.sprite = kirbyIdleSprite();
+    score.reset(gameModes[mode].startScore)
     tutorialToggle = true;
-    Object.keys(buttons).forEach(key=> buttons[key].flipped = false);
+    tutorialMusicButton.flipped = ingameMusicButton.flipped;
+    console.log(ingameMusicButton.flipped)
+    readyButton.flipped = false;
+    languageButton.flipped = false;
+    difficultyButton.flipped = false;
+    tutorialButton.flipped = false;
     orderNumEasy = Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.random() * 1));
     orderNumMed = Array.from(Array(100).keys()).sort((a, b) => (0.5 - Math.random() * 1));
     orderNumHard = Array.from(Array(1000).keys()).sort((a, b) => (0.5 - Math.random() * 1));
@@ -192,6 +199,7 @@ modalCanvas.addEventListener('click', (e) =>{
     let pos = getMousePosition(e);
     
     if (step === "end" && readyButton.inside(pos)) {
+        console.log(ingameMusicButton.flipped)
         readyButton.flipped = !readyButton.flipped;
         setTimeout(resetGame, 1000);
     }
@@ -218,21 +226,22 @@ modalCanvas.addEventListener('click', (e) =>{
         } else if (difficultyButton.inside(pos)){
             difficultyButton.flipped = !difficultyButton.flipped;
             mode = mode === "medium" ? "easy" : "medium";
+            console.log(mode);
         } else if (languageButton.inside(pos)){
             languageButton.flipped = !languageButton.flipped;
             language = language === "cantonese" ? "japanese" : "cantonese";
-            debugger
         } else if (tutorialMusicButton.inside(pos)){
             tutorialMusicButton.flipped = !tutorialMusicButton.flipped;
             music.play();
         }
-    } else{
+    } else if (step !=="end") {
         step += 1;
         change = true;
     }
     if (step > 6){
         tutorial = false;
         isGameStart = true;
+        ingameMusicButton.flipped = tutorialMusicButton.flipped;
         canvas.classList.add('front-canvas');
         canvas.classList.remove('back-canvas');
         modalCanvas.classList.add('back-canvas');
@@ -358,7 +367,7 @@ let generateOrder = (index) => {
     );
     
     orders.push(order);
-    playNumberSound(randNum, language)
+    if (index > 1) playNumberSound(randNum, language)
 }
 
 let shiftOrders = () => {
@@ -734,7 +743,6 @@ let tutorialLoop = () => {
                     modaltext.step = step;
                     break;
                 case "end":
-                    debugger;
                     spotlight.x = kirby.pos[0] + kirby.sprite.size[0] / 2;
                     spotlight.y = kirby.pos[1] + kirby.sprite.size[1] / 2;
                     spotlight.radius = 1;

@@ -22,11 +22,15 @@ class Order{
     }
 
     addSushi(sushi){
-        let sushiIndex = this.charsArray.indexOf(sushi.character);
-        this.collectedChars[sushiIndex] = sushi.character;
-        sushi.plate();
-        this.sushis.push(sushi);
-        sushi.platePos = this.sushiPositions[sushiIndex]
+        let sushiIndex = [];
+        this.charsArray.forEach((char, i) => {
+            if (char === sushi.character && this.collectedChars[i] !== sushi.character){
+                this.collectedChars[i] = sushi.character;
+                sushi.plate();
+                this.sushis.push(sushi);
+                sushi.platePos = this.sushiPositions[i]
+            }
+        })
         this.time += 5;
         if (this.time > this.startTime) this.time = this.startTime;
     }
