@@ -1,5 +1,5 @@
 class Mouse{
-    constructor(closed, x, y,openImg, closedImg){
+    constructor(x, y,closed,openImg, closedImg){
         this.x = x;
         this.y = y;
         this.closed = closed;

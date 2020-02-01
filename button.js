@@ -15,9 +15,10 @@ class Button {
     update(dt){
         if (this.slidePosX >= this.width / 2 && this.flipped){
             this.slidePosX = this.width / 2
-        } else if (this.slidePosX <= this.width / 2 & !this.flipped) {
+        } else if (this.slidePosX <= 0 & !this.flipped) {
             this.slidePosX = 0;
         } else {
+            debugger
             this.flipped ? this.slidePosX += dt * 75 : this.slidePosX -= dt * 75;
         }
     }
@@ -35,10 +36,10 @@ class Button {
     }
 
     render(ctx){
-        let color = this.flipped ? "#ff90f6" : "#c411ff"
+        let color = this.flipped ? "#fcbdc5" : "#c411ff"
         roundRect(this.pos[0], this.pos[1], this.width, this.height, 20, ctx, color);
         roundRect(this.pos[0] + this.slidePosX, this.pos[1], this.width / 2, this.height, 20, ctx, "#fcc81f");
-        ctx.font = "bolder 24px Roboto";
+        ctx.font = "bolder 22px Roboto";
         ctx.fillStyle = "#000000";
         let words = this.flipped ? this.altText1 : this.text;
         ctx.fillText(words, this.pos[0]+ this.textStartWidth, this.pos[1]+ this.textStartHeight);

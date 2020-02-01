@@ -61,6 +61,40 @@ const audioJapaneseFiles = {
     'minus': 'japaneseAudio/minus.mp3'
 };
 
+const japanesePronunciation = {
+    '0': 'rei',
+    '1': 'ichi',
+    '2': 'ni',
+    '3': 'san',
+    '4': 'yon',
+    '5': 'go',
+    '6': 'roku',
+    '7': 'nana',
+    '8': 'hachi',
+    '9': 'kyu',
+    '10': 'ju',
+    '100': 'hyaku',
+    '1000': 'sen',
+    '10000': 'ichiman',
+};
+
+const cantonesePronunciation = {
+    '0': 'lihng',
+    '1': 'yāt',
+    '2': 'yih',
+    '3': 'sàam',
+    '4': 'sei',
+    '5': 'nǵh',
+    '6': 'luhk',
+    '7': 'chāt',
+    '8': 'baat',
+    '9': 'gáu',
+    '10': 'sahp',
+    '100': 'yātbaak', 
+    '1000': 'yātchìn',
+    '10000': 'yātmaahn',
+};
+
 
 const audioCantoneseFiles = {
     '0': 'cantoneseAudio/0.mp3',
@@ -104,7 +138,7 @@ const gameSoundFiles = {
 }
 
 const kanji = {
-    '0': '0',
+    '0': '\u96F6',
     '1': '\u4e00',
     '2': '\u4e8c',
     '3': '\u4e09',
@@ -246,4 +280,11 @@ let roundRect = (x, y, w, h, radius, ctx, color) => {
     ctx.fillStyle = color;
     ctx.stroke();
     ctx.fill();
+}
+
+let getMousePosition = (e) => {
+    let rect = canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+    return [x, y]
 }

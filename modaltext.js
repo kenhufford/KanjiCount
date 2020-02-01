@@ -4,7 +4,7 @@ class Modaltext {
         this.y = y;
         this.step = step;
         this.text = {
-            "0": ["Welcome to Kirby's Kanjiland!","Select a language: Japanese, Cantonese", "Order numbers from 1-10 or 1-99", "Toggle tutorial", "Toggle music", "Click when ready"],
+            "0": ["Welcome to Kirby Kount!","Select a language: Japanese, Cantonese", "Order numbers from 1-10 or 1-99", "Toggle tutorial", "Toggle music", "Click when ready"],
             "1": ["Kirby is hungry and ready to order some sushi"],
             "2": ["Sushis will appear on the conveyor. Click to pick", "one up and click again to drop it."],
             "3": ["Orders will appear here.  Complete the order before" , "time runs out!  Click on the order to hear the word."],
@@ -28,9 +28,15 @@ class Modaltext {
     }
 
     render(ctx) {
-        ctx.font = "bolder 28px Dosis";
+        
+        
         ctx.fillStyle = "#FFFFFF";
         this.text[this.step].forEach((string, i) => {
+            if (this.step === 0 && i === 0){ 
+                ctx.font = "bolder 36px Dosis"
+            } else {
+                ctx.font = "bolder 28px Dosis";
+            }
             ctx.fillText(string, this.location[this.step][i][0], this.location[this.step][i][1]);
         })
     }
