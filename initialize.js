@@ -93,16 +93,13 @@ let norinSprite = () => new Sprite(norinSpriteURL, [100, 0], [900, 190], 1, [0],
 let kanjiArray = Object.values(kanji);
 let randomIndex = (array) => Math.floor(Math.random() * array.length)
 
-let lesson = new Lesson("cantonese", canvas, ctx);
+let lesson;
 let game;
 let kirbyLink = document.querySelector("#kirbylink");
 let lessonsLink = document.querySelector("#lessonlink")
-let gameSelected;
 resources.loadSelector(images);
 
 kirbyLink.addEventListener('click', () => {
-    lesson.complete = true;
-    gameSelected = true;
     if (resources.isReady()) {
         let game = new Game("medium", "cantonese", canvas, ctx, modalCanvas, modalCtx);
         game.start();

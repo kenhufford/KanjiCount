@@ -10,13 +10,23 @@ class Lesson{
         this.dt = (this.now - this.lastTime )/ 1000;
         this.lessonLoop = this.lessonLoop.bind(this);
         this.mouse = new Mouse (0,0);
-        this.number = new Number(this.index, this.language, this.ctx, this.canvas, this.mouse);
-        this.addEventListeners();
+        this.number = new Number(this.index, this.language, this.ctx, this.canvas, this.mouse, this);
+        this.kirbyLink = document.querySelector("#kirbylink");
+        this.lessonsLink = document.querySelector("#lessonlink")
         this.addEventListeners = this.addEventListeners.bind(this);
+        this.addEventListeners();
         this.canvas.classList.add('mouse-vis-canvas');
     }
 
     addEventListeners(){
+        this.kirbyLink.addEventListener('click', () => {
+            this.complete = true;
+        })
+
+        this.lessonsLink.addEventListener('click', () => {
+            this.complete = true;
+        })
+
         this.canvas.addEventListener('mousemove', e => {
             e.preventDefault();
             let pos = this.getMousePosition(e);
@@ -61,7 +71,7 @@ class Lesson{
     nextNum(){
         if (this.number === 10) this.complete = true;
         this.index += 1;
-        this.number = new Number(this.index, this.language, this.ctx, this.canvas, this.mouse);
+        this.number = new Number(this.index, this.language, this.ctx, this.canvas, this.mouse, this);
     }
 
     update(dt){

@@ -86,10 +86,20 @@ class Game{
         for (let i = 0; i < 4; i++) {
             this.orderPositions.push([i * 140 + 400, 10])
         }
-        //tutorial buttons
+
+        this.kirbyLink = document.querySelector("#kirbylink");
+        this.lessonsLink = document.querySelector("#lessonlink")
     }
 
     addEventListeners(){
+        this.lessonsLink.addEventListener('click', () => {
+           this.gamePhase = "lessons";
+        })
+
+        this.kirbyLink.addEventListener('click', () => {
+           this.gamePhase = "lessons";
+        })
+
         this.canvas.onmousemove = (e) => {
             if (this.gamePhase === "tutorial") return null;
             let pos = this.getMousePosition(e);
@@ -437,8 +447,8 @@ class Game{
     }
 
     gameLoop(){
-        if (this.gamePhase === "tutorial") return null;
-        debugger
+        if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null;
+        console.log("game looping")
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;

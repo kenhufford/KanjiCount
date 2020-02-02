@@ -36,6 +36,9 @@ class Tutorial{
         this.loop = this.loop.bind(this);
         this.startNewGame = this.startNewGame.bind(this);
         this.startGame = this.startGame.bind(this);
+
+        this.kirbyLink = document.querySelector("#kirbylink");
+        this.lessonsLink = document.querySelector("#lessonlink")
     }
 
     getMousePosition(e) {
@@ -120,7 +123,7 @@ class Tutorial{
     }
 
     loop(){
-        if(this.step > 6) return null;
+        if (this.step > 6 || this.game.gamePhase === "lessons") return null;
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;

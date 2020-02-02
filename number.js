@@ -1,5 +1,5 @@
 class Number{
-    constructor(number, language, ctx, canvas, mouse){
+    constructor(number, language, ctx, canvas, mouse, lesson){
         this.number = number;
         this.ctx = ctx;
         this.canvas = canvas;
@@ -10,6 +10,7 @@ class Number{
         this.randomChars;
         this.randomPronuciation;
         this.mouse = mouse;
+        this.lesson = lesson;
         this.circleSelected = null;
         this.transition = false;
         this.tutorialCooldown = 0;
@@ -117,6 +118,7 @@ class Number{
     }
 
     generateCircles(setNum){
+        debugger
         let orientation = this.set[setNum].orientation;
         let solutionCircle = 
             new Circle(70,
@@ -158,7 +160,7 @@ class Number{
 
     nextStep(){
         if (this.step === 4){
-            lesson.nextNum();
+            this.lesson.nextNum();
         }
         this.circles = [];
         this.step += 1;
