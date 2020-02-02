@@ -105,10 +105,8 @@ kirbyLink.addEventListener('click', () => {
     gameSelected = true;
     if (resources.isReady()) {
         let game = new Game("medium", "cantonese", canvas, ctx, modalCanvas, modalCtx);
-        game.tutorial = new Tutorial(modalCanvas, modalCtx, canvas, ctx, game);
         game.start();
     };
-
 })
 
 lessonsLink.addEventListener('click', () => {
@@ -116,6 +114,6 @@ lessonsLink.addEventListener('click', () => {
     canvas.classList.remove('back-canvas');
     modalCanvas.classList.add('back-canvas');
     modalCanvas.classList.remove('front-canvas');
-    let lesson = new Lesson(language, canvas, ctx);
+    let lesson = new Lesson("cantonese", canvas, ctx);
     if (resources.isReady()) lesson.lessonLoop();
 })

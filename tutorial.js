@@ -34,6 +34,8 @@ class Tutorial{
         this.addEventListeners();
 
         this.loop = this.loop.bind(this);
+        this.startNewGame = this.startNewGame.bind(this);
+        this.startGame = this.startGame.bind(this);
     }
 
     getMousePosition(e) {
@@ -43,11 +45,23 @@ class Tutorial{
         return [x, y]
     }
 
+    startNewGame(){
+        this.canvas.classList.add('front-canvas');
+        this.canvas.classList.remove('back-canvas');
+        this.modalCanvas.classList.add('back-canvas');
+        this.modalCanvas.classList.remove('front-canvas');
+        this.game = new Game("medium", "cantonese", this.canvas,this.ctx, this.modalCanvas, this.modalCtx, this);
+        this.step = 7;
+        this.game.start();
+    }
+
     startGame(){
         this.canvas.classList.add('front-canvas');
         this.canvas.classList.remove('back-canvas');
         this.modalCanvas.classList.add('back-canvas');
         this.modalCanvas.classList.remove('front-canvas');
+        let now = Date.now();
+        this.game.lastTime = now;
         this.game.ingameMusicButton.flipped = this.tutorialMusicButton.flipped;
         this.game.difficulty = this.difficulty;
         this.game.gamePhase = "game";
@@ -69,7 +83,7 @@ class Tutorial{
 
             if (this.step === "end" && this.readyButton.inside(pos)) {
                 this.readyButton.flipped = !this.readyButton.flipped;
-                setTimeout(this.startGame, 1000);
+                setTimeout(this.startNewGame, 1000);
             }
 
             if (this.step === 0) {
@@ -96,7 +110,9 @@ class Tutorial{
                     this.tutorialMusicButton.flipped = !this.tutorialMusicButton.flipped;
                     this.game.music.play();
                 }
-            } else if (this.step !== "end") {
+            } if (this.step === 6) {
+                this.startGame();
+            } else if (this.step !== "end" && this.step !== 0) {
                 this.step += 1;
                 this.change = true;
             }

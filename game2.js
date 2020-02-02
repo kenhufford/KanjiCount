@@ -40,7 +40,7 @@ class Game{
         this.sushiIndex = 0;
         this.sushiId = 1;
         this.gameTime = 0;
-        this.endGameScore = 4;
+        this.endGameScore = 10;
         this.windCooldown = 1;
         let now = Date.now();
         this.now = now;
@@ -156,10 +156,11 @@ class Game{
         this.sushiCooldown = 2.5;
         this.update(this.dt);
         this.render();
-        canvas.classList.remove('front-canvas');
-        canvas.classList.add('back-canvas');
-        modalCanvas.classList.remove('back-canvas');
-        modalCanvas.classList.add('front-canvas');
+        this.tutorial = new Tutorial(modalCanvas, modalCtx, canvas, ctx, this);
+        this.canvas.classList.remove('front-canvas');
+        this.canvas.classList.add('back-canvas');
+        this.modalCanvas.classList.remove('back-canvas');
+        this.modalCanvas.classList.add('front-canvas');
         this.tutorial.loop();
     }
 
@@ -436,7 +437,8 @@ class Game{
     }
 
     gameLoop(){
-        if (this.gamePhase === "gameOver") return null;
+        if (this.gamePhase === "tutorial") return null;
+        debugger
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;
@@ -492,7 +494,7 @@ class Game{
         this.canvas.classList.add('back-canvas');
         this.modalCanvas.classList.remove('back-canvas');
         this.modalCanvas.classList.add('front-canvas');
-        this.gamePhase = "gameOver";
+        this.gamePhase = "tutorial";
         this.tutorial.loop();
 
         // tutorial = true;
