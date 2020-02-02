@@ -101,11 +101,11 @@ let gameSelected;
 resources.loadSelector(images);
 
 kirbyLink.addEventListener('click', () => {
-    // tutorial = true;
     lesson.complete = true;
     gameSelected = true;
     if (resources.isReady()) {
         let game = new Game("medium", "cantonese", canvas, ctx, modalCanvas, modalCtx);
+        game.tutorial = new Tutorial(modalCanvas, modalCtx, canvas, ctx, game);
         game.start();
     };
 

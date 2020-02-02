@@ -7,6 +7,7 @@ class Game{
         this.ctx = ctx;
         this.modalCanvas = modalCanvas;
         this.modalCtx = modalCtx;
+        this.tutorial;
 
         //bind
         this.gameLoop = this.gameLoop.bind(this);
@@ -34,8 +35,7 @@ class Game{
         }
 
         //start game variables
-        this.gamePhase = "intro";
-        this.tutorial = true;
+        this.gamePhase = "tutorial";
         this.orderIndex = 0;
         this.sushiIndex = 0;
         this.sushiId = 1;
@@ -67,12 +67,6 @@ class Game{
         this.wind = new Entity([90, 110], noWindSprite(), kirbySpriteURL, noWindSprite)
         this.norin = new Entity([0, 0], norinSprite(), norinSpriteURL, norinSprite);
         this.music = new Music(gameSoundFiles["kirbysong"]);
-        // this.spotlight = new Spotlight(this.kirby.pos[0] + this.kirby.sprite.size[0] / 2, this.kirby.pos[1] + this.kirby.sprite.size[1] / 2, 80)
-        this.languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese", "", true);
-        this.difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Medium", "Easy", "", true);
-        this.tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None", "", true);
-        this.tutorialMusicButton = new Button([100, 400], 120, 50, 4, 33, "Off", "On", "", true);
-        this.readyButton = new Button([400, 500], 120, 50, 4, 33, "Start", "Start", "", false);
         this.ingameMusicButton = new Button([760, 530], 120, 50, 4, 33, "Off", "On", "", true);
         this.orderNumEasy = Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.random() * 1));
         this.orderNumMed = Array.from(Array(100).keys()).sort((a, b) => (0.5 - Math.random() * 1));
@@ -88,18 +82,11 @@ class Game{
             conveyor2: this.conveyor2, chef: this.chef, 
             wind: this.wind, hearts: this.hearts
         };
-        this.buttons = {
-            languageButton: this.languageButton, 
-            difficultyButton: this.difficultyButton, 
-            tutorialButton: this.tutorialButton, 
-            readyButton: this.readyButton, 
-            tutorialMusicButton: this.tutorialButton
-        }
+
         for (let i = 0; i < 4; i++) {
             this.orderPositions.push([i * 140 + 400, 10])
         }
         //tutorial buttons
-        console.log(this)
     }
 
     addEventListeners(){
@@ -117,7 +104,7 @@ class Game{
 
         this.canvas.addEventListener('click', (e) => {
             e.preventDefault();
-            // if (tutorial) return null
+            if (this.gamePhase === "tutorial") return null
             let pos = this.getMousePosition(e);
             this.mouse.closed = !this.mouse.closed;
             Object.keys(this.sushis).forEach((id) => {
@@ -147,12 +134,6 @@ class Game{
                 this.music.play();
             }
         })
-
-        // this.modalCanvas.onmousemove = (e) => {
-        //     if (this.gamePhase !== "tutorial") return null;
-        //     let modalPos = getMousePosition(e);
-        //     this.mouse.update(modalPos[0], modalPos[1])
-        // }
     }
 
     getMousePosition(e){
@@ -170,23 +151,16 @@ class Game{
         this.lastTime = now;
         this.generateOrder(0);
         this.generateOrder(1);
+        let sushi = this.generateSushi();
+        this.sushis[sushi.id] = sushi;
         this.sushiCooldown = 2.5;
         this.update(this.dt);
         this.render();
-        // if (tutorial) {
-        //     canvas.classList.remove('front-canvas');
-        //     canvas.classList.add('back-canvas');
-        //     modalCanvas.classList.remove('back-canvas');
-        //     modalCanvas.classList.add('front-canvas');
-        //     tutorialLoop()
-        // } else {
-        this.canvas.classList.add('front-canvas');
-        this.canvas.classList.remove('back-canvas');
-        this.modalCanvas.classList.add('back-canvas');
-        this.modalCanvas.classList.remove('front-canvas');
-        this.gameLoop();
-        // }
-
+        canvas.classList.remove('front-canvas');
+        canvas.classList.add('back-canvas');
+        modalCanvas.classList.remove('back-canvas');
+        modalCanvas.classList.add('front-canvas');
+        this.tutorial.loop();
     }
 
     generateOrder(index){
@@ -492,7 +466,6 @@ class Game{
             setTimeout(() => {
                 clearInterval(spit);
                 this.switchToGameOver();
-                // tutorialLoop();
             }, 2000)
         } else if (this.gamePhase !== "ending") {
             this.gamePhase = "ending";
@@ -508,17 +481,19 @@ class Game{
             })
             setTimeout(() => {
                 this.switchToGameOver();
-                tutorialLoop();
             }, 2000)
         }
     }
 
     switchToGameOver(){
+        this.tutorial.step = "end";
+        this.tutorial.change = true;
         this.canvas.classList.remove('front-canvas');
         this.canvas.classList.add('back-canvas');
         this.modalCanvas.classList.remove('back-canvas');
         this.modalCanvas.classList.add('front-canvas');
         this.gamePhase = "gameOver";
+        this.tutorial.loop();
 
         // tutorial = true;
         // step = "end";
