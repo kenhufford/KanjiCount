@@ -20,7 +20,6 @@ class Button {
             } else if (this.slidePosX <= 0 & !this.flipped) {
                 this.slidePosX = 0;
             } else {
-                debugger
                 this.flipped ? this.slidePosX += dt * 75 : this.slidePosX -= dt * 75;
             }
         }

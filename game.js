@@ -1,4 +1,3 @@
-
 let lesson = new Lesson("cantonese", canvas, ctx);
 let kirbyLink = document.querySelector("#kirbylink");
 let lessonsLink = document.querySelector("#lessonlink")
@@ -6,10 +5,14 @@ let gameSelected;
 resources.loadSelector(images);
 
 kirbyLink.addEventListener('click', () => {
-    tutorial = false;
+    tutorial = true;
     lesson.complete = true;
     gameSelected = true;
-    if (resources.isReady()) resetGame();
+    if (resources.isReady()) {
+       resetGame();
+       init();
+    };
+
 })
 
 lessonsLink.addEventListener('click', () => {
@@ -17,18 +20,19 @@ lessonsLink.addEventListener('click', () => {
     canvas.classList.remove('back-canvas');
     modalCanvas.classList.add('back-canvas');
     modalCanvas.classList.remove('front-canvas');
-    lesson.complete = false;
+    tutorial = false;
     gameSelected = false;
     isGameOver = true;
+    let lesson = new Lesson(language, canvas, ctx);
     if (resources.isReady()) lesson.lessonLoop();
 })
 
 let resetGame = () => {
     step = 0;
     modaltext.step = step;
-    mode = "medium";
-    language = "cantonese";
-    tutorial = true;
+    // difficulty = "medium";
+    // language = "cantonese";
+    // tutorial = true;
     isGameOver = false;
     isGameEnding = false;
     isGameStart = false;
@@ -44,7 +48,7 @@ let resetGame = () => {
     sushiShelf;
     endGameScore = 10;
     kirby.sprite = kirbyIdleSprite();
-    score.reset(gameModes[mode].startScore)
+    score.reset(gameModes[difficult].startScore)
     tutorialToggle = true;
     tutorialMusicButton.flipped = ingameMusicButton.flipped;
     readyButton.flipped = false;
@@ -54,20 +58,20 @@ let resetGame = () => {
     orderNumEasy = Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.random() * 1));
     orderNumMed = Array.from(Array(100).keys()).sort((a, b) => (0.5 - Math.random() * 1));
     orderNumHard = Array.from(Array(1000).keys()).sort((a, b) => (0.5 - Math.random() * 1));
-    init();
+    debugger
 }
 
 let init = () => {
-    if(!gameSelected) return null;
     now = Date.now();
     dt = (now - lastTime) / 1000.0;
     lastTime = now;
     generateOrderPositions(4, 140, 10)
     generateOrder(0);
     generateOrder(1);
+    // let sushi = generateSushi()
+    // sushis[sushi.id] = sushi;
     sushiCooldown = 2.5;
-    let sushi = generateSushi()
-    sushis[sushi.id] = sushi;
+    debugger
     update(dt);
     render();
     if (tutorial){
@@ -77,8 +81,8 @@ let init = () => {
         modalCanvas.classList.add('front-canvas');
         tutorialLoop()
     } else {
-        orderCooldown = gameModes[mode].orderCooldown;
-        orderTime = gameModes[mode].orderTime;
+        orderCooldown = gameModes[difficulty].orderCooldown;
+        orderTime = gameModes[difficulty].orderTime;
         gameLoop();
     }
 }
@@ -93,7 +97,10 @@ modalCanvas.addEventListener('click', (e) =>{
     if (step === "end" && readyButton.inside(pos)) {
         console.log(ingameMusicButton.flipped)
         readyButton.flipped = !readyButton.flipped;
-        setTimeout(resetGame, 1000);
+        setTimeout(() => {
+            resetGame();
+            init();
+        }, 1000);
     }
 
     if (step === 0){
@@ -117,8 +124,7 @@ modalCanvas.addEventListener('click', (e) =>{
             tutorialToggle = !tutorialToggle;
         } else if (difficultyButton.inside(pos)){
             difficultyButton.flipped = !difficultyButton.flipped;
-            mode = mode === "medium" ? "easy" : "medium";
-            console.log(mode);
+            difficulty = difficulty === "medium" ? "easy" : "medium";
         } else if (languageButton.inside(pos)){
             languageButton.flipped = !languageButton.flipped;
             language = language === "cantonese" ? "japanese" : "cantonese";
@@ -181,7 +187,7 @@ let randomIndex = (array) => Math.floor(Math.random() * array.length)
 
 let generateRandomNumber = (type) => {
     if (type === "sushi"){
-        sushiShelf= gameModes[mode].sushiShelf;
+        sushiShelf= gameModes[difficulty].sushiShelf;
         if (sushiNumIndex === sushiShelf.length-1) {
             sushiShelf.sort((a, b) => (0.5 - Math.random() * 1));
             sushiNumIndex = 0;
@@ -196,11 +202,11 @@ let generateRandomNumber = (type) => {
         }
         
         ordNumIndex += 1;
-        if (mode==="easy"){
+        if (difficulty==="easy"){
             return orderNumEasy[ordNumIndex];
-        } else if (mode==="medium"){
+        } else if (difficulty==="medium"){
             return ordNumIndex % 2 === 0 ? orderNumEasy[ordNumIndex] : orderNumMed[ordNumIndex];
-        } else if (mode === "hard") {
+        } else if (difficulty === "hard") {
             return ordNumIndex % 2 === 0 ? orderNumMed[ordNumIndex] : orderNumHard[ordNumIndex];
         }
     }
@@ -558,7 +564,7 @@ let change = true;
 let modaltext =  new Modaltext(300, 300, 0)
 
 let tutorialLoop = () => {
-    if (!tutorial) {
+    if (!tutorial & lesson.complete) {
         gameLoop();
         return;
     };
