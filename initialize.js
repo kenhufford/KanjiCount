@@ -106,12 +106,12 @@ let hearts = new Entity([10, 10], heartsSprite(), heartsSpriteURL, heartsSprite)
 let score = new Score(gameModes[mode].startScore, [10, 10], endGameScore, hearts)
 let mouse = new Mouse(false, 0, 0, mouseImages[0], mouseImages[1])
 let spotlight = new Spotlight(kirby.pos[0] + kirby.sprite.size[0] / 2, kirby.pos[1] + kirby.sprite.size[1] / 2, 80)
-let languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese");
-let difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Medium", "Easy");
-let tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None");
-let tutorialMusicButton = new Button([100, 400], 120, 50, 4, 33, "Music Off", "Music On");
-let ingameMusicButton = new Button([760, 530], 120, 50, 4, 33, "Music Off", "Music On");
-let readyButton = new Button([100, 500], 120, 50, 4, 33, "Not Yet", "Ready");
+let languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese", "", true);
+let difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Medium", "Easy", "", true);
+let tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None", "", true);
+let tutorialMusicButton = new Button([100, 400], 120, 50, 4, 33, "Off", "On", "",true);
+let ingameMusicButton = new Button([760, 530], 120, 50, 4, 33, "Off", "On","", true);
+let readyButton = new Button([400, 500], 120, 50, 4, 33, "Start", "Start", "",false);
 let norin = new Entity([0, 0], norinSprite(), norinSpriteURL, norinSprite);
 let music = new Music(gameSoundFiles["kirbysong"]);
 
@@ -127,6 +127,7 @@ let entities = {
 let buttons = {
     languageButton, difficultyButton, tutorialButton, readyButton, tutorialMusicButton
 }
+
 
 
 

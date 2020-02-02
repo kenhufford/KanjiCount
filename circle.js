@@ -8,7 +8,9 @@ class Circle{
         this.ctx = ctx;
         this.content = content;
         this.immovable = false;
+        this.originalRadius = radius;
         this.pingRadius = radius+6;
+        this.maxHoverRadius = radius + 10;
         this.maxPingRadius = 90;
         this.maxTransRadius = 120;
         this.pinged = false;
@@ -27,17 +29,22 @@ class Circle{
             this.y = pos[1];
         } else if (this.shaking) { 
             if (this.shakeSwitch){
-                this.x += 10;
+                this.x += 15;
                 this.shakeSwitch = false;
             } else { 
-                this.x -= 10;
+                this.x -= 15;
                 this.shakeSwitch = true;      
             }
         } else if (this.transition) {
             this.transitionCount += dt;
             if (this.radius< this.maxTransRadius) this.radius += dt * 200;
             if (this.y < 300) this.y += dt * 500;
-            if (this.transitionCount > 2 ) this.y += dt * (this.transitionCount - 2) * 4000;
+            if (this.transitionCount > 1.5 && this.transitionCount * 10 % 2 === 0) {
+                this.y += dt * (this.transitionCount - 1.5) * 4000;
+            } else if (this.transitionCount > 1.5 && this.transitionCount * 10 % 2 !== 0){
+                this.y -= dt * (this.transitionCount - 1.5) * 4000;
+            }
+            
         } else {
             this.x = this.originalX;
             this.y = this.originalY;
@@ -47,7 +54,6 @@ class Circle{
                 this.pinged = false;
             };
         }
-
     }
 
     inside(pos){
@@ -91,9 +97,9 @@ class Circle{
             } else {
                 if (word.length > 1){
                     let adjust = this.content[i].length;
-                    this.ctx.fillText(word, this.x - adjust * 5.5, this.y + 10);
+                    this.ctx.fillText(word, this.x - adjust * 6.5, this.y + 10);
                 } else {
-                    this.ctx.fillText(word, this.x-15, this.y+8);
+                    this.ctx.fillText(word, this.x-13, this.y+8);
                 }
             }  
         })

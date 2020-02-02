@@ -1,4 +1,27 @@
+
 let lesson = new Lesson("cantonese", canvas, ctx);
+let kirbyLink = document.querySelector("#kirbylink");
+let lessonsLink = document.querySelector("#lessonlink")
+let gameSelected;
+resources.loadSelector(images);
+
+kirbyLink.addEventListener('click', () => {
+    tutorial = false;
+    lesson.complete = true;
+    gameSelected = true;
+    if (resources.isReady()) resetGame();
+})
+
+lessonsLink.addEventListener('click', () => {
+    canvas.classList.add('front-canvas');
+    canvas.classList.remove('back-canvas');
+    modalCanvas.classList.add('back-canvas');
+    modalCanvas.classList.remove('front-canvas');
+    lesson.complete = false;
+    gameSelected = false;
+    isGameOver = true;
+    if (resources.isReady()) lesson.lessonLoop();
+})
 
 let resetGame = () => {
     step = 0;
@@ -24,7 +47,6 @@ let resetGame = () => {
     score.reset(gameModes[mode].startScore)
     tutorialToggle = true;
     tutorialMusicButton.flipped = ingameMusicButton.flipped;
-    console.log(ingameMusicButton.flipped)
     readyButton.flipped = false;
     languageButton.flipped = false;
     difficultyButton.flipped = false;
@@ -36,6 +58,7 @@ let resetGame = () => {
 }
 
 let init = () => {
+    if(!gameSelected) return null;
     now = Date.now();
     dt = (now - lastTime) / 1000.0;
     lastTime = now;
@@ -60,10 +83,6 @@ let init = () => {
     }
 }
 
-resources.loadSelector(images);
-// resources.onReady(init);
-
-resources.onReady(lesson.lessonLoop);
 
 modalCanvas.addEventListener('click', (e) =>{
     e.preventDefault();
@@ -384,6 +403,7 @@ let renderStatic = (entity) => {
 }
 
 let gameLoop = () => {
+    if (isGameOver) return null
     let now = Date.now();
     let dt = (now - lastTime) / 1000.0;
     lastTime = now;
@@ -393,13 +413,11 @@ let gameLoop = () => {
 };
 
 let update = (dt) => {
-    if(!isGameOver){
-        if ((score.score === 0 || score.score === endGameScore )&& !isGameEnding) endGame();
-        gameTime += dt;
-        updateCooldowns(dt);
-        updateEntities(dt);
-        ingameMusicButton.update(dt);
-    }
+    if ((score.score === 0 || score.score === endGameScore )&& !isGameEnding) endGame();
+    gameTime += dt;
+    updateCooldowns(dt);
+    updateEntities(dt);
+    ingameMusicButton.update(dt);
 };
 
 let updateEntities = (dt) => {

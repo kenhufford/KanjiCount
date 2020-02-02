@@ -52,19 +52,14 @@ class Lesson{
 
     }
 
-    nextStep(){
-        this.step += 1;
-        if (this.step > 3) this.step = 0;
-    }
-
     nextNum(){
-        this.number += 1;
         if (this.number === 10) this.complete = true;
+        this.index += 1;
+        this.number = new Number(this.index, this.language, this.ctx, this.canvas, this.mouse);
     }
 
     update(dt){
         this.number.update(dt)
-
     }
 
     render(){
@@ -77,6 +72,7 @@ class Lesson{
     }
 
     lessonLoop(){
+        if (this.complete) return null;
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;

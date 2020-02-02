@@ -15,7 +15,6 @@ let playSound = (key, language) => {
 }
 
 let playNumberSound = (number, language) => {
-    console.log("im playing something")
     let audioArray = convertNumberToSoundArray(number, language);
     let newAudio;
 

@@ -4,7 +4,7 @@ class Modaltext {
         this.y = y;
         this.step = step;
         this.text = {
-            "0": ["Welcome to Kirby Kount!","Select a language: Japanese, Cantonese", "Order numbers from 1-10 or 1-99", "Toggle tutorial", "Toggle music", "Click when ready"],
+            "0": ["Welcome to Kirby Kount!","Language", "Difficulty", "Tutorial", "Music"],
             "1": ["Kirby is hungry and ready to order some sushi"],
             "2": ["Sushis will appear on the conveyor. Click to pick", "one up and click again to drop it."],
             "3": ["Orders will appear here.  Complete the order before" , "time runs out!  Click on the order to hear the word."],
@@ -15,7 +15,7 @@ class Modaltext {
             "lose": ["Oh no! You've angered Kirby", "Want to try feeding him again?"]
         }
         this.location = {
-            "0": [[270, 50], [235, 135], [235, 235], [235, 335], [235, 435], [235, 535]],
+            "0": [[270, 50], [235, 135], [235, 235], [235, 335], [235, 435]],
             "1": [[225, 255]],
             "2": [[120, 340], [120, 370]],
             "3": [[200, 170], [200, 200]],

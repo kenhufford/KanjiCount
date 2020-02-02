@@ -5,12 +5,16 @@ class Number{
         this.canvas = canvas;
         this.step = 0;
         this.character = convertToKanji(convertNumberToArray(number));
+        this.language = language
         this.randomNums;
         this.randomChars;
         this.randomPronuciation;
         this.mouse = mouse;
         this.circleSelected = null;
         this.transition = false;
+        this.tutorialCooldown = 0;
+        this.nextStep = this.nextStep.bind(this);
+        this.arrow = new Arrow(this.canvas.width/2, this.canvas.height/2, 150, 0.7 * Math.PI, 1.3 * Math.PI, ctx);
 
         if (language === "cantonese") {
             this.pronunciation = cantonesePronunciation[this.number];
@@ -80,7 +84,7 @@ class Number{
                 0: [this.pronunciation],
                 1: [this.randomPronuciation[1]],
                 2: [this.randomPronuciation[2]],
-                3: [this.randomPronuciation[2]],
+                3: [this.randomPronuciation[3]],
             }
         }
 
@@ -153,16 +157,22 @@ class Number{
     }
 
     nextStep(){
+        if (this.step === 4){
+            lesson.nextNum();
+        }
         this.circles = [];
         this.step += 1;
         this.generateCircles(this.step);
+        this.transition = false;
     }
 
     answer(){
         if(this.circleSelected.answer){
+            playSound(this.number, this.language);
             this.transition = true;
             this.circles[0].transition = true;
-            this.nextStep;
+            setTimeout(this.nextStep, 2000)
+            
         } else {
             this.circleSelected.shaking = true;
             let lastCircle = this.circleSelected;
@@ -174,9 +184,22 @@ class Number{
         this.circles.forEach( (circle) => {
             circle.update(dt, [this.mouse.x, this.mouse.y]);
         })
+        if (this.number === 0 && this.step === 0) {
+            this.tutorialCooldown -= dt;
+            if (this.tutorialCooldown <= 0){
+                this.arrow.reset();
+                this.circles[1].pinged = true;
+                setTimeout((() => this.circles[0].pinged = true), 900)
+                this.tutorialCooldown = 4;
+            } 
+            this.arrow.update(dt);
+        }
     }
 
     render(){
+        if (this.number === 0 && this.step === 0) {
+            this.arrow.render()
+        }
         if (!this.transition){
             for (let i = 0; i < this.circles.length; i++) {
                 this.circles[i].render();
