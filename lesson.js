@@ -19,7 +19,7 @@ class Lesson{
     addEventListeners(){
         this.canvas.addEventListener('mousemove', e => {
             e.preventDefault();
-            let pos = getMousePosition(e);
+            let pos = this.getMousePosition(e);
             this.mouse.update(pos[0], pos[1])
             this.number.circles.forEach(circle =>{
                 if (circle.inside(pos)){
@@ -30,7 +30,7 @@ class Lesson{
 
         this.canvas.addEventListener('click', (e) =>{
             e.preventDefault();
-            let pos = getMousePosition(e);
+            let pos = this.getMousePosition(e);
             if (this.number.circleSelected){
                 let circle = this.number.circleSelected;
                 if (this.number.circles[0].inside(pos)){
@@ -49,7 +49,13 @@ class Lesson{
                 })
             }
         })
+    }
 
+    getMousePosition(e) {
+        let rect = this.canvas.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+        return [x, y]
     }
 
     nextNum(){

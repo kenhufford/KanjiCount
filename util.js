@@ -281,9 +281,3 @@ let roundRect = (x, y, w, h, radius, ctx, color) => {
     ctx.fill();
 }
 
-let getMousePosition = (e) => {
-    let rect = canvas.getBoundingClientRect();
-    let x = e.clientX - rect.left;
-    let y = e.clientY - rect.top;
-    return [x, y]
-}
