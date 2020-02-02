@@ -61,7 +61,7 @@ const audioJapaneseFiles = {
 };
 
 const japanesePronunciation = {
-    '0': 'rei',
+    '0': 'zero',
     '1': 'ichi',
     '2': 'ni',
     '3': 'san',

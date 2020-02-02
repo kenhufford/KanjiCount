@@ -118,7 +118,6 @@ class Number{
     }
 
     generateCircles(setNum){
-        debugger
         let orientation = this.set[setNum].orientation;
         let solutionCircle = 
             new Circle(70,

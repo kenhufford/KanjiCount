@@ -1,16 +1,26 @@
 class Lesson{
-    constructor(language, canvas, ctx){
+    constructor(language, canvas, ctx, modalCanvas, modalCtx){
         this.language = language;
         this.index = 0;
-        this.complete = false;
+        this.finalIndex = 13;
+        this.indices = Array.from(Array(this.finalIndex+1).keys())
+        this.shuffle = false;
+        this.lessonPhase = "options";
+        this.numbers = {
+            0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7,
+            8: 8, 9: 9, 10: 10, 11: 100, 12: 1000, 13: 10000
+        }
         this.canvas = canvas;
         this.ctx = ctx;
+        this.modalCanvas = modalCanvas;
+        this.modalCtx = modalCtx;
         this.now = Date.now();
         this.lastTime = this.now;
         this.dt = (this.now - this.lastTime )/ 1000;
         this.lessonLoop = this.lessonLoop.bind(this);
         this.mouse = new Mouse (0,0);
-        this.number = new Number(this.index, this.language, this.ctx, this.canvas, this.mouse, this);
+        this.number;
+        this.lessonTutorial = new LessonTutorial(this.modalCanvas, this.modalCtx, this.canvas, this.ctx, this);
         this.kirbyLink = document.querySelector("#kirbylink");
         this.lessonsLink = document.querySelector("#lessonlink")
         this.addEventListeners = this.addEventListeners.bind(this);
@@ -20,11 +30,11 @@ class Lesson{
 
     addEventListeners(){
         this.kirbyLink.addEventListener('click', () => {
-            this.complete = true;
+            this.lessonPhase = "complete";
         })
 
         this.lessonsLink.addEventListener('click', () => {
-            this.complete = true;
+            this.lessonPhase = "complete";
         })
 
         this.canvas.addEventListener('mousemove', e => {
@@ -69,9 +79,18 @@ class Lesson{
     }
 
     nextNum(){
-        if (this.number === 10) this.complete = true;
+        if (this.index === this.finalIndex) this.lessonPhase = "complete";
         this.index += 1;
-        this.number = new Number(this.index, this.language, this.ctx, this.canvas, this.mouse, this);
+        let number = this.numbers[this.indices[this.index]];
+        this.number = new Number(number, this.language, this.ctx, this.canvas, this.mouse, this);
+    }
+
+    init(){
+        if (this.shuffle) this.indices.sort((a, b) => (0.5 - Math.random() * 1));
+        let number = this.numbers[this.indices[this.index]];
+        this.number = new Number(number, this.language, this.ctx, this.canvas, this.mouse, this);
+        this.lessonPhase = "lesson";
+        this.lessonLoop();
     }
 
     update(dt){
@@ -88,14 +107,21 @@ class Lesson{
     }
 
     lessonLoop(){
-        if (this.complete) return null;
-        this.now = Date.now();
-        this.dt = (this.now - this.lastTime) / 1000.0;
-        this.lastTime = this.now;
-        this.update(this.dt);
-        this.render();
-        requestAnimFrame(this.lessonLoop);
+        if (this.lessonPhase === "complete") return null;
+        if (this.lessonPhase === "options") {
+            this.canvas.classList.remove('front-canvas');
+            this.canvas.classList.add('back-canvas');
+            this.modalCanvas.classList.remove('back-canvas');
+            this.modalCanvas.classList.add('front-canvas');
+            this.lessonTutorial.loop();
+        }
+        if (this.lessonPhase === "lesson"){
+            this.now = Date.now();
+            this.dt = (this.now - this.lastTime) / 1000.0;
+            this.lastTime = this.now;
+            this.update(this.dt);
+            this.render();
+            requestAnimFrame(this.lessonLoop);
+        }
     }
-
-
 }

@@ -40,7 +40,7 @@ class Game{
         this.sushiIndex = 0;
         this.sushiId = 1;
         this.gameTime = 0;
-        this.endGameScore = 10;
+        this.endGameScore = 3;
         this.windCooldown = 1;
         let now = Date.now();
         this.now = now;

@@ -189,8 +189,8 @@ class Tutorial{
                     this.spotlight.y = this.game.kirby.pos[1] + this.game.kirby.sprite.size[1] / 2;
                     this.spotlight.radius = 1;
                     this.spotlight.maxRadius = 80;
-                    this.modaltext.step = this.game.score.score === this.endGameScore ? "win" : "lose";
-                    this.game.kirby.sprite = this.game.score.score === this.endGameScore ? kirbyWinSprite() : kirbyLoseSprite();
+                    this.modaltext.step = this.game.score.score > 0  ? "win" : "lose";
+                    this.game.kirby.sprite = this.game.score.score > 0 ? kirbyWinSprite() : kirbyLoseSprite();
                     this.readyButton.flipped = false;
                     setTimeout(this.game.kirby.sprite.sound, 1000)
                     break;
