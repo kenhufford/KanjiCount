@@ -7,6 +7,9 @@ let playSound = (key, language) => {
         case 'cantonese':
             newAudio = new Audio(audioCantoneseFiles[key]);
             break;
+        case 'mandarin':
+            newAudio = new Audio(audioMandarinFiles[key]);
+            break;
         default:
             newAudio = new Audio(gameSoundFiles[key])
             break;
@@ -28,6 +31,8 @@ let playNumberSound = (number, language) => {
             newAudio = new Audio(audioCantoneseFiles[audioArray[index]]);
         } else if (language === 'japanese') {
             newAudio = new Audio(audioJapaneseFiles[audioArray[index]]);
+        } else if (language === 'mandarin') {
+            newAudio = new Audio(audioMandarinFiles[audioArray[index]]);
         };
         newAudio.addEventListener('ended', playSound);
         newAudio.play();
@@ -55,9 +60,6 @@ const audioJapaneseFiles = {
     '1000': 'japaneseAudio/1000.mp3',
     '10000': 'japaneseAudio/10000.mp3',
     '10000a': 'japaneseAudio/10000a.mp3',
-    'equals': 'japaneseAudio/equals.mp3',
-    'plus': 'japaneseAudio/plus.mp3',
-    'minus': 'japaneseAudio/minus.mp3'
 };
 
 const japanesePronunciation = {
@@ -113,9 +115,44 @@ const audioCantoneseFiles = {
     '1000a': 'cantoneseAudio/1000a.mp3',
     '10000': 'cantoneseAudio/10000.mp3',
     '10000a': 'cantoneseAudio/10000a.mp3',
-    'equals': 'cantoneseAudio/equals.mp3',
-    'plus': 'cantoneseAudio/plus.mp3',
-    'minus': 'cantoneseAudio/minus.mp3'
+};
+
+const mandarinPronunciation = {
+    '0': 'líng',
+    '1': 'yī',
+    '2': 'èr',
+    '3': 'sān',
+    '4': 'sì',
+    '5': 'wǔ',
+    '6': 'liù',
+    '7': 'qī',
+    '8': 'bā',
+    '9': 'jiǔ',
+    '10': 'shí',
+    '100': 'yībǎi', 
+    '1000': 'yīqiān',
+    '10000': 'yīwàn',
+};
+
+
+const audioMandarinFiles = {
+    '0': 'mandarinAudio/0.mp3',
+    '1': 'mandarinAudio/1.mp3',
+    '2': 'mandarinAudio/2.mp3',
+    '3': 'mandarinAudio/3.mp3',
+    '4': 'mandarinAudio/4.mp3',
+    '5': 'mandarinAudio/5.mp3',
+    '6': 'mandarinAudio/6.mp3',
+    '7': 'mandarinAudio/7.mp3',
+    '8': 'mandarinAudio/8.mp3',
+    '9': 'mandarinAudio/9.mp3',
+    '10': 'mandarinAudio/10.mp3',
+    '100': 'mandarinAudio/100.mp3',
+    '100a': 'mandarinAudio/100a.mp3',
+    '1000': 'mandarinAudio/1000.mp3',
+    '1000a': 'mandarinAudio/1000a.mp3',
+    '10000': 'mandarinAudio/10000.mp3',
+    '10000a': 'mandarinAudio/10000a.mp3',
 };
 
 const gameSoundFiles = {
@@ -181,7 +218,6 @@ let convertNumberToArray = (num) => {
             result.push(order[orderNumber]);
         };
     }
-
     return result;
 };
 
@@ -233,9 +269,28 @@ let convertNumberToSoundArray = (num, language) => {
                 results.push(order[orderNumber]);
             };
         }
-    };
+    } else if (language == 'cantonese') {
 
-    if (language == 'cantonese') {
+        for (let i = 0; i < digits.length; i++) {
+            orderNumber = digits.length - i;
+            if (digits[i] == 0) {
+                continue;
+            } else if (orderNumber == 5 && digits[i] == 1) {
+                results.push('10000a')
+            } else if (orderNumber == 4 && digits[i] == 1) {
+                results.push('1000a')
+            } else if (orderNumber == 3 && digits[i] == 1) {
+                results.push('1000a')
+            } else if (digits[i] == 1 && orderNumber != 1) {
+                results.push(order[orderNumber]);
+            } else if (orderNumber == 1) {
+                results.push(digits[i]);
+            } else {
+                results.push(digits[i]);
+                results.push(order[orderNumber]);
+            };
+        }
+    } else if (language == 'mandarin') {
 
         for (let i = 0; i < digits.length; i++) {
             orderNumber = digits.length - i;
@@ -257,7 +312,8 @@ let convertNumberToSoundArray = (num, language) => {
             };
         }
     };
-
+    if (results.length === 0) results = [0];
+    console.log(results);
     return results;
 };
 

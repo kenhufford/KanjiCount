@@ -20,12 +20,12 @@ class Tutorial{
 
         this.spotlight = new Spotlight(this.game.kirby.pos[0] + this.game.kirby.sprite.size[0] / 2, this.game.kirby.pos[1] + this.game.kirby.sprite.size[1] / 2, 80)
         this.modaltext = new Modaltext(300, 300, 0);
-        this.languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese", "", true);
-        this.difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Easy", "Medium", "", true);
-        this.tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None", "", true);
-        this.tutorialMusicButton = new Button([100, 400], 120, 50, 4, 33, "Off", "On", "", true);
-        this.mathButton = new Button([100, 500], 120, 50, 4, 33, "Off", "On", "", true);
-        this.readyButton = new Button([400, 500], 120, 50, 4, 33, "Start", "Start", "", false);
+        this.languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese", "Mandarin", true, 3);
+        this.difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Easy", "Medium", "", true, 2);
+        this.tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None", "", true, 2);
+        this.tutorialMusicButton = new Button([100, 400], 120, 50, 4, 33, "Off", "On", "", true, 2);
+        this.mathButton = new Button([100, 500], 120, 50, 4, 33, "Off", "On", "", true, 2);
+        this.readyButton = new Button([400, 500], 120, 50, 4, 33, "Start", "Start", "", false, 1);
         this.buttons = {
             languageButton: this.languageButton,
             difficultyButton: this.difficultyButton,
@@ -68,8 +68,7 @@ class Tutorial{
         this.modalCanvas.classList.remove('front-canvas');
         let now = Date.now();
         this.game.lastTime = now;
-        this.game.ingameMusicButton.flipped = this.tutorialMusicButton.flipped;
-        debugger
+        this.game.ingameMusicButton.slide();
         if (this.math){
             this.game.difficulty = this.difficulty === "easy" ? "easymath" : "hardmath";
         } else {
@@ -100,13 +99,13 @@ class Tutorial{
             let pos = this.getMousePosition(e);
 
             if (this.step === "end" && this.readyButton.inside(pos)) {
-                this.readyButton.flipped = !this.readyButton.flipped;
+                this.readyButton.slide();
                 setTimeout(this.startNewGame, 1000);
             }
 
             if (this.step === 0) {
                 if (this.readyButton.inside(pos)) {
-                    this.readyButton.flipped = !this.readyButton.flipped;
+                    this.readyButton.slide();
                     setTimeout(() => {
                         if (!this.tutorialToggle) {
                             this.startGame();
@@ -116,21 +115,27 @@ class Tutorial{
                         }
                     }, 1000)
                 } else if (this.tutorialButton.inside(pos)) {
-                    this.tutorialButton.flipped = !this.tutorialButton.flipped;
+                    this.tutorialButton.slide();
                     this.tutorialToggle = !this.tutorialToggle;
                 } else if (this.difficultyButton.inside(pos)) {
-                    this.difficultyButton.flipped = !this.difficultyButton.flipped;
+                    this.difficultyButton.slide();
                     this.difficulty = this.difficulty === "medium" ? "easy" : "medium";
                 } else if (this.languageButton.inside(pos)) {
-                    this.languageButton.flipped = !this.languageButton.flipped;
-                    this.language = this.language === "cantonese" ? "japanese" : "cantonese";
+                    this.languageButton.slide();
+                    if (this.languageButton.flipPosition === 1){
+                        this.game.language = "cantonese";
+                    } else if (this.languageButton.flipPosition === 2){
+                        this.game.language = "japanese";
+                    } else if (this.languageButton.flipPosition === 3){
+                        this.game.language = "mandarin";  
+                    }
                 } else if (this.tutorialMusicButton.inside(pos)) {
-                    this.tutorialMusicButton.flipped = !this.tutorialMusicButton.flipped;
+                    this.tutorialMusicButton.slide();
                     this.game.music.play();
                 } else if (this.mathButton.inside(pos)) {
-                    this.mathButton.flipped = !this.mathButton.flipped;
+                    this.mathButton.slide();
                     this.math = !this.math;
-                    if (this.mathButton.flipped) {
+                    if (this.mathButton.flipPosition===2) {
                         this.difficultyButton.text = "Hard";
                         this.difficultyButton.altText1 = "INSANE";
                     } else { 
@@ -216,7 +221,7 @@ class Tutorial{
                     this.spotlight.maxRadius = 80;
                     this.modaltext.step = this.game.score.score > 0  ? "win" : "lose";
                     this.game.kirby.sprite = this.game.score.score > 0 ? kirbyWinSprite() : kirbyLoseSprite();
-                    this.readyButton.flipped = false;
+                    this.readyButton.flipPosition = 1;
                     setTimeout(this.game.kirby.sprite.sound, 1000)
                     break;
             }

@@ -1,5 +1,5 @@
 class Button {
-    constructor(pos, width, height, textStartWidth, textStartHeight, text, altText1, altText2, slideable) {
+    constructor(pos, width, height, textStartWidth, textStartHeight, text, altText1, altText2, slideable, flipPositionMax) {
         this.pos = pos;
         this.width = width;
         this.height = height;
@@ -8,21 +8,44 @@ class Button {
         this.altText2 = altText2;
         this.textStartWidth = textStartWidth;
         this.textStartHeight = textStartHeight;
+        this.flipPositionMax = flipPositionMax;
         this.slidePosX = 0;
-        this.flipped = false;
+        this.flipPosition = 1;
         this.slideable = slideable;
     }
 
     update(dt){
         if (this.slideable){
-            if (this.slidePosX >= this.width / 2 && this.flipped) {
-                this.slidePosX = this.width / 2
-            } else if (this.slidePosX <= 0 & !this.flipped) {
-                this.slidePosX = 0;
-            } else {
-                this.flipped ? this.slidePosX += dt * 75 : this.slidePosX -= dt * 75;
-            }
+            if (this.flipPositionMax === 2){
+                if (this.slidePosX >= this.width / 2 && this.flipPosition===2) {
+                    this.slidePosX = this.width / 2
+                } else if (this.slidePosX <= 0 & this.flipPosition===1) {
+                    this.slidePosX = 0;
+                } else if (this.slidePosX >= this.width/2 & this.flipPosition===1) {
+                    this.slidePosX = 0
+                } else {
+                    this.slidePosX += dt * 75
+                }
+            } else if (this.flipPositionMax === 3){
+                if (this.slidePosX >= this.width / 3 && this.flipPosition === 2) {
+                    this.slidePosX = this.width / 3
+                } else if (this.slidePosX >= this.width * 2/ 3 && this.flipPosition === 3) {
+                    this.slidePosX = this.width * 2 / 3
+                } else if (this.slidePosX >= 0 & this.flipPosition === 1) {
+                    this.slidePosX = 0;
+                } else {
+                    this.slidePosX += dt * 75
+                }
+            } 
         }
+    }
+
+    slide(){
+        if (this.slideable){
+            this.flipPosition+= 1;
+            if (this.flipPosition > this.flipPositionMax) this.flipPosition = 1;
+        }
+        console.log(this.flipPosition)
     }
 
 
@@ -38,10 +61,14 @@ class Button {
     }
 
     render(ctx){
-        let color = this.flipped ? "#fcbdc5" : "#c411ff"
+        let color = this.flipPosition % 2 === 0 ? "#c411ff": "#fcbdc5"
         roundRect(this.pos[0], this.pos[1], this.width, this.height, 20, ctx, color);
         if (this.slideable){
-            roundRect(this.pos[0] + this.slidePosX, this.pos[1], this.width / 2, this.height, 20, ctx, "#fcc81f");
+            if (this.flipPositionMax === 2){
+                roundRect(this.pos[0] + this.slidePosX, this.pos[1], this.width / 2, this.height, 20, ctx, "#fcc81f");
+            } else if (this.flipPositionMax === 3){
+                roundRect(this.pos[0] + this.slidePosX, this.pos[1], this.width / 3, this.height, 20, ctx, "#fcc81f");
+            }
         }
         if (this.text === "Hard" || this.altText === "Insane"){
             ctx.font = "bolder 26px Roboto";
@@ -49,13 +76,15 @@ class Button {
             ctx.font = "bolder 22px Roboto";
         }
         let words;
-        if (this.flipped){
-            words = this.altText1;
-            ctx.fillStyle = "#000000";
-        } else {
+        ctx.fillStyle = "#000000";
+        if (this.flipPosition === 1){
             words = this.text;
-            ctx.fillStyle = "#000000";
+        } else if (this.flipPosition === 2){
+            words = this.altText1;
+        } else if (this.flipPosition === 3){
+            words = this.altText2;
         }
+
         if (this.slideable) {
             ctx.fillText(words, this.pos[0] + this.textStartWidth, this.pos[1] + this.textStartHeight);
         } else {

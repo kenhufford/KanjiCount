@@ -20,7 +20,9 @@ class Number{
         if (language === "cantonese") {
             this.pronunciation = cantonesePronunciation[this.number];
         } else if (language === "japanese"){
-            this.pronunciation = japanesePronunciation[this.number];
+            this.pronunciation = japanesePronunciation[this.number]
+        } else if (language === "mandarin"){
+            this.pronunciation = mandarinPronunciation[this.number];
         }
         this.circles = []
         this.solutionPositions = {

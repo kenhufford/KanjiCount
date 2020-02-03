@@ -5,7 +5,6 @@ class LessonTutorial {
         this.modalCtx = modalCtx;
         this.canvas = canvas;
         this.ctx = ctx;
-        this.language = "cantonese";
         let now = Date.now();
         this.now = now;
         this.lastTime = now;
@@ -13,9 +12,9 @@ class LessonTutorial {
         this.modaltext = new Modaltext(300, 300, 0);
         this.step = "lesson1";
         this.modaltext.step = this.step;
-        this.languageButton = new Button([350, 320], 120, 50, 4, 33, "Cantonese", "Japanese", "", true);
-        this.shuffleButton = new Button([350, 380], 120, 50, 4, 33, "Off", "Shuffle", "", true);
-        this.readyButton = new Button([400, 500], 120, 50, 4, 33, "Start", "Start", "", false);
+        this.languageButton = new Button([350, 320], 120, 50, 4, 33, "Cantonese", "Japanese", "Mandarin", true, 3);
+        this.shuffleButton = new Button([350, 380], 120, 50, 4, 33, "Off", "Shuffle", "", true, 2);
+        this.readyButton = new Button([400, 500], 120, 50, 4, 33, "Start", "Start", "", false, 1);
         this.buttons = {
             languageButton: this.languageButton,
             shuffleButton: this.shuffleButton,
@@ -85,13 +84,19 @@ class LessonTutorial {
                     this.modaltext.step = this.step;
                 }
                 if (this.readyButton.inside(pos)) {
-                    this.readyButton.flipped = !this.readyButton.flipped;
+                    this.readyButton.slide();
                     this.startLesson();
                 } else if (this.languageButton.inside(pos)) {
-                    this.languageButton.flipped = !this.languageButton.flipped;
-                    this.lesson.language = this.lesson.language === "cantonese" ? "japanese" : "cantonese";
+                    this.languageButton.slide();
+                    if (this.languageButton.flipPosition === 1) {
+                        this.lesson.language = "cantonese";
+                    } else if (this.languageButton.flipPosition === 2) {
+                        this.lesson.language = "japanese";
+                    } else if (this.languageButton.flipPosition === 3) {
+                        this.lesson.language = "mandarin";
+                    }
                 } else if (this.shuffleButton.inside(pos)) {
-                    this.shuffleButton.flipped = !this.shuffleButton.flipped;
+                    this.shuffleButton.slide();
                     this.lesson.shuffle = !this.lesson.shuffle;
                 } 
             }

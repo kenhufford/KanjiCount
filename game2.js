@@ -54,6 +54,7 @@ class Game{
         this.gameTime = 0;
         this.endGameScore = 10;
         this.windCooldown = 1;
+        this.soundCooldown = 2;
         let now = Date.now();
         this.now = now;
         this.lastTime = now;
@@ -146,11 +147,13 @@ class Game{
                     }
                 }
             });
+            debugger
             this.orders.forEach(order => {
                 if (order.withinBox(pos)) {
                     if (this.soundCooldown < 0) {
+                        debugger
                         playNumberSound(order.number, this.language)
-                        this.soundCooldown = 3;
+                        this.soundCooldown = 2;
                     }
                 }
             })
@@ -191,7 +194,6 @@ class Game{
 
     generateOrder(index){
         if (this.orders.length >= 3) return null
-        console.log(this.difficulty);
         if (this.difficulty === "easymath" || this.difficulty === "hardmath" ) {
             this.generateMathOrder(index);
             return;
@@ -213,7 +215,7 @@ class Game{
             this.orderPositions[index]
         );
         this.orders.push(order);
-        if (index > 1) playNumberSound(randNum, this.language)
+        if (this.gamePhase !== "tutorial" && this.gamePhase !== "ending") playNumberSound(randNum, this.language)
     }
 
     generateMathOrder(index){
@@ -489,7 +491,6 @@ class Game{
 
     gameLoop(){
         if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null;
-        console.log("game looping")
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;
