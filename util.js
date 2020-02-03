@@ -99,7 +99,7 @@ const cantonesePronunciation = {
 
 
 const audioCantoneseFiles = {
-    '0': 'GameSound/attackup.mp3',
+    '0': 'cantoneseAudio/0.mp3',
     '1': 'cantoneseAudio/1.mp3',
     '2': 'cantoneseAudio/2.mp3',
     '3': 'cantoneseAudio/3.mp3',
