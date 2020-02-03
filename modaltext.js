@@ -14,7 +14,7 @@ class Modaltext {
             "win": ["Great job! Kirby is pleased!", "Want to feed him again?"],
             "lose": ["Oh no! You've angered Kirby", "Want to try feeding him again?"],
             "lesson1": ["Welcome to Kirby Count!", "Our goal is to teach you the Chinese/Japanese characters", "and counting systems through games and math!", "Click to Continue"],
-            "lesson2": ["If you're already familiar with the characters", " or just want to try out the game. Click Kirby", "Count above! Otherwise continue on to the", "study session section!" ,"Click to Continue"],
+            "lesson2": ["If you're already familiar with the characters", " or just want to try out the game. Click Play", "Otherwise continue on to the study session ", "section!"],
             "lesson3": ["Let's Study!", "Click on an answer and click again", "to drop it on the matching target", "Language", "Shuffle"]
         }
         this.location = {
@@ -28,8 +28,8 @@ class Modaltext {
             "win": [[250, 250], [250, 280]],
             "lose": [[250, 250], [250, 280]],
             "lesson1": [[300, 50], [150, 150], [150, 200], [340, 500]],
-            "lesson2": [[200, 150], [200, 200], [200, 250], [200, 300],[340, 500]],
-            "lesson3": [[390, 50], [290, 150], [290, 200], [500, 350], [500, 420]]
+            "lesson2": [[200, 150], [200, 200], [200, 250], [200, 300]],
+            "lesson3": [[390, 50], [290, 150], [290, 200], [460, 355], [460, 425]]
         }
     }
 

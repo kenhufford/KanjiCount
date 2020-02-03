@@ -77,17 +77,17 @@ class Number{
                 orientation: "square",
                 "solution": [this.pronunciation],
                 0: [this.character],
-                1: [this.randomChars[1]],
-                2: [this.randomChars[2]],
-                3: [this.randomChars[2]],
+                1: [this.randomChars[3]],
+                2: [this.randomChars[4]],
+                3: [this.randomChars[5]],
             },
             4: {
                 orientation: "square",
                 "solution": [this.character],
                 0: [this.pronunciation],
-                1: [this.randomPronuciation[1]],
-                2: [this.randomPronuciation[2]],
-                3: [this.randomPronuciation[3]],
+                1: [this.randomPronuciation[6]],
+                2: [this.randomPronuciation[7]],
+                3: [this.randomPronuciation[8]],
             }
         }
 
@@ -96,7 +96,7 @@ class Number{
     }
 
     generateRandomNum(){
-        let nums = Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.random() * 1));
+        let nums = Array.from(Array(11).keys()).concat(100, 1000, 10000).sort((a, b) => (0.5 - Math.random() * 1));
         let randomNums = [];
         nums.map(num => {
             if (num !== this.number) randomNums.push(num)
