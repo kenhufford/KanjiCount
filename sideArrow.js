@@ -16,7 +16,7 @@ class SideArrow{
         return false
     }
 
-    render(){
+    render(ctx){
         let top = [this.x + this.width, this.y];
         let mid = [this.x, this.y + this.height / 2];
         let bottom = [this.x + this.width, this.y + this.height];
@@ -25,12 +25,12 @@ class SideArrow{
             mid = [this.x + this.width, this.y + this.height / 2];
             bottom = [this.x, this.y + this.height];
         }
-        this.ctx.strokeStyle = 'black';
-        this.ctx.beginPath();
-        this.ctx.moveTo(top[0], top[1]);
-        this.ctx.lineTo(mid[0], mid[1]);
-        this.ctx.lineTo(bottom[0], bottom[1]);
-        this.ctx.lineWidth = 3;
-        this.ctx.stroke();
+        ctx.strokeStyle = 'black';
+        ctx.beginPath();
+        ctx.moveTo(top[0], top[1]);
+        ctx.lineTo(mid[0], mid[1]);
+        ctx.lineTo(bottom[0], bottom[1]);
+        ctx.lineWidth = 3;
+        ctx.stroke();
     }
 }

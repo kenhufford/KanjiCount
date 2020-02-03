@@ -117,8 +117,8 @@ class Lesson{
         this.number.render()
 
         if (this.lessonPhase === "lesson") {
-            this.leftSideArrow.render();
-            this.rightSideArrow.render();
+            this.leftSideArrow.render(this.ctx);
+            this.rightSideArrow.render(this.ctx);
         }
     }
 
