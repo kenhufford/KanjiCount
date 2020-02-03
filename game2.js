@@ -31,6 +31,18 @@ class Game{
                 orderTime: 25,
                 orderCooldown: 10,
                 startScore: 2
+            },
+            "easymath": {
+                sushiShelf: Array.from(Array(11).keys()).concat([10, 10, 10]).sort((a, b) => (0.5 - Math.random() * 1)),
+                orderTime: 30,
+                orderCooldown: 10,
+                startScore: 2
+            },
+            "hardmath": {
+                sushiShelf: Array.from(Array(11).keys()).concat([10, 10, 10, 100]).sort((a, b) => (0.5 - Math.random() * 1)),
+                orderTime: 40,
+                orderCooldown: 15,
+                startScore: 2
             }
         }
 
@@ -40,13 +52,14 @@ class Game{
         this.sushiIndex = 0;
         this.sushiId = 1;
         this.gameTime = 0;
-        this.endGameScore = 3;
+        this.endGameScore = 10;
         this.windCooldown = 1;
         let now = Date.now();
         this.now = now;
         this.lastTime = now;
         this.dt = (this.now - this.lastTime )/ 1000.0;
         this.orderCooldown = this.gameModes[this.difficulty].orderCooldown;
+        this.orderCooldownOriginal = this.gameModes[this.difficulty].orderCooldown;
         this.orderTime = this.gameModes[this.difficulty].orderTime;
 
         //containers
@@ -72,6 +85,7 @@ class Game{
         this.orderNumEasy = Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.random() * 1));
         this.orderNumMed = Array.from(Array(100).keys()).sort((a, b) => (0.5 - Math.random() * 1));
         this.orderNumHard = Array.from(Array(1000).keys()).sort((a, b) => (0.5 - Math.random() * 1));
+        this.orderNumMath;
         this.orderPositions = [];
         this.attackSprites = [
             { sprite: kirbyAttackDown, vector: [0, -1], sound: (() => playSound('attackdown')) },
@@ -177,6 +191,11 @@ class Game{
 
     generateOrder(index){
         if (this.orders.length >= 3) return null
+        console.log(this.difficulty);
+        if (this.difficulty === "easymath" || this.difficulty === "hardmath" ) {
+            this.generateMathOrder(index);
+            return;
+        }; 
         this.shiftOrders();
         let randNum = this.generateRandomNumber("order");
         if (this.lastOrder){
@@ -196,6 +215,28 @@ class Game{
         this.orders.push(order);
         if (index > 1) playNumberSound(randNum, this.language)
     }
+
+    generateMathOrder(index){
+        this.shiftOrders();
+        let max = this.difficulty === "easymath" ? 10 : 50
+        let problemArray = generateNewProblem(max);
+        let equation;
+        equation = this.difficulty === "easymath" ? problemArray[2] : problemArray[3];
+            
+        let order = new Order(
+            index,
+            problemArray[0],
+            problemArray[1],
+            this.orderTime,
+            this.orderPositions[index],
+            equation
+        )
+        order.height = 100;
+        this.orderIndex+= 1;
+        this.orders.push(order);
+    }
+
+
 
     shiftOrders(){
         this.orders.forEach((order, i) => {
@@ -382,8 +423,8 @@ class Game{
     }
 
     updateOrders(dt){
-        if (this.orderCooldown < 0) {
-            this.orderCooldown = 5;
+        if (this.orderCooldown < 0 || this.orders.length === 0) {
+            this.orderCooldown = this.orderCooldownOriginal;
             this.generateOrder(this.orders.length);
         }
         this.orders.forEach(order => {

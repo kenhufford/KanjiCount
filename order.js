@@ -1,5 +1,5 @@
 class Order{
-    constructor(index, character, number, time, pos){
+    constructor(index, character, number, time, pos, equation){
         this.index = index;
         this.character = character;
         this.number = number;
@@ -15,7 +15,7 @@ class Order{
         this.collectedChars = [];
         this.sushis = [];
         this.sushiPositions = [[0, 140], [30, 140], [60, 140], [15, 120], [45, 120]]
-
+        this.equation = equation;
         for (let i = 0; i < this.charsArray.length; i++){
             this.collectedChars.push("")
         }
@@ -80,9 +80,44 @@ class Order{
         ctx.fillStyle = this.time / this.startTime >= 0.25 ? "#1fbd00" : "red";
         ctx.fillRect(10, 10, (this.time * 100/this.startTime), 20);
         //render order number
-        ctx.font = "bolder 24px Roboto";
-        ctx.fillStyle = "#000000";
-        ctx.fillText(this.number, 50, 55);
+        if (this.equation){
+            let parts = this.equation.split(" ");
+            parts.forEach( (part, i) => {
+                ctx.font = "bolder 22px Roboto";
+                ctx.fillStyle = "#000000";
+                let x;
+                let y;
+                if (i!==1){
+                    switch (part.length) {
+                        case 3:
+                            x = 30;
+                            break;
+                        case 2:
+                            x = 50;
+                            break;
+                        case 1:
+                            x = 70;
+                            break;
+                        default:
+                            x = 30;
+                            break;
+                    }
+                } else {
+                    x = 15;
+                }
+                if (i===0){
+                    y = 55
+                } else if (i===1 || i === 2) { 
+                    y = 85;
+                }
+                ctx.fillText(part, x, y);
+            })
+        } else {
+            ctx.font = "bolder 24px Roboto";
+            ctx.fillStyle = "#000000";
+            ctx.fillText(this.number, 50, 55);
+        }
+
         //render plate
         if (this.charsArray.length !== 1){
             ctx.beginPath();

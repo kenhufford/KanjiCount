@@ -6,8 +6,9 @@ class Tutorial{
         this.modalCtx = modalCtx;
         this.canvas = canvas;
         this.ctx = ctx;
-        this.difficulty = "medium";
+        this.difficulty = "easy";
         this.language = "cantonese";
+        this.math = false;
 
         let now = Date.now();
         this.now = now;
@@ -23,13 +24,15 @@ class Tutorial{
         this.difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Easy", "Medium", "", true);
         this.tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None", "", true);
         this.tutorialMusicButton = new Button([100, 400], 120, 50, 4, 33, "Off", "On", "", true);
+        this.mathButton = new Button([100, 500], 120, 50, 4, 33, "Off", "On", "", true);
         this.readyButton = new Button([400, 500], 120, 50, 4, 33, "Start", "Start", "", false);
         this.buttons = {
             languageButton: this.languageButton,
             difficultyButton: this.difficultyButton,
             tutorialButton: this.tutorialButton,
             readyButton: this.readyButton,
-            tutorialMusicButton: this.tutorialMusicButton
+            tutorialMusicButton: this.tutorialMusicButton,
+            mathButton: this.mathButton,
         }
         this.addEventListeners();
 
@@ -66,10 +69,22 @@ class Tutorial{
         let now = Date.now();
         this.game.lastTime = now;
         this.game.ingameMusicButton.flipped = this.tutorialMusicButton.flipped;
-        this.game.difficulty = this.difficulty;
+        debugger
+        if (this.math){
+            this.game.difficulty = this.difficulty === "easy" ? "easymath" : "hardmath";
+        } else {
+            this.game.difficulty = this.difficulty;
+        }
         this.game.gamePhase = "game";
+        if (this.game.difficulty === "easymath" || this.game.difficulty === "hardmath" ){
+            this.game.orders = [];
+            this.game.orderIndex = 0;
+            this.game.generateOrder(0);
+            this.game.generateOrder(1);
+        }
         this.game.gameLoop();
     }
+
 
     addEventListeners(){
         this.modalCanvas.onmousemove = (e) => {
@@ -112,6 +127,9 @@ class Tutorial{
                 } else if (this.tutorialMusicButton.inside(pos)) {
                     this.tutorialMusicButton.flipped = !this.tutorialMusicButton.flipped;
                     this.game.music.play();
+                } else if (this.mathButton.inside(pos)) {
+                    this.mathButton.flipped = !this.mathButton.flipped;
+                    this.math = !this.math;
                 }
             } if (this.step === 6) {
                 this.startGame();

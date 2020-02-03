@@ -281,3 +281,51 @@ let roundRect = (x, y, w, h, radius, ctx, color) => {
     ctx.fill();
 }
 
+const generateMultipleChoiceArray = (a)=>{
+    let mcArray = [a + 10, a + 1, a - 1, a - 2, a + 2, a + 11, a - 11];
+    mcArray = mcArray.filter((number) => {
+        return number >= 0;
+    });
+    mcArray.sort(() => 0.5 - Math.random());
+    let results = [a, mcArray[0], mcArray[1], mcArray[2]];
+    return results;
+};
+
+const generateNewProblem = (maximumNumber) => {
+
+    r1 = Math.floor(Math.random() * maximumNumber) + 1;
+    r2 = Math.floor(Math.random() * maximumNumber) + 1;
+
+    while (r1 === r2) {
+        r2 = Math.floor(Math.random() * maximumNumber) + 1;
+    }
+
+    let r1converted = convertToKanji(convertNumberToArray(r1));
+    let r2converted = convertToKanji(convertNumberToArray(r2));
+    let equation;
+    let convertedEquation;
+    let answer = 0;
+    let convertedAnswer;;
+    if (Math.random() > 0.5) {
+        answer = r1 + r2;
+        convertedAnswer = convertToKanji(convertNumberToArray(answer));
+        equation = `${r1} + ${r2}`;
+        convertedEquation = `${r1converted} + ${r2converted}`;
+    } else {
+        if (r1 > r2) {
+            answer = r1 - r2;
+            convertedAnswer = convertToKanji(convertNumberToArray(answer));
+            equation = `${r1} - ${r2}`;
+            convertedEquation = `${r1converted} - ${r2converted}`;
+        }
+        else {
+            answer = r2 - r1;
+            convertedAnswer = convertToKanji(convertNumberToArray(answer));
+            equation = `${r2} - ${r1}`;
+            convertedEquation = `${r2converted} - ${r1converted}`;
+        }
+    }
+
+    return [convertedAnswer,answer, equation, convertedEquation];
+
+};
