@@ -113,11 +113,11 @@ class Game{
         })
 
         this.kirbyLink.addEventListener('click', () => {
-           this.gamePhase = "lessons";
+           this.gamePhase = "tutorial";
         })
 
         this.canvas.onmousemove = (e) => {
-            if (this.gamePhase === "tutorial") return null;
+            if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null;
             let pos = this.getMousePosition(e);
             if (this.mouse.closed && this.windCooldown < 0 && this.kirby.nearby(pos)) {
                 this.kirby.sprite = kirbyOpeningSprite();
@@ -130,7 +130,7 @@ class Game{
 
         this.canvas.addEventListener('click', (e) => {
             e.preventDefault();
-            if (this.gamePhase === "tutorial") return null
+            if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null
             let pos = this.getMousePosition(e);
             this.mouse.closed = !this.mouse.closed;
             Object.keys(this.sushis).forEach((id) => {
@@ -147,11 +147,9 @@ class Game{
                     }
                 }
             });
-            debugger
             this.orders.forEach(order => {
                 if (order.withinBox(pos)) {
                     if (this.soundCooldown < 0) {
-                        debugger
                         playNumberSound(order.number, this.language)
                         this.soundCooldown = 2;
                     }

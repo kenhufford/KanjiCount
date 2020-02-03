@@ -71,7 +71,6 @@ class LessonTutorial {
 
         this.modalCanvas.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log(this.lesson.lessonPhase)
             if (this.lesson.lessonPhase !== "options") return null
             this.lesson.mouse.closed = !this.lesson.mouse.closed;
             let pos = this.getMousePosition(e);

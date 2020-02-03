@@ -172,7 +172,7 @@ class Number{
 
     answer(){
         if(this.circleSelected.answer){
-            playSound(this.number, this.language);
+            playNumberSound(this.number, this.language);
             this.transition = true;
             this.circles[0].transition = true;
             setTimeout(this.nextStep, 2000)
