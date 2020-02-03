@@ -38,7 +38,8 @@ class Lesson{
         })
 
         this.canvas.addEventListener('mousemove', e => {
-            e.preventDefault();
+            if (this.lessonPhase !== "lesson") return null;
+            e.preventDefault(); 
             let pos = this.getMousePosition(e);
             this.mouse.update(pos[0], pos[1])
             this.number.circles.forEach(circle =>{
@@ -49,6 +50,7 @@ class Lesson{
         })
 
         this.canvas.addEventListener('click', (e) =>{
+            if (this.lessonPhase !== "lesson") return null;
             e.preventDefault();
             let pos = this.getMousePosition(e);
             if (this.number.circleSelected){
@@ -79,17 +81,24 @@ class Lesson{
     }
 
     nextNum(){
-        if (this.index === this.finalIndex) this.lessonPhase = "complete";
-        this.index += 1;
-        let number = this.numbers[this.indices[this.index]];
-        this.number = new Number(number, this.language, this.ctx, this.canvas, this.mouse, this);
+        if (this.index === this.finalIndex) {
+            this.lessonPhase = "options";
+            this.canvas.classList.remove('front-canvas');
+            this.canvas.classList.add('back-canvas');
+            this.modalCanvas.classList.remove('back-canvas');
+            this.modalCanvas.classList.add('front-canvas');
+        } else {
+            this.index += 1;
+            let number = this.numbers[this.indices[this.index]];
+            this.number = new Number(number, this.language, this.ctx, this.canvas, this.mouse, this);
+        }
     }
 
     init(){
         if (this.shuffle) this.indices.sort((a, b) => (0.5 - Math.random() * 1));
         let number = this.numbers[this.indices[this.index]];
         this.number = new Number(number, this.language, this.ctx, this.canvas, this.mouse, this);
-        this.lessonPhase = "lesson";
+        this.lessonPhase = "lesson"
         this.lessonLoop();
     }
 

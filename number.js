@@ -160,11 +160,12 @@ class Number{
     nextStep(){
         if (this.step === 4){
             this.lesson.nextNum();
+        } else {
+            this.circles = [];
+            this.step += 1;
+            this.generateCircles(this.step);
+            this.transition = false;
         }
-        this.circles = [];
-        this.step += 1;
-        this.generateCircles(this.step);
-        this.transition = false;
     }
 
     answer(){

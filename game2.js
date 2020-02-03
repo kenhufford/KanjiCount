@@ -53,6 +53,7 @@ class Game{
         this.sushis = {};
         this.answers = {};
         this.orders = [];
+        this.lastOrder;
         this.orderPositions = [];
         this.sushiShelf = this.gameModes[this.difficulty].sushiShelf;
 
@@ -178,9 +179,12 @@ class Game{
         if (this.orders.length >= 3) return null
         this.shiftOrders();
         let randNum = this.generateRandomNumber("order");
-        // while (randNum < 11 && index === 0) {
-        //     randNum = this.generateRandomNumber("order");
-        // }
+        if (this.lastOrder){
+            while (this.lastOrder.number === randNum){
+                randNum = this.generateRandomNumber("order");
+            }
+        }
+
         let characters = convertToKanji(convertNumberToArray(randNum));
         let order = new Order(
             index,
@@ -226,7 +230,7 @@ class Game{
 
     generateSushi(){
         let startPos = [700, 320];
-        if (this.gamePhase==="ending") {
+        if (this.gamePhase==="ending" && this.score.score <=0) {
             startPos = [...this.kirby.pos];
             startPos[0] += 30;
         }
@@ -235,7 +239,6 @@ class Game{
         let randSushiChar = convertToKanji(convertNumberToArray(randSushiNum));
         let sushi = new Sushi(this.sushiId, startPos, randSushiUrl, randSushiChar, randSushiNum) //700, 370 start, 130 end
         this.sushiId++;
-        console.log(sushi)
         return sushi
     }
 
@@ -265,17 +268,14 @@ class Game{
         } else {
             kirbyMood = "happy";
         }
-        if (kirbyMood === "happy") {
+        if (kirbyMood === "happy" && this.gamePhase !== "ending") {
             this.kirby.sprite = kirbyHappySprite();
             this.kirby.sprite.sound();
             delete this.sushis[sushi.id];
         } else if (this.gamePhase === "ending") {
-            kirbySucks();
+            this.kirbySucks();
             kirbyHappySprite().sound();
             delete this.sushis[sushi.id];
-            setTimeout(() => {
-                this.kirby.sprite = kirbyHappySprite();
-            }, 1500)
         } else {
             this.score.update(-1);
             sushi.hit = true;
@@ -506,9 +506,5 @@ class Game{
         this.modalCanvas.classList.add('front-canvas');
         this.gamePhase = "tutorial";
         this.tutorial.loop();
-
-        // tutorial = true;
-        // step = "end";
-        // change = true;
     }
 }

@@ -20,7 +20,7 @@ class Tutorial{
         this.spotlight = new Spotlight(this.game.kirby.pos[0] + this.game.kirby.sprite.size[0] / 2, this.game.kirby.pos[1] + this.game.kirby.sprite.size[1] / 2, 80)
         this.modaltext = new Modaltext(300, 300, 0);
         this.languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese", "", true);
-        this.difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Medium", "Easy", "", true);
+        this.difficultyButton = new Button([100, 200], 120, 50, 4, 33, "Easy", "Medium", "", true);
         this.tutorialButton = new Button([100, 300], 120, 50, 4, 33, "Tutorial", "None", "", true);
         this.tutorialMusicButton = new Button([100, 400], 120, 50, 4, 33, "Off", "On", "", true);
         this.readyButton = new Button([400, 500], 120, 50, 4, 33, "Start", "Start", "", false);

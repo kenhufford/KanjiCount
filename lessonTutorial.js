@@ -6,15 +6,15 @@ class LessonTutorial {
         this.canvas = canvas;
         this.ctx = ctx;
         this.language = "cantonese";
-
         let now = Date.now();
         this.now = now;
         this.lastTime = now;
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.modaltext = new Modaltext(300, 300, 0);
-        this.modaltext.step = "lesson";
-        this.languageButton = new Button([100, 100], 120, 50, 4, 33, "Cantonese", "Japanese", "", true);
-        this.shuffleButton = new Button([100, 200], 120, 50, 4, 33, "Off", "Shuffle", "", true);
+        this.step = "lesson1";
+        this.modaltext.step = this.step;
+        this.languageButton = new Button([350, 320], 120, 50, 4, 33, "Cantonese", "Japanese", "", true);
+        this.shuffleButton = new Button([350, 380], 120, 50, 4, 33, "Off", "Shuffle", "", true);
         this.readyButton = new Button([400, 500], 120, 50, 4, 33, "Start", "Start", "", false);
         this.buttons = {
             languageButton: this.languageButton,
@@ -70,30 +70,36 @@ class LessonTutorial {
             this.lesson.mouse.closed = !this.lesson.mouse.closed;
             let pos = this.getMousePosition(e);
 
-            if (this.lesson.lessonPhase === "complete" && this.readyButton.inside(pos)) {
-                this.readyButton.flipped = !this.readyButton.flipped;
-                setTimeout(this.startNewLesson, 1000);
-            }
-
             if (this.lesson.lessonPhase === "options" ) {
+                if (this.step === "lesson1" || this.step === "lesson2") {
+                    switch (this.step) {
+                        case "lesson1":
+                            this.step = "lesson2"
+                            break;
+                        case "lesson2":
+                            this.step = "lesson3"
+                            break;
+                        default:
+                            break;
+                    }
+                    this.modaltext.step = this.step;
+                }
                 if (this.readyButton.inside(pos)) {
                     this.readyButton.flipped = !this.readyButton.flipped;
                     this.startLesson();
                 } else if (this.languageButton.inside(pos)) {
                     this.languageButton.flipped = !this.languageButton.flipped;
                     this.lesson.language = this.lesson.language === "cantonese" ? "japanese" : "cantonese";
-                    console.log(this.lesson.language)
                 } else if (this.shuffleButton.inside(pos)) {
                     this.shuffleButton.flipped = !this.shuffleButton.flipped;
                     this.lesson.shuffle = !this.lesson.shuffle;
-                    console.log(this.lesson.shuffle)
                 } 
             }
         })
     }
 
     loop() {
-        if (this.lesson.lessonPhase === "lessons" || this.lesson.lessonPhase === "complete" ) return null;
+        if (this.lesson.lessonPhase === "lessons") return null;
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;
@@ -113,14 +119,17 @@ class LessonTutorial {
 
     renderTutorial(){
         this.modalCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        // this.lesson.mouse.render(this.modalCtx);
         this.modalCtx.globalAlpha = 0.9;
         this.modalCtx.fillStyle = "#000000";
         this.modalCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.modaltext.render(this.modalCtx);
-        Object.keys(this.buttons).forEach(key => {
-            this.buttons[key].render(this.modalCtx);
-        })
+
+        if (this.step === "lesson3"){
+            Object.keys(this.buttons).forEach(key => {
+                this.buttons[key].render(this.modalCtx);
+            })
+        }
+
     };
 
 }

@@ -26,17 +26,13 @@
 .header p{
   font-size: 28px;
   font-weight: 800;
+  cursor: pointer;
 }
 
 .header a{
   font-size: 40px;
   text-decoration: none;
   color: #f741d3;
-  color: #25e91f;
-
-
-
-  color: #ff90f6;
 }
 
 .body{

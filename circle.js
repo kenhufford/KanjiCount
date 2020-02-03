@@ -97,7 +97,7 @@ class Circle{
             } else {
                 if (word.length > 1){
                     let adjust = this.content[i].length;
-                    this.ctx.fillText(word, this.x - adjust * 6.5, this.y + 10);
+                    this.ctx.fillText(word, this.x - adjust * 7.5, this.y + 10);
                 } else {
                     this.ctx.fillText(word, this.x-13, this.y+8);
                 }
