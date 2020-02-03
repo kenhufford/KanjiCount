@@ -130,6 +130,13 @@ class Tutorial{
                 } else if (this.mathButton.inside(pos)) {
                     this.mathButton.flipped = !this.mathButton.flipped;
                     this.math = !this.math;
+                    if (this.mathButton.flipped) {
+                        this.difficultyButton.text = "Hard";
+                        this.difficultyButton.altText1 = "INSANE";
+                    } else { 
+                        this.difficultyButton.text = "Easy";
+                        this.difficultyButton.altText1 = "Medium"
+                    }
                 }
             } if (this.step === 6) {
                 this.startGame();

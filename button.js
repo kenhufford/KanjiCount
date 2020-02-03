@@ -43,7 +43,11 @@ class Button {
         if (this.slideable){
             roundRect(this.pos[0] + this.slidePosX, this.pos[1], this.width / 2, this.height, 20, ctx, "#fcc81f");
         }
-        ctx.font = "bolder 22px Roboto";
+        if (this.text === "Hard" || this.altText === "Insane"){
+            ctx.font = "bolder 26px Roboto";
+        } else {
+            ctx.font = "bolder 22px Roboto";
+        }
         let words;
         if (this.flipped){
             words = this.altText1;
@@ -53,10 +57,8 @@ class Button {
             ctx.fillStyle = "#000000";
         }
         if (this.slideable) {
-            
             ctx.fillText(words, this.pos[0] + this.textStartWidth, this.pos[1] + this.textStartHeight);
         } else {
-            
             ctx.fillText(words, this.pos[0] + this.textStartWidth+30, this.pos[1] + this.textStartHeight);
         }
     }
