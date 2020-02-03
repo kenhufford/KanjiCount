@@ -20,12 +20,13 @@ class LessonTutorial {
         this.lesson2buttons = {
             kanjiKountButton: this.kanjiKountButton,
             shuffleBstudySessionButtonutton: this.studySessionButton,
-        }
+        };
         this.lesson3buttons = {
             languageButton: this.languageButton,
             shuffleButton: this.shuffleButton,
             readyButton: this.readyButton,
-        }
+        };
+
         this.addEventListeners();
 
         this.loop = this.loop.bind(this);

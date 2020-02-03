@@ -21,6 +21,8 @@ class Lesson{
         this.mouse = new Mouse (0,0);
         this.number;
         this.lessonTutorial = new LessonTutorial(this.modalCanvas, this.modalCtx, this.canvas, this.ctx, this);
+        this.leftSideArrow = new SideArrow([50, 350], "left", this.ctx);    
+        this.rightSideArrow = new SideArrow([650, 350], "right", this.ctx);
         this.kirbyLink = document.querySelector("#kirbylink");
         this.lessonsLink = document.querySelector("#lessonlink")
         this.addEventListeners = this.addEventListeners.bind(this);
@@ -113,6 +115,11 @@ class Lesson{
         roundRect(0, 0, this.canvas.width, this.canvas.height, 10, this.ctx, "#ff90f6")
         ctx.stroke();
         this.number.render()
+
+        if (this.lessonPhase === "lesson") {
+            this.leftSideArrow.render();
+            this.rightSideArrow.render();
+        }
     }
 
     lessonLoop(){
