@@ -9,14 +9,15 @@ class SideArrow{
     }
 
     inside(inputPos) {
-        if (posX + this.width > inputPos[0] && posX < inputPos[0] &&
-            posY + this.height > inputPos[1] && posY < inputPos[1]) {
+        if (this.x + this.width > inputPos[0] && this.x < inputPos[0] &&
+            this.y + this.height > inputPos[1] && this.y < inputPos[1]) {
             return true
         }
         return false
     }
 
     render(ctx){
+       
         let top = [this.x + this.width, this.y];
         let mid = [this.x, this.y + this.height / 2];
         let bottom = [this.x + this.width, this.y + this.height];
@@ -25,6 +26,7 @@ class SideArrow{
             mid = [this.x + this.width, this.y + this.height / 2];
             bottom = [this.x, this.y + this.height];
         }
+        
         ctx.strokeStyle = 'black';
         ctx.beginPath();
         ctx.moveTo(top[0], top[1]);

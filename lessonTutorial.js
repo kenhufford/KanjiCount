@@ -1,6 +1,6 @@
 class LessonTutorial {
-    constructor(modalCanvas, modalCtx, canvas, ctx, lesson) {
-        this.lesson = lesson;
+    constructor(modalCanvas, modalCtx, canvas, ctx) {
+        this.lesson = new Lesson("cantonese", canvas, ctx, modalCanvas, modalCtx, this);
         this.modalCanvas = modalCanvas;
         this.modalCtx = modalCtx;
         this.canvas = canvas;
@@ -28,12 +28,11 @@ class LessonTutorial {
         };
 
         this.addEventListeners();
-
         this.loop = this.loop.bind(this);
-        this.startNewLesson = this.startNewLesson.bind(this);
         this.startLesson = this.startLesson.bind(this);
         this.kirbyLink = document.querySelector("#kirbylink");
         this.lessonsLink = document.querySelector("#lessonlink")
+        
     }
 
     getMousePosition(e) {
@@ -41,16 +40,6 @@ class LessonTutorial {
         let x = e.clientX - rect.left;
         let y = e.clientY - rect.top;
         return [x, y]
-    }
-
-    startNewLesson() {
-        this.canvas.classList.add('front-canvas');
-        this.canvas.classList.remove('back-canvas');
-        this.modalCanvas.classList.add('back-canvas');
-        this.modalCanvas.classList.remove('front-canvas');
-        this.lesson.lessonPhase == "complete";
-        this.lesson = new Lesson("cantonese", canvas, ctx, modalCanvas, modalCtx);
-        this.lesson.init();
     }
 
     startLesson() {
@@ -75,12 +64,11 @@ class LessonTutorial {
             if (this.lesson.lessonPhase !== "options") return null
             this.lesson.mouse.closed = !this.lesson.mouse.closed;
             let pos = this.getMousePosition(e);
-
             if (this.lesson.lessonPhase === "options" ) {
                 if (this.step === "lesson1") {
                     this.step = "lesson2";
                     this.modaltext.step = this.step;
-                } else {
+                } else if (this.step === "lesson2") {
                     if (this.kanjiKountButton.inside(pos)) {
                         this.lesson.lessonPhase = "complete";
                         let game = new Game("easy", "cantonese", canvas, ctx, modalCanvas, modalCtx);
@@ -88,11 +76,14 @@ class LessonTutorial {
                     } else if (this.studySessionButton.inside(pos)) {
                         this.step = "lesson3";
                         this.modaltext.step = this.step;
-                    } else if (this.readyButton.inside(pos)) {
+                    }
+                } else if (this.step === "lesson3"){
+                    if (this.readyButton.inside(pos)) {
                         this.readyButton.slide();
                         this.startLesson();
                     } else if (this.languageButton.inside(pos)) {
                         this.languageButton.slide();
+                        console.log(this.languageButton);
                         if (this.languageButton.flipPosition === 1) {
                             this.lesson.language = "cantonese";
                         } else if (this.languageButton.flipPosition === 2) {
@@ -102,6 +93,7 @@ class LessonTutorial {
                         }
                     } else if (this.shuffleButton.inside(pos)) {
                         this.shuffleButton.slide();
+                        console.log(this.shuffleButton);
                         this.lesson.shuffle = !this.lesson.shuffle;
                     } 
                 }
@@ -110,7 +102,7 @@ class LessonTutorial {
     }
 
     loop() {
-        if (this.lesson.lessonPhase === "lessons") return null;
+        if (this.lesson.lessonPhase !== "options") return null;
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;
@@ -143,6 +135,7 @@ class LessonTutorial {
         }
 
         if (this.step === "lesson3"){
+            
             Object.keys(this.lesson3buttons).forEach(key => {
                 this.lesson3buttons[key].render(this.modalCtx);
             })

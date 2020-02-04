@@ -45,7 +45,9 @@ let norinSprite = () => new Sprite(norinSpriteURL, [100, 0], [900, 190], 1, [0],
 let kanjiArray = Object.values(kanji);
 let randomIndex = (array) => Math.floor(Math.random() * array.length)
 
-let lesson = new Lesson("cantonese", canvas, ctx, modalCanvas, modalCtx);
+
+let lessonTutorial = new LessonTutorial(modalCanvas, modalCtx, canvas, ctx);
+// let lesson = new Lesson("cantonese", canvas, ctx, modalCanvas, modalCtx);
 let game;
 let kirbyLink = document.querySelector("#kirbylink");
 let lessonsLink = document.querySelector("#lessonlink")
@@ -63,8 +65,14 @@ lessonsLink.addEventListener('click', () => {
     canvas.classList.remove('back-canvas');
     modalCanvas.classList.add('back-canvas');
     modalCanvas.classList.remove('front-canvas');
-    let lesson = new Lesson("cantonese", canvas, ctx, modalCanvas, modalCtx);
-    if (resources.isReady()) lesson.lessonLoop();
+    // let lesson = new Lesson("cantonese", canvas, ctx, modalCanvas, modalCtx);
+    let lessonTutorial = new LessonTutorial(modalCanvas, modalCtx, canvas, ctx);
+    if (resources.isReady()) lessonTutorial.loop();
 })
 
-lesson.lessonLoop();
+canvas.classList.remove('front-canvas');
+canvas.classList.add('back-canvas');
+modalCanvas.classList.remove('back-canvas');
+modalCanvas.classList.add('front-canvas');
+
+lessonTutorial.loop();

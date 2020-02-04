@@ -1,5 +1,5 @@
 class Lesson{
-    constructor(language, canvas, ctx, modalCanvas, modalCtx){
+    constructor(language, canvas, ctx, modalCanvas, modalCtx, lessonTutorial){
         this.language = language;
         this.index = 0;
         this.finalIndex = 13;
@@ -20,9 +20,9 @@ class Lesson{
         this.lessonLoop = this.lessonLoop.bind(this);
         this.mouse = new Mouse (0,0);
         this.number;
-        this.lessonTutorial = new LessonTutorial(this.modalCanvas, this.modalCtx, this.canvas, this.ctx, this);
-        this.leftSideArrow = new SideArrow([50, 350], "left", this.ctx);    
-        this.rightSideArrow = new SideArrow([650, 350], "right", this.ctx);
+        this.lessonTutorial = lessonTutorial;
+        this.leftSideArrow = new SideArrow(50,275, "left", this.ctx);    
+        this.rightSideArrow = new SideArrow(830, 275, "right", this.ctx);
         this.kirbyLink = document.querySelector("#kirbylink");
         this.lessonsLink = document.querySelector("#lessonlink")
         this.addEventListeners = this.addEventListeners.bind(this);
@@ -55,6 +55,7 @@ class Lesson{
             if (this.lessonPhase !== "lesson") return null;
             e.preventDefault();
             let pos = this.getMousePosition(e);
+            
             if (this.number.circleSelected){
                 let circle = this.number.circleSelected;
                 if (this.number.circles[0].inside(pos)){
@@ -64,6 +65,10 @@ class Lesson{
                 circle.x = circle.originalX;
                 circle.y = circle.originalY;
                 this.number.circleSelected = null;
+            } else if (this.leftSideArrow.inside(pos)){
+                this.prevNum();
+            } else if (this.rightSideArrow.inside(pos)){
+                this.nextNum();
             } else {
                 this.number.circles.forEach(circle => {
                     if (circle.inside(pos) && !circle.grabbed && !circle.immovable) {
@@ -71,7 +76,7 @@ class Lesson{
                         this.number.circleSelected = circle;
                     }
                 })
-            }
+            } 
         })
     }
 
@@ -84,13 +89,31 @@ class Lesson{
 
     nextNum(){
         if (this.index === this.finalIndex) {
+            this.lessonPhase = "complete";
+            this.lessonTutorial = new LessonTutorial(this.modalCanvas, this.modalCtx, this.canvas, this.ctx, this);
+            this.lessonTutorial.step = "lesson3";
+            this.lessonTutorial.modaltext.step = "lesson3";
+            this.canvas.classList.remove('front-canvas');
+            this.canvas.classList.add('back-canvas');
+            this.modalCanvas.classList.remove('back-canvas');
+            this.modalCanvas.classList.add('front-canvas');
+            this.lessonTutorial.loop();
+        } else {
+            this.index += 1;
+            let number = this.numbers[this.indices[this.index]];
+            this.number = new Number(number, this.language, this.ctx, this.canvas, this.mouse, this);
+        }
+    }
+
+    prevNum(){
+        if (this.index === 0) {
             this.lessonPhase = "options";
             this.canvas.classList.remove('front-canvas');
             this.canvas.classList.add('back-canvas');
             this.modalCanvas.classList.remove('back-canvas');
             this.modalCanvas.classList.add('front-canvas');
         } else {
-            this.index += 1;
+            this.index -= 1;
             let number = this.numbers[this.indices[this.index]];
             this.number = new Number(number, this.language, this.ctx, this.canvas, this.mouse, this);
         }

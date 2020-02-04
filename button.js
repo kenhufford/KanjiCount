@@ -45,7 +45,6 @@ class Button {
             this.flipPosition+= 1;
             if (this.flipPosition > this.flipPositionMax) this.flipPosition = 1;
         }
-        console.log(this.flipPosition)
     }
 
 
