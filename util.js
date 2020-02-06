@@ -161,7 +161,7 @@ const gameSoundFiles = {
     'attackdown': 'GameSound/attackdown.mp3',
     'attackfwd': 'GameSound/punch.mp3',
     'kirbysong': 'GameSound/kirbysong.mp3',
-    'hi': 'GameSound/hi.mp3',
+    'hi': 'GameSound/hiwin.mp3',
     'disappointed': 'GameSound/disappointed.mp3',
     'gross': 'GameSound/gross.mp3',
     'gross2': 'GameSound/gross2.mp3',
@@ -281,7 +281,7 @@ let convertNumberToSoundArray = (num, language) => {
             } else if (orderNumber == 4 && digits[i] == 1) {
                 results.push('1000a')
             } else if (orderNumber == 3 && digits[i] == 1) {
-                results.push('1000a')
+                results.push('100a')
             } else if (digits[i] == 1 && orderNumber != 1) {
                 results.push(order[orderNumber]);
             } else if (orderNumber == 1) {
@@ -302,7 +302,7 @@ let convertNumberToSoundArray = (num, language) => {
             } else if (orderNumber == 4 && digits[i] == 1) {
                 results.push('1000a')
             } else if (orderNumber == 3 && digits[i] == 1) {
-                results.push('1000a')
+                results.push('100a')
             } else if (digits[i] == 1 && orderNumber != 1) {
                 results.push(order[orderNumber]);
             } else if (orderNumber == 1) {

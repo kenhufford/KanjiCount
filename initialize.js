@@ -19,9 +19,9 @@ let conveyorSprite2 = new Sprite("https://obsoletegame.files.wordpress.com/2013/
 let kirbySpriteURL = 'https://i.imgur.com/L41WBdc.png';
 let heartsSpriteURL = 'https://i.imgur.com/yHVGEZl.png';
 let norinSpriteURL = "https://i.imgur.com/K6KU5Rs.png";
-let kirbyOpeningSprite = () => new Sprite(kirbySpriteURL, [0, 0], [75, 75], 10, [0, 1, 1, 2, 2, 3, 3, 4, 4], "horizontal", true);
+let kirbyOpeningSprite = () => new Sprite(kirbySpriteURL, [0, 0], [75, 75], 10, [0, 0 , 1, 1, 2, 2, 3, 3], "horizontal", true);
 let kirbyClosingSprite = () => new Sprite(kirbySpriteURL, [150, 0], [75, 75], 10, [0, 1, 2], "horizontal", true)
-let kirbyIdleSprite = () => new Sprite(kirbySpriteURL, [0, 75], [75, 75], 10, Array.from(Array(34).keys()), "horizontal", false)
+let kirbyIdleSprite = () => new Sprite(kirbySpriteURL, [0, 75], [75, 75], 5, Array.from(Array(34).keys()), "horizontal", false)
 let kirbySadSprite = () => new Sprite(kirbySpriteURL, [0, 150], [75, 75], 10, [0, 1, 2], "horizontal", true, () => playSound('disappointed'))
 let kirbyHappySprite = () => new Sprite(kirbySpriteURL, [0, 225], [75, 75], 10, [0, 1, 2, 3], "horizontal", true, () => playSound('haumph'))
 let kirbyWinSprite = () => new Sprite(kirbySpriteURL, [0, 2025], [75, 75], 10, Array.from(Array(13).keys()), "horizontal", false, () => playSound('hi'))

@@ -88,6 +88,7 @@ class Lesson{
     }
 
     nextNum(){
+        console.log(this.number)
         if (this.index === this.finalIndex) {
             this.lessonPhase = "complete";
             this.lessonTutorial = new LessonTutorial(this.modalCanvas, this.modalCtx, this.canvas, this.ctx, this);

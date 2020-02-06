@@ -97,7 +97,6 @@ class Circle{
             } else {
                 let charCount = word.toString().length;
                 if (charCount > 1){
-                    debugger
                     this.ctx.fillText(word, this.x - charCount * 7.5, this.y + 10);
                 } else {
                     this.ctx.fillText(word, this.x-13, this.y+8);
