@@ -52,6 +52,8 @@ class Tutorial{
     }
 
     startNewGame(){
+        this.game.stopGame();
+        this.stopTutorial();
         this.canvas.classList.add('front-canvas');
         this.canvas.classList.remove('back-canvas');
         this.modalCanvas.classList.add('back-canvas');
@@ -84,76 +86,89 @@ class Tutorial{
         this.game.gameLoop();
     }
 
+    mouseMoveEvents(e){
+        if (this.game.gamePhase !== "tutorial") return null;
+        let modalPos = this.getMousePosition(e);
+        this.game.mouse.update(modalPos[0], modalPos[1])
+    }
 
-    addEventListeners(){
-        this.modalCanvas.onmousemove = (e) => {
-            if (this.game.gamePhase !== "tutorial") return null;
-            let modalPos = this.getMousePosition(e);
-            this.game.mouse.update(modalPos[0], modalPos[1])
+    mouseClickEvents(e){
+        e.preventDefault();
+        if (this.game.gamePhase !== "tutorial") return null
+        this.game.mouse.closed = !this.game.mouse.closed;
+        let pos = this.getMousePosition(e);
+
+        if (this.step === "end" && this.readyButton.inside(pos)) {
+            this.readyButton.slide();
+            setTimeout(this.startNewGame, 1000);
         }
 
-        this.modalCanvas.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (this.game.gamePhase !== "tutorial") return null
-            this.game.mouse.closed = !this.game.mouse.closed;
-            let pos = this.getMousePosition(e);
-
-            if (this.step === "end" && this.readyButton.inside(pos)) {
+        if (this.step === 0) {
+            if (this.readyButton.inside(pos)) {
                 this.readyButton.slide();
-                setTimeout(this.startNewGame, 1000);
-            }
-
-            if (this.step === 0) {
-                if (this.readyButton.inside(pos)) {
-                    this.readyButton.slide();
-                    setTimeout(() => {
-                        if (!this.tutorialToggle) {
-                            this.startGame();
-                        } else {
-                            this.step += 1;
-                            this.change = true;
-                        }
-                    }, 1000)
-                } else if (this.tutorialButton.inside(pos)) {
-                    this.tutorialButton.slide();
-                    this.tutorialToggle = !this.tutorialToggle;
-                } else if (this.difficultyButton.inside(pos)) {
-                    this.difficultyButton.slide();
-                    this.difficulty = this.difficulty === "medium" ? "easy" : "medium";
-                } else if (this.languageButton.inside(pos)) {
-                    this.languageButton.slide();
-                    if (this.languageButton.flipPosition === 1){
-                        this.game.language = "cantonese";
-                    } else if (this.languageButton.flipPosition === 2){
-                        this.game.language = "japanese";
-                    } else if (this.languageButton.flipPosition === 3){
-                        this.game.language = "mandarin";  
+                setTimeout(() => {
+                    if (!this.tutorialToggle) {
+                        this.startGame();
+                    } else {
+                        this.step += 1;
+                        this.change = true;
                     }
-                } else if (this.tutorialMusicButton.inside(pos)) {
-                    this.tutorialMusicButton.slide();
-                    this.game.music.play();
-                } else if (this.mathButton.inside(pos)) {
-                    this.mathButton.slide();
-                    this.math = !this.math;
-                    if (this.mathButton.flipPosition===2) {
-                        this.difficultyButton.text = "Hard";
-                        this.difficultyButton.altText1 = "INSANE";
-                    } else { 
-                        this.difficultyButton.text = "Easy";
-                        this.difficultyButton.altText1 = "Medium"
-                    }
+                }, 1000)
+            } else if (this.tutorialButton.inside(pos)) {
+                this.tutorialButton.slide();
+                this.tutorialToggle = !this.tutorialToggle;
+            } else if (this.difficultyButton.inside(pos)) {
+                this.difficultyButton.slide();
+                this.difficulty = this.difficulty === "medium" ? "easy" : "medium";
+            } else if (this.languageButton.inside(pos)) {
+                this.languageButton.slide();
+                if (this.languageButton.flipPosition === 1) {
+                    this.game.language = "cantonese";
+                } else if (this.languageButton.flipPosition === 2) {
+                    this.game.language = "japanese";
+                } else if (this.languageButton.flipPosition === 3) {
+                    this.game.language = "mandarin";
                 }
-            } if (this.step === 6) {
-                this.startGame();
-            } else if (this.step !== "end" && this.step !== 0) {
-                this.step += 1;
-                this.change = true;
+            } else if (this.tutorialMusicButton.inside(pos)) {
+                this.tutorialMusicButton.slide();
+                this.game.music.play();
+            } else if (this.mathButton.inside(pos)) {
+                this.mathButton.slide();
+                this.math = !this.math;
+                if (this.mathButton.flipPosition === 2) {
+                    this.difficultyButton.text = "Hard";
+                    this.difficultyButton.altText1 = "INSANE";
+                } else {
+                    this.difficultyButton.text = "Easy";
+                    this.difficultyButton.altText1 = "Medium"
+                }
             }
+        } if (this.step === 6) {
+            this.startGame();
+        } else if (this.step !== "end" && this.step !== 0) {
+            this.step += 1;
+            this.change = true;
+        }
+    }
+
+    addEventListeners(){
+        this.modalCanvas.addEventListener('mousemove', (e) => {
+            this.mouseMoveEvents(e);
+        })
+
+        this.modalCanvas.addEventListener('click', (e) => {
+            this.mouseClickEvents(e);
         })
     }
 
+    stopTutorial(){
+        this.canvas.removeEventListener('click', this.mouseClickEvents)
+        this.canvas.removeEventListener('mousemove', this.mouseMoveEvents)
+        this.step = "stopTutorial";
+    }
+
     loop(){
-        if (this.step > 6 || this.game.gamePhase === "lessons") return null;
+        if (this.step === "stopTutorial") return null;
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;

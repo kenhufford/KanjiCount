@@ -107,60 +107,56 @@ class Game{
         this.lessonsLink = document.querySelector("#lessonlink")
     }
 
-    addEventListeners(){
-        this.lessonsLink.addEventListener('click', () => {
-            if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null;
-           this.gamePhase = "lessons";
-        })
-
-        this.kirbyLink.addEventListener('click', () => {
-            if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null;
-           this.gamePhase = "tutorial";
-        })
-
-        this.canvas.onmousemove = (e) => {
-            if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null;
-            let pos = this.getMousePosition(e);
-            if (this.mouse.closed && this.windCooldown < 0 && this.kirby.nearby(pos)) {
-                this.kirby.sprite = kirbyOpeningSprite();
-                this.wind.sprite = windSprite();
-                this.wind.sprite.sound();
-                this.windCooldown = 1;
-            }
-            this.mouse.update(pos[0], pos[1])
+    mouseMoveEvents(e){
+        let pos = this.getMousePosition(e);
+        if (this.mouse.closed && this.windCooldown < 0 && this.kirby.nearby(pos)) {
+            this.kirby.sprite = kirbyOpeningSprite();
+            this.wind.sprite = windSprite();
+            this.wind.sprite.sound();
+            this.windCooldown = 1;
         }
+        this.mouse.update(pos[0], pos[1])
+    }
 
-        this.canvas.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null
-            let pos = this.getMousePosition(e);
-            this.mouse.closed = !this.mouse.closed;
-            Object.keys(this.sushis).forEach((id) => {
-                if (this.mouse.closed && this.sushis[id].clickInside(pos)) {//grabbed sushi with chops
-                    playSound('pickupsushi')
-                    this.sushis[id].grabbed = true;
-                    this.sushis[id].dropped = false;
-                } else if (!this.mouse.closed && this.sushis[id].clickInside(pos)) {
-                    if (this.sushis[id].nearby(this.kirby.pos, 100)) {
-                        this.feedKirby(this.sushis[id]);
-                    } else {
-                        this.sushis[id].grabbed = false;
-                        this.sushis[id].dropped = true;
-                    }
+    mouseClickEvents(e){
+        e.preventDefault();
+        let pos = this.getMousePosition(e);
+        this.mouse.closed = !this.mouse.closed;
+        Object.keys(this.sushis).forEach((id) => {
+            if (this.mouse.closed && this.sushis[id].clickInside(pos)) {//grabbed sushi with chops
+                playSound('pickupsushi')
+                this.sushis[id].grabbed = true;
+                this.sushis[id].dropped = false;
+            } else if (!this.mouse.closed && this.sushis[id].clickInside(pos)) {
+                if (this.sushis[id].nearby(this.kirby.pos, 100)) {
+                    this.feedKirby(this.sushis[id]);
+                } else {
+                    this.sushis[id].grabbed = false;
+                    this.sushis[id].dropped = true;
                 }
-            });
-            this.orders.forEach(order => {
-                if (order.withinBox(pos)) {
-                    if (this.soundCooldown < 0) {
-                        playNumberSound(order.number, this.language)
-                        this.soundCooldown = 2;
-                    }
-                }
-            })
-            if (this.ingameMusicButton.inside(pos)) {
-                this.ingameMusicButton.flipped = !this.ingameMusicButton.flipped;
-                this.music.play();
             }
+        });
+        this.orders.forEach(order => {
+            if (order.withinBox(pos)) {
+                if (this.soundCooldown < 0) {
+                    playNumberSound(order.number, this.language)
+                    this.soundCooldown = 2;
+                }
+            }
+        })
+        if (this.ingameMusicButton.inside(pos)) {
+            this.ingameMusicButton.flipped = !this.ingameMusicButton.flipped;
+            this.music.play();
+        }
+    }
+
+    addEventListeners(){
+        this.canvas.addEventListener('click', (e) => {
+            this.mouseClickEvents(e);
+        })
+
+        this.canvas.addEventListener('mousemove', (e) => {
+            this.mouseMoveEvents(e);
         })
     }
 
@@ -491,7 +487,7 @@ class Game{
     }
 
     gameLoop(){
-        if (this.gamePhase === "tutorial" || this.gamePhase === "lessons" || ) return null;
+        if (this.gamePhase === "tutorial" || this.gamePhase === "stopGame") return null;
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;
@@ -541,14 +537,19 @@ class Game{
     }
 
     switchToGameOver(){
-        // this.kirbyLink.removeEventListener('click', )
-        this.tutorial.step = "end";
         this.tutorial.change = true;
         this.canvas.classList.remove('front-canvas');
         this.canvas.classList.add('back-canvas');
         this.modalCanvas.classList.remove('back-canvas');
         this.modalCanvas.classList.add('front-canvas');
         this.gamePhase = "tutorial";
+        this.tutorial.step = "end";
         this.tutorial.loop();
+    }
+
+    stopGame(){
+        this.canvas.removeEventListener('click', this.mouseClickEvents);
+        this.canvas.removeEventListener('mousemove', this.mouseMoveEvents);
+        this.gamePhase = "stopGame";
     }
 }

@@ -54,23 +54,31 @@ let lessonsLink = document.querySelector("#lessonlink")
 resources.loadSelector(images);
 
 kirbyLink.addEventListener('click', () => {
-    debugger
+    debugger;
     if (game){
-        game.gamePhase = "tutorial";
+        game.tutorial.stopTutorial();
+        game.stopGame();
     }
     if (lesson){
         lesson.lessonPhase = "complete";
     }
-    // if (resources.isReady()) {
+
+    canvas.classList.add('front-canvas');
+    canvas.classList.remove('back-canvas');
+    modalCanvas.classList.add('back-canvas');
+    modalCanvas.classList.remove('front-canvas');
+
+    if (resources.isReady()) {
         game = new Game("easy", "cantonese", canvas, ctx, modalCanvas, modalCtx);
         game.start();
-    // };
-    debugger
+    };
 })
 
 lessonsLink.addEventListener('click', () => {
+    
     if (game){
-        game.gamePhase = "lessons";
+        game.tutorial.stopTutorial();
+        game.stopGame();
     }
     if (lesson) {
         lesson.lessonPhase = "options";
@@ -84,9 +92,9 @@ lessonsLink.addEventListener('click', () => {
     if (resources.isReady()) lessonTutorial.loop();
 })
 
-canvas.classList.remove('front-canvas');
-canvas.classList.add('back-canvas');
-modalCanvas.classList.remove('back-canvas');
-modalCanvas.classList.add('front-canvas');
+// canvas.classList.remove('front-canvas');
+// canvas.classList.add('back-canvas');
+// modalCanvas.classList.remove('back-canvas');
+// modalCanvas.classList.add('front-canvas');
 
-lessonTutorial.loop();
+// lessonTutorial.loop();
