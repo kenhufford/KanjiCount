@@ -47,26 +47,40 @@ let randomIndex = (array) => Math.floor(Math.random() * array.length)
 
 
 let lessonTutorial = new LessonTutorial(modalCanvas, modalCtx, canvas, ctx);
-// let lesson = new Lesson("cantonese", canvas, ctx, modalCanvas, modalCtx);
-let game;
+let lesson = lessonTutorial.lesson;
+let game = new Game("easy", "cantonese", canvas, ctx, modalCanvas, modalCtx);
 let kirbyLink = document.querySelector("#kirbylink");
 let lessonsLink = document.querySelector("#lessonlink")
 resources.loadSelector(images);
 
 kirbyLink.addEventListener('click', () => {
-    if (resources.isReady()) {
-        let game = new Game("easy", "cantonese", canvas, ctx, modalCanvas, modalCtx);
+    debugger
+    if (game){
+        game.gamePhase = "tutorial";
+    }
+    if (lesson){
+        lesson.lessonPhase = "complete";
+    }
+    // if (resources.isReady()) {
+        game = new Game("easy", "cantonese", canvas, ctx, modalCanvas, modalCtx);
         game.start();
-    };
+    // };
+    debugger
 })
 
 lessonsLink.addEventListener('click', () => {
-    canvas.classList.add('front-canvas');
-    canvas.classList.remove('back-canvas');
-    modalCanvas.classList.add('back-canvas');
-    modalCanvas.classList.remove('front-canvas');
-    // let lesson = new Lesson("cantonese", canvas, ctx, modalCanvas, modalCtx);
-    let lessonTutorial = new LessonTutorial(modalCanvas, modalCtx, canvas, ctx);
+    if (game){
+        game.gamePhase = "lessons";
+    }
+    if (lesson) {
+        lesson.lessonPhase = "options";
+    }
+    canvas.classList.remove('front-canvas');
+    canvas.classList.add('back-canvas');
+    modalCanvas.classList.remove('back-canvas');
+    modalCanvas.classList.add('front-canvas');
+    lessonTutorial = new LessonTutorial(modalCanvas, modalCtx, canvas, ctx);
+    lesson = new Lesson("cantonese", canvas, ctx, modalCanvas, modalCtx, lessonTutorial);
     if (resources.isReady()) lessonTutorial.loop();
 })
 

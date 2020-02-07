@@ -109,10 +109,12 @@ class Game{
 
     addEventListeners(){
         this.lessonsLink.addEventListener('click', () => {
+            if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null;
            this.gamePhase = "lessons";
         })
 
         this.kirbyLink.addEventListener('click', () => {
+            if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null;
            this.gamePhase = "tutorial";
         })
 
@@ -489,7 +491,7 @@ class Game{
     }
 
     gameLoop(){
-        if (this.gamePhase === "tutorial" || this.gamePhase === "lessons") return null;
+        if (this.gamePhase === "tutorial" || this.gamePhase === "lessons" || ) return null;
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;
@@ -539,6 +541,7 @@ class Game{
     }
 
     switchToGameOver(){
+        // this.kirbyLink.removeEventListener('click', )
         this.tutorial.step = "end";
         this.tutorial.change = true;
         this.canvas.classList.remove('front-canvas');
