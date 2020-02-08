@@ -24,6 +24,7 @@ class Lesson{
         this.lessonTutorial = lessonTutorial;
         this.leftSideArrow = new SideArrow(50,275, "left", this.ctx);    
         this.rightSideArrow = new SideArrow(830, 275, "right", this.ctx);
+        this.background = new Entity([0, 0], backgroundSprite(), backgroundSpriteURL, backgroundSprite);
         this.kirbyLink = document.querySelector("#kirbylink");
         this.lessonsLink = document.querySelector("#lessonlink")
         this.addEventListeners = this.addEventListeners.bind(this);
@@ -90,7 +91,6 @@ class Lesson{
             this.splash.newLesson(true);
         } else {
             this.index += 1;
-            
             let number = this.numbers[this.indices[this.index]];
             this.number = new Number(number, this.language, this.ctx, this.canvas, this.mouse, this);
         }
@@ -125,10 +125,12 @@ class Lesson{
 
     render(){
         this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
-        ctx.beginPath();
-        ctx.strokeStyle = "#ff90f6";
-        roundRect(0, 0, this.canvas.width, this.canvas.height, 10, this.ctx, "#ff90f6")
-        ctx.stroke();
+
+        this.ctx.save();
+        this.ctx.translate(this.background.pos[0], this.background.pos[1]);
+        this.background.sprite.render(this.ctx);
+        this.ctx.restore();
+
         this.number.render()
 
         if (this.lessonPhase === "lesson") {
@@ -139,13 +141,6 @@ class Lesson{
 
     lessonLoop(){
         if (this.lessonPhase === "complete") return null;
-        // if (this.lessonPhase === "options") {
-        //     this.canvas.classList.remove('front-canvas');
-        //     this.canvas.classList.add('back-canvas');
-        //     this.modalCanvas.classList.remove('back-canvas');
-        //     this.modalCanvas.classList.add('front-canvas');
-        //     this.lessonTutorial.loop();
-        // }
         if (this.lessonPhase === "lesson"){
             this.now = Date.now();
             this.dt = (this.now - this.lastTime) / 1000.0;

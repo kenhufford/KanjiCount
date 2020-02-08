@@ -28,8 +28,8 @@ class Splash{
         this.lessonTutorial.lesson = this.lesson;
 
         if (restart) {
-            this.lessonTutorial.lessonTutorialPhase = "lessonTutorial3";
-            this.lessonTutorial.modaltext.step = "lessonTutorial3";
+            this.lessonTutorial.lessonTutorialPhase = "lessonTutorial2";
+            this.lessonTutorial.modaltext.step = "lessonTutorial2";
         }
         this.switchToModalCanvas();
         this.lessonTutorial.init();

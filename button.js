@@ -87,7 +87,7 @@ class Button {
         if (this.slideable) {
             ctx.fillText(words, this.pos[0] + this.textStartWidth, this.pos[1] + this.textStartHeight);
         } else {
-            ctx.fillText(words, this.pos[0] + this.textStartWidth+30, this.pos[1] + this.textStartHeight);
+            ctx.fillText(words, this.pos[0] + this.textStartWidth+10, this.pos[1] + this.textStartHeight);
         }
     }
 }

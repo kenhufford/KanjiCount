@@ -3,6 +3,7 @@ let ctx = canvas.getContext("2d");
 let modalCanvas = document.querySelector("#modal-canvas");
 let modalCtx = modalCanvas.getContext("2d");
 let resources = new Resources();
+resources.loadSelector(images);
 let requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
@@ -19,6 +20,7 @@ let conveyorSprite2 = new Sprite("https://obsoletegame.files.wordpress.com/2013/
 let kirbySpriteURL = 'https://i.imgur.com/L41WBdc.png';
 let heartsSpriteURL = 'https://i.imgur.com/yHVGEZl.png';
 let norinSpriteURL = "https://i.imgur.com/K6KU5Rs.png";
+let backgroundSpriteURL = "https://i.imgur.com/ghfk8Ee.jpg";
 let kirbyOpeningSprite = () => new Sprite(kirbySpriteURL, [0, 0], [75, 75], 10, [0, 0 , 1, 1, 2, 2, 3, 3], "horizontal", true);
 let kirbyClosingSprite = () => new Sprite(kirbySpriteURL, [150, 0], [75, 75], 10, [0, 1, 2], "horizontal", true)
 let kirbyIdleSprite = () => new Sprite(kirbySpriteURL, [0, 75], [75, 75], 5, Array.from(Array(34).keys()), "horizontal", false)
@@ -42,6 +44,7 @@ let windSprite = () => new Sprite(kirbySpriteURL, [0, 1200], [225, 225], 25, Arr
 let noWindSprite = () => new Sprite(kirbySpriteURL, [0, 0], [0, 0], 0, Array.from(Array(1).keys()), "horizontal", false);
 let heartsSprite = () => new Sprite(heartsSpriteURL, [0, 0], [250, 50], 1, [10 - 2], "vertical", false);
 let norinSprite = () => new Sprite(norinSpriteURL, [100, 0], [900, 190], 1, [0], "vertical", false);
+let backgroundSprite = () => new Sprite(backgroundSpriteURL, [0, 0], [900, 600], 1, [0], "vertical", false);
 let kanjiArray = Object.values(kanji);
 let randomIndex = (array) => Math.floor(Math.random() * array.length)
 
@@ -49,8 +52,8 @@ let splash = new Splash(canvas, ctx, modalCanvas, modalCtx);
 let homeLink = document.querySelector("#homelink");
 let kirbyLink = document.querySelector("#kirbylink");
 let lessonsLink = document.querySelector("#lessonlink")
-resources.loadSelector(images);
-splash.newLesson();
+
+
 
 kirbyLink.addEventListener('click', () => {
     if (resources.isReady()) {
@@ -69,3 +72,9 @@ homeLink.addEventListener('click', () => {
         splash.newLesson();;
     };
 })
+
+setTimeout(() => {
+    if (resources.isReady()) {
+        splash.newLesson();;
+    };
+}, 500)

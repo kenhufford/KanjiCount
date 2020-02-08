@@ -27,7 +27,7 @@ class SideArrow{
             bottom = [this.x, this.y + this.height];
         }
         
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = 'white';
         ctx.beginPath();
         ctx.moveTo(top[0], top[1]);
         ctx.lineTo(mid[0], mid[1]);

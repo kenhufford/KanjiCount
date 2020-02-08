@@ -67,5 +67,7 @@ let mouseImages = ['https://i.imgur.com/NYu9p6I.png','https://i.imgur.com/DgTx4W
 
 let kirbyUrl = ['https://i.imgur.com/L41WBdc.png']
 
-let images = ["https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png",'https://i.imgur.com/K6KU5Rs.png', 'https://i.imgur.com/yHVGEZl.png'].concat(sushiUrls, mouseImages, kirbyUrl)
+let kirbyBackground = ['https://i.imgur.com/ghfk8Ee.jpg']
+
+let images = ["https://obsoletegame.files.wordpress.com/2013/10/conveyorbelt605x60.png", 'https://i.imgur.com/K6KU5Rs.png', 'https://i.imgur.com/yHVGEZl.png'].concat(sushiUrls, mouseImages, kirbyUrl, kirbyBackground)
 

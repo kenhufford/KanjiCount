@@ -18,7 +18,6 @@ class Sprite {
 
     render(ctx) {
         let frame;
-
         if (this.speed > 0) {
             let max = this.frames.length;
             let idx = Math.floor(this._index);
@@ -42,7 +41,6 @@ class Sprite {
         else {
             x += frame * this.size[0];
         }
-        
         ctx.drawImage(resources.get(this.url),
             x, y,
             this.size[0], this.size[1],

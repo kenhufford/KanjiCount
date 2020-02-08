@@ -17,13 +17,14 @@ class LessonTutorial {
         this.languageButton = new Button([330, 320], 120, 50, 4, 33, "Cantonese", "Japanese", "Mandarin", true, 3);
         this.shuffleButton = new Button([330, 380], 120, 50, 4, 33, "Off", "Shuffle", "", true, 2);
         this.readyButton = new Button([390, 500], 120, 50, 4, 33, "Start", "Start", "", false, 1);
-        this.kanjiKountButton = new Button([470, 500], 120, 50, 4, 33, "Play", "Play", "", false, 1);
-        this.studySessionButton = new Button([270, 500], 120, 50, 4, 33, "Study", "Study", "", false, 1);
-        this.lesson2buttons = {
+        this.kanjiKountButton = new Button([470, 500], 180, 50, 0, 33, "Play Kirby Kount", "Play", "", false, 1);
+        this.studySessionButton = new Button([270, 500], 180, 50, 0, 33, "Study Session", "Study", "", false, 1);
+        this.background = new Entity([0, 0], backgroundSprite(), backgroundSpriteURL, backgroundSprite);
+        this.lesson1buttons = {
             kanjiKountButton: this.kanjiKountButton,
             shuffleBstudySessionButtonutton: this.studySessionButton,
         };
-        this.lesson3buttons = {
+        this.lesson2buttons = {
             languageButton: this.languageButton,
             shuffleButton: this.shuffleButton,
             readyButton: this.readyButton,
@@ -66,17 +67,14 @@ class LessonTutorial {
         let pos = this.getMousePosition(e);
         if (this.lesson.lessonPhase === "options") {
             if (this.lessonTutorialPhase === "lessonTutorial1") {
-                this.lessonTutorialPhase = "lessonTutorial2";
-                this.modaltext.step = this.lessonTutorialPhase;
-            } else if (this.lessonTutorialPhase === "lessonTutorial2") {
                 if (this.kanjiKountButton.inside(pos)) {
                     this.lesson.lessonPhase = "complete";
                     this.splash.newGame();
                 } else if (this.studySessionButton.inside(pos)) {
-                    this.lessonTutorialPhase = "lessonTutorial3";
+                    this.lessonTutorialPhase = "lessonTutorial2";
                     this.modaltext.step = this.lessonTutorialPhase;
                 }
-            } else if (this.lessonTutorialPhase === "lessonTutorial3") {
+            } else if (this.lessonTutorialPhase === "lessonTutorial2") {
                 if (this.readyButton.inside(pos)) {
                     this.readyButton.slide();
                     this.startLesson();
@@ -91,7 +89,6 @@ class LessonTutorial {
                     }
                 } else if (this.shuffleButton.inside(pos)) {
                     this.shuffleButton.slide();
-                    console.log(this.shuffleButton);
                     this.lesson.shuffle = !this.lesson.shuffle;
                 }
             }
@@ -100,7 +97,6 @@ class LessonTutorial {
 
     addEventListeners() {
         this.modalCanvas.addEventListener('click', this.mouseMoveEvents);
-
         this.modalCanvas.addEventListener('click', this.mouseClickEvents)
     }
 
@@ -123,31 +119,34 @@ class LessonTutorial {
 
 
     updateTutorial(dt) {
+        Object.keys(this.lesson1buttons).forEach(key => {
+            this.lesson1buttons[key].update(dt)
+        })
         Object.keys(this.lesson2buttons).forEach(key => {
             this.lesson2buttons[key].update(dt)
-        })
-        Object.keys(this.lesson3buttons).forEach(key => {
-            this.lesson3buttons[key].update(dt)
         })
     };
 
     renderTutorial(){
         this.modalCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.modalCtx.globalAlpha = 0.9;
-        this.modalCtx.fillStyle = "#000000";
-        this.modalCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.modalCtx.globalAlpha = 1.0;
+        this.modalCtx.save();
+        this.modalCtx.translate(this.background.pos[0], this.background.pos[1]);
+        this.background.sprite.render(this.modalCtx);
+        this.modalCtx.restore();
+
         this.modaltext.render(this.modalCtx);
 
-        if (this.lessonTutorialPhase === "lessonTutorial2"){
-            Object.keys(this.lesson2buttons).forEach(key => {
-                this.lesson2buttons[key].render(this.modalCtx);
+        if (this.lessonTutorialPhase === "lessonTutorial1"){
+            Object.keys(this.lesson1buttons).forEach(key => {
+                this.lesson1buttons[key].render(this.modalCtx);
             })
         }
 
-        if (this.lessonTutorialPhase === "lessonTutorial3"){
+        if (this.lessonTutorialPhase === "lessonTutorial2"){
             
-            Object.keys(this.lesson3buttons).forEach(key => {
-                this.lesson3buttons[key].render(this.modalCtx);
+            Object.keys(this.lesson2buttons).forEach(key => {
+                this.lesson2buttons[key].render(this.modalCtx);
             })
         }
     };

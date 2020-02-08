@@ -20,6 +20,7 @@ class Circle{
         this.shakeSwitch = false;
         this.transition = false;
         this.transitionCount = 0;
+        this.numbers = [0,1,2,3,4,5,6,7,8,9]
     }
 
     update(dt, pos){
@@ -61,7 +62,10 @@ class Circle{
     }
 
     ping(){
+        
         this.ctx.beginPath();
+        this.ctx.save();
+        this.ctx.globalAlpha = 0.4;
         this.ctx.arc(this.x, this.y, this.pingRadius, 0, 2 * Math.PI)
         if (this.pingRadius <= this.radius + 5) {
             this.ctx.strokeStyle = "#ff90f6";
@@ -70,6 +74,8 @@ class Circle{
         }
         this.ctx.closePath();
         this.ctx.stroke();
+        this.ctx.restore();
+        
     }
 
     render(){
@@ -99,7 +105,11 @@ class Circle{
                 if (charCount > 1){
                     this.ctx.fillText(word, this.x - charCount * 7.5, this.y + 10);
                 } else {
-                    this.ctx.fillText(word, this.x-8, this.y+8);
+                    if (this.numbers.includes(word)){
+                        this.ctx.fillText(word, this.x-8, this.y + 8);
+                    } else {
+                        this.ctx.fillText(word, this.x-16, this.y+8);
+                    }
                 }
             }  
         })
