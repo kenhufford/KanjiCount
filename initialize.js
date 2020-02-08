@@ -46,6 +46,7 @@ let kanjiArray = Object.values(kanji);
 let randomIndex = (array) => Math.floor(Math.random() * array.length)
 
 let splash = new Splash(canvas, ctx, modalCanvas, modalCtx);
+let homeLink = document.querySelector("#homelink");
 let kirbyLink = document.querySelector("#kirbylink");
 let lessonsLink = document.querySelector("#lessonlink")
 resources.loadSelector(images);
@@ -60,5 +61,11 @@ kirbyLink.addEventListener('click', () => {
 lessonsLink.addEventListener('click', () => {
     if (resources.isReady()) {
         splash.newLesson(true);;
+    };
+})
+
+homeLink.addEventListener('click', () => {
+    if (resources.isReady()) {
+        splash.newLesson();;
     };
 })

@@ -13,8 +13,8 @@ class Modaltext {
             "6": ["If an order runs out of time or if you feed Kirby incorrectly,", "he will lose a heart. Fill up Kirby's health bar to win!"],
             "win": ["Great job! Kirby is pleased!", "Want to feed him again?"],
             "lose": ["Oh no! You've angered Kirby", "Want to try feeding him again?"],
-            "lessonTutorial1": ["Welcome to Kirby Count!", "Our goal is to teach you the Chinese/Japanese characters", "and counting systems through games and math!", "Click to Continue"],
-            "lessonTutorial2": ["If you're already familiar with the characters", " or just want to try out the game. Click Play", "Otherwise continue on to the study session ", "section!"],
+            "lessonTutorial1": ["Welcome to Kirby Kount!", "Our goal is to teach you the Chinese/Japanese characters", "and counting systems through games and math!", "Click to Continue"],
+            "lessonTutorial2": ["If you're already familiar with the characters", " or just want to try out the game, click Play.", "Otherwise continue on to the study session ", "section!"],
             "lessonTutorial3": ["Let's Study!", "Click on an answer and click again", "to drop it on the matching target", "Language", "Shuffle"]
         }
         this.location = {

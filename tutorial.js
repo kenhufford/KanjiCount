@@ -62,7 +62,7 @@ class Tutorial{
         this.splash.switchToCanvas();
         let now = Date.now();
         this.game.lastTime = now;
-        this.game.ingameMusicButton.slide();
+        
         if (this.math){
             this.game.difficulty = this.difficulty === "easy" ? "easymath" : "hardmath";
         } else {
@@ -123,7 +123,9 @@ class Tutorial{
                 }
             } else if (this.tutorialMusicButton.inside(pos)) {
                 this.tutorialMusicButton.slide();
+                this.game.ingameMusicButton.slide();
                 this.game.music.play();
+                debugger
             } else if (this.mathButton.inside(pos)) {
                 this.mathButton.slide();
                 this.math = !this.math;

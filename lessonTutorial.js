@@ -60,7 +60,6 @@ class LessonTutorial {
     }
 
     mouseClickEvents(e){
-        // if (this.lesson.tutorialPhase === "stopLessonTutorial") return null
         e.preventDefault();
         
         this.mouse.closed = !this.mouse.closed;
@@ -83,7 +82,6 @@ class LessonTutorial {
                     this.startLesson();
                 } else if (this.languageButton.inside(pos)) {
                     this.languageButton.slide();
-                    console.log(this.languageButton);
                     if (this.languageButton.flipPosition === 1) {
                         this.lesson.language = "cantonese";
                     } else if (this.languageButton.flipPosition === 2) {

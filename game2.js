@@ -148,7 +148,6 @@ class Game{
             }
         })
         if (this.ingameMusicButton.inside(pos)) {
-            debugger
             this.ingameMusicButton.slide();
             this.music.play();
         }

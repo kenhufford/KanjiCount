@@ -11,8 +11,8 @@ class Circle{
         this.originalRadius = radius;
         this.pingRadius = radius+6;
         this.maxHoverRadius = radius + 10;
-        this.maxPingRadius = 90;
-        this.maxTransRadius = 120;
+        this.maxPingRadius = 100;
+        this.maxTransRadius = 130;
         this.pinged = false;
         this.grabbed = false;
         this.answer = false;
@@ -92,14 +92,14 @@ class Circle{
                 if (i === 0) this.ctx.fillText(word, this.x - 15, this.y - 15);
                 if (i === 1) {
                     let adjust = this.content[i].length;
-                    this.ctx.fillText(word, this.x - adjust * 6.5, this.y + 25);
+                    this.ctx.fillText(word, this.x - adjust * 7, this.y + 25);
                 }
             } else {
                 let charCount = word.toString().length;
                 if (charCount > 1){
                     this.ctx.fillText(word, this.x - charCount * 7.5, this.y + 10);
                 } else {
-                    this.ctx.fillText(word, this.x-13, this.y+8);
+                    this.ctx.fillText(word, this.x-8, this.y+8);
                 }
             }  
         })

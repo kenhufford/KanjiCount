@@ -60,7 +60,7 @@ class Button {
     }
 
     render(ctx){
-        let color = this.flipPosition % 2 === 0 ? "#c411ff": "#fcbdc5"
+        let color = this.flipPosition % 2 === 0 ? "#c411ff" : "#ff90f6"
         roundRect(this.pos[0], this.pos[1], this.width, this.height, 20, ctx, color);
         if (this.slideable){
             if (this.flipPositionMax === 2){

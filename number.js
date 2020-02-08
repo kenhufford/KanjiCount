@@ -122,7 +122,7 @@ class Number{
     generateCircles(setNum){
         let orientation = this.set[setNum].orientation;
         let solutionCircle = 
-            new Circle(70,
+            new Circle(80,
             this.solutionPositions[orientation][0],
             this.solutionPositions[orientation][1],
             this.ctx,
@@ -132,7 +132,7 @@ class Number{
         
         if (orientation === "vertical"){
             let position = this.positions[orientation][0];
-            let circle = new Circle(70, position[0], position[1], this.ctx, this.set[setNum][0]);
+            let circle = new Circle(80, position[0], position[1], this.ctx, this.set[setNum][0]);
             circle.answer = true;
             this.circles.push(circle);
         } else if (orientation === "horizontal"){
