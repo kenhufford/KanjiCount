@@ -266,6 +266,19 @@ class Tutorial{
                 this.buttons[key].render(this.modalCtx);
             })
         }
+        if (this.step === 5){
+            debugger
+            this.ctx.beginPath();
+            this.ctx.fillStyle = "#995201";
+            this.ctx.strokeStyle = "#663700";
+            this.ctx.rect(400, 180, 120, 15)
+            this.ctx.fillRect(400, 180, 120, 15)
+            this.ctx.rect(420, 180 + 15, 20, 20)
+            this.ctx.fillRect(420, 180 + 15, 20, 20)
+            this.ctx.rect(480, 180 + 15, 20, 20)
+            this.ctx.fillRect(480, 180 + 15, 20, 20)
+            this.ctx.stroke();
+        }
         if (this.step === "end") {
             this.readyButton.render(this.modalCtx);
         }
