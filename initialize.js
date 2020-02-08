@@ -45,56 +45,20 @@ let norinSprite = () => new Sprite(norinSpriteURL, [100, 0], [900, 190], 1, [0],
 let kanjiArray = Object.values(kanji);
 let randomIndex = (array) => Math.floor(Math.random() * array.length)
 
-
-let lessonTutorial = new LessonTutorial(modalCanvas, modalCtx, canvas, ctx);
-let lesson = lessonTutorial.lesson;
-let game = new Game("easy", "cantonese", canvas, ctx, modalCanvas, modalCtx);
+let splash = new Splash(canvas, ctx, modalCanvas, modalCtx);
 let kirbyLink = document.querySelector("#kirbylink");
 let lessonsLink = document.querySelector("#lessonlink")
 resources.loadSelector(images);
+splash.newLesson();
 
 kirbyLink.addEventListener('click', () => {
-    debugger;
-    if (game){
-        game.tutorial.stopTutorial();
-        game.stopGame();
-    }
-    if (lesson){
-        lesson.lessonPhase = "complete";
-    }
-
-    canvas.classList.add('front-canvas');
-    canvas.classList.remove('back-canvas');
-    modalCanvas.classList.add('back-canvas');
-    modalCanvas.classList.remove('front-canvas');
-
     if (resources.isReady()) {
-        game = new Game("easy", "cantonese", canvas, ctx, modalCanvas, modalCtx);
-        game.start();
+        splash.newGame();
     };
 })
 
 lessonsLink.addEventListener('click', () => {
-    
-    if (game){
-        game.tutorial.stopTutorial();
-        game.stopGame();
-    }
-    if (lesson) {
-        lesson.lessonPhase = "options";
-    }
-    canvas.classList.remove('front-canvas');
-    canvas.classList.add('back-canvas');
-    modalCanvas.classList.remove('back-canvas');
-    modalCanvas.classList.add('front-canvas');
-    lessonTutorial = new LessonTutorial(modalCanvas, modalCtx, canvas, ctx);
-    lesson = new Lesson("cantonese", canvas, ctx, modalCanvas, modalCtx, lessonTutorial);
-    if (resources.isReady()) lessonTutorial.loop();
+    if (resources.isReady()) {
+        splash.newLesson(true);;
+    };
 })
-
-// canvas.classList.remove('front-canvas');
-// canvas.classList.add('back-canvas');
-// modalCanvas.classList.remove('back-canvas');
-// modalCanvas.classList.add('front-canvas');
-
-// lessonTutorial.loop();

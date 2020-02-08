@@ -1,6 +1,6 @@
 class Tutorial{
-    constructor(modalCanvas, modalCtx, canvas, ctx, game){
-        
+    constructor(modalCanvas, modalCtx, canvas, ctx, game, splash){
+        this.splash = splash;
         this.game = game;
         this.modalCanvas = modalCanvas;
         this.modalCtx = modalCtx;
@@ -34,11 +34,12 @@ class Tutorial{
             tutorialMusicButton: this.tutorialMusicButton,
             mathButton: this.mathButton,
         }
-        this.addEventListeners();
 
         this.loop = this.loop.bind(this);
         this.startNewGame = this.startNewGame.bind(this);
         this.startGame = this.startGame.bind(this);
+        this.mouseClickEvents = this.mouseClickEvents.bind(this);
+        this.mouseMoveEvents = this.mouseMoveEvents.bind(this);
 
         this.kirbyLink = document.querySelector("#kirbylink");
         this.lessonsLink = document.querySelector("#lessonlink")
@@ -54,20 +55,11 @@ class Tutorial{
     startNewGame(){
         this.game.stopGame();
         this.stopTutorial();
-        this.canvas.classList.add('front-canvas');
-        this.canvas.classList.remove('back-canvas');
-        this.modalCanvas.classList.add('back-canvas');
-        this.modalCanvas.classList.remove('front-canvas');
-        this.game = new Game("medium", "cantonese", this.canvas,this.ctx, this.modalCanvas, this.modalCtx, this);
-        this.step = 7;
-        this.game.start();
+        this.splash.newGame();
     }
 
     startGame(){
-        this.canvas.classList.add('front-canvas');
-        this.canvas.classList.remove('back-canvas');
-        this.modalCanvas.classList.add('back-canvas');
-        this.modalCanvas.classList.remove('front-canvas');
+        this.splash.switchToCanvas();
         let now = Date.now();
         this.game.lastTime = now;
         this.game.ingameMusicButton.slide();
@@ -152,19 +144,20 @@ class Tutorial{
     }
 
     addEventListeners(){
-        this.modalCanvas.addEventListener('mousemove', (e) => {
-            this.mouseMoveEvents(e);
-        })
-
-        this.modalCanvas.addEventListener('click', (e) => {
-            this.mouseClickEvents(e);
-        })
+        this.modalCanvas.addEventListener('mousemove', this.mouseMoveEvents)
+        this.modalCanvas.addEventListener('click', this.mouseClickEvents)
     }
 
     stopTutorial(){
         this.canvas.removeEventListener('click', this.mouseClickEvents)
         this.canvas.removeEventListener('mousemove', this.mouseMoveEvents)
         this.step = "stopTutorial";
+    }
+
+    init(){
+        this.splash.switchToModalCanvas();
+        this.addEventListeners();
+        this.loop();
     }
 
     loop(){

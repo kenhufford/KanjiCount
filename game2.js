@@ -1,5 +1,5 @@
 class Game{
-    constructor(difficulty, language, canvas, ctx, modalCanvas, modalCtx){
+    constructor(difficulty, language, canvas, ctx, modalCanvas, modalCtx, splash){
         //constructed
         this.difficulty = difficulty;
         this.language = language;
@@ -8,9 +8,12 @@ class Game{
         this.modalCanvas = modalCanvas;
         this.modalCtx = modalCtx;
         this.tutorial;
+        this.splash = splash;
 
         //bind
         this.gameLoop = this.gameLoop.bind(this);
+        this.mouseClickEvents = this.mouseClickEvents.bind(this);
+        this.mouseMoveEvents = this.mouseMoveEvents.bind(this);
 
         //should remain same
         this.gameModes = {
@@ -82,7 +85,7 @@ class Game{
         this.wind = new Entity([90, 110], noWindSprite(), kirbySpriteURL, noWindSprite)
         this.norin = new Entity([0, 0], norinSprite(), norinSpriteURL, norinSprite);
         this.music = new Music(gameSoundFiles["kirbysong"]);
-        this.ingameMusicButton = new Button([760, 530], 120, 50, 4, 33, "Off", "On", "", true);
+        this.ingameMusicButton = new Button([760, 530], 120, 50, 4, 33, "Off", "On", "", true, 2);
         this.orderNumEasy = Array.from(Array(11).keys()).sort((a, b) => (0.5 - Math.random() * 1));
         this.orderNumMed = Array.from(Array(100).keys()).sort((a, b) => (0.5 - Math.random() * 1));
         this.orderNumHard = Array.from(Array(1000).keys()).sort((a, b) => (0.5 - Math.random() * 1));
@@ -145,19 +148,15 @@ class Game{
             }
         })
         if (this.ingameMusicButton.inside(pos)) {
-            this.ingameMusicButton.flipped = !this.ingameMusicButton.flipped;
+            debugger
+            this.ingameMusicButton.slide();
             this.music.play();
         }
     }
 
     addEventListeners(){
-        this.canvas.addEventListener('click', (e) => {
-            this.mouseClickEvents(e);
-        })
-
-        this.canvas.addEventListener('mousemove', (e) => {
-            this.mouseMoveEvents(e);
-        })
+        this.canvas.addEventListener('click', this.mouseClickEvents)
+        this.canvas.addEventListener('mousemove', this.mouseMoveEvents)
     }
 
     getMousePosition(e){
@@ -167,7 +166,7 @@ class Game{
         return [x, y]
     }
 
-    start(){
+    init(){
         this.addEventListeners();
         let now = Date.now();
         this.now = now;
@@ -180,12 +179,7 @@ class Game{
         this.sushiCooldown = 2.5;
         this.update(this.dt);
         this.render();
-        this.tutorial = new Tutorial(modalCanvas, modalCtx, canvas, ctx, this);
-        this.canvas.classList.remove('front-canvas');
-        this.canvas.classList.add('back-canvas');
-        this.modalCanvas.classList.remove('back-canvas');
-        this.modalCanvas.classList.add('front-canvas');
-        this.tutorial.loop();
+        this.tutorial.init();
     }
 
     generateOrder(index){
@@ -550,6 +544,8 @@ class Game{
     stopGame(){
         this.canvas.removeEventListener('click', this.mouseClickEvents);
         this.canvas.removeEventListener('mousemove', this.mouseMoveEvents);
+        this.music.mute = true;
+        this.music.play();
         this.gamePhase = "stopGame";
     }
 }

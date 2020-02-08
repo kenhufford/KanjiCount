@@ -1,5 +1,6 @@
 class Lesson{
-    constructor(language, canvas, ctx, modalCanvas, modalCtx, lessonTutorial){
+    constructor(language, canvas, ctx, modalCanvas, modalCtx, lessonTutorial, splash){
+        this.splash = splash;
         this.language = language;
         this.index = 0;
         this.finalIndex = 13;
@@ -26,58 +27,53 @@ class Lesson{
         this.kirbyLink = document.querySelector("#kirbylink");
         this.lessonsLink = document.querySelector("#lessonlink")
         this.addEventListeners = this.addEventListeners.bind(this);
-        this.addEventListeners();
         this.canvas.classList.add('mouse-vis-canvas');
+        this.mouseMoveEvents = this.mouseMoveEvents.bind(this);
+        this.mouseClickEvents = this.mouseClickEvents.bind(this);
+    }
+
+    mouseMoveEvents(e){
+        e.preventDefault();
+        let pos = this.getMousePosition(e);
+        this.mouse.update(pos[0], pos[1]);
+        
+        this.number.circles.forEach(circle => {
+            if (circle.inside(pos)) {
+                circle.pinged = true;
+            }
+        })
+    }
+
+    mouseClickEvents(e){
+        e.preventDefault();
+        let pos = this.getMousePosition(e);
+        
+        if (this.number.circleSelected) {
+            let circle = this.number.circleSelected;
+            if (this.number.circles[0].inside(pos)) {
+                this.number.answer();
+            }
+            circle.grabbed = false;
+            circle.x = circle.originalX;
+            circle.y = circle.originalY;
+            this.number.circleSelected = null;
+        } else if (this.leftSideArrow.inside(pos)) {
+            this.prevNum();
+        } else if (this.rightSideArrow.inside(pos)) {
+            this.nextNum();
+        } else {
+            this.number.circles.forEach(circle => {
+                if (circle.inside(pos) && !circle.grabbed && !circle.immovable) {
+                    circle.grabbed = true;
+                    this.number.circleSelected = circle;
+                }
+            })
+        } 
     }
 
     addEventListeners(){
-        this.kirbyLink.addEventListener('click', () => {
-            this.lessonPhase = "complete";
-        })
-
-        this.lessonsLink.addEventListener('click', () => {
-            this.lessonPhase = "complete";
-        })
-
-        this.canvas.addEventListener('mousemove', e => {
-            if (this.lessonPhase !== "lesson") return null;
-            e.preventDefault(); 
-            let pos = this.getMousePosition(e);
-            this.mouse.update(pos[0], pos[1])
-            this.number.circles.forEach(circle =>{
-                if (circle.inside(pos)){
-                    circle.pinged = true;
-                } 
-            })
-        })
-
-        this.canvas.addEventListener('click', (e) =>{
-            if (this.lessonPhase !== "lesson") return null;
-            e.preventDefault();
-            let pos = this.getMousePosition(e);
-            
-            if (this.number.circleSelected){
-                let circle = this.number.circleSelected;
-                if (this.number.circles[0].inside(pos)){
-                    this.number.answer();
-                }
-                circle.grabbed = false;
-                circle.x = circle.originalX;
-                circle.y = circle.originalY;
-                this.number.circleSelected = null;
-            } else if (this.leftSideArrow.inside(pos)){
-                this.prevNum();
-            } else if (this.rightSideArrow.inside(pos)){
-                this.nextNum();
-            } else {
-                this.number.circles.forEach(circle => {
-                    if (circle.inside(pos) && !circle.grabbed && !circle.immovable) {
-                        circle.grabbed = true;
-                        this.number.circleSelected = circle;
-                    }
-                })
-            } 
-        })
+        this.canvas.addEventListener('mousemove', this.mouseMoveEvents);
+        this.canvas.addEventListener('click', this.mouseClickEvents)
     }
 
     getMousePosition(e) {
@@ -90,17 +86,11 @@ class Lesson{
     nextNum(){
         console.log(this.number)
         if (this.index === this.finalIndex) {
-            this.lessonPhase = "complete";
-            this.lessonTutorial = new LessonTutorial(this.modalCanvas, this.modalCtx, this.canvas, this.ctx, this);
-            this.lessonTutorial.step = "lesson3";
-            this.lessonTutorial.modaltext.step = "lesson3";
-            this.canvas.classList.remove('front-canvas');
-            this.canvas.classList.add('back-canvas');
-            this.modalCanvas.classList.remove('back-canvas');
-            this.modalCanvas.classList.add('front-canvas');
-            this.lessonTutorial.loop();
+            this.stopLesson();
+            this.splash.newLesson(true);
         } else {
             this.index += 1;
+            
             let number = this.numbers[this.indices[this.index]];
             this.number = new Number(number, this.language, this.ctx, this.canvas, this.mouse, this);
         }
@@ -124,7 +114,8 @@ class Lesson{
         if (this.shuffle) this.indices.sort((a, b) => (0.5 - Math.random() * 1));
         let number = this.numbers[this.indices[this.index]];
         this.number = new Number(number, this.language, this.ctx, this.canvas, this.mouse, this);
-        this.lessonPhase = "lesson"
+        this.lessonPhase = "lesson";
+        this.addEventListeners();
         this.lessonLoop();
     }
 
@@ -148,13 +139,13 @@ class Lesson{
 
     lessonLoop(){
         if (this.lessonPhase === "complete") return null;
-        if (this.lessonPhase === "options") {
-            this.canvas.classList.remove('front-canvas');
-            this.canvas.classList.add('back-canvas');
-            this.modalCanvas.classList.remove('back-canvas');
-            this.modalCanvas.classList.add('front-canvas');
-            this.lessonTutorial.loop();
-        }
+        // if (this.lessonPhase === "options") {
+        //     this.canvas.classList.remove('front-canvas');
+        //     this.canvas.classList.add('back-canvas');
+        //     this.modalCanvas.classList.remove('back-canvas');
+        //     this.modalCanvas.classList.add('front-canvas');
+        //     this.lessonTutorial.loop();
+        // }
         if (this.lessonPhase === "lesson"){
             this.now = Date.now();
             this.dt = (this.now - this.lastTime) / 1000.0;
@@ -163,5 +154,11 @@ class Lesson{
             this.render();
             requestAnimFrame(this.lessonLoop);
         }
+    }
+
+    stopLesson(){
+        this.canvas.removeEventListener('click', this.mouseClickEvents);
+        this.canvas.removeEventListener('mousemove', this.mouseMoveEvents);
+        this.lessonPhase = "complete";
     }
 }
