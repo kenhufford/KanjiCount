@@ -125,7 +125,6 @@ class Tutorial{
                 this.tutorialMusicButton.slide();
                 this.game.ingameMusicButton.slide();
                 this.game.music.play();
-                debugger
             } else if (this.mathButton.inside(pos)) {
                 this.mathButton.slide();
                 this.math = !this.math;
@@ -267,7 +266,6 @@ class Tutorial{
             })
         }
         if (this.step === 5){
-            debugger
             this.ctx.beginPath();
             this.ctx.fillStyle = "#995201";
             this.ctx.strokeStyle = "#663700";

@@ -41,3 +41,4 @@ https://imgur.com/4fC7gBH
 - Day 1/2 - Learn sprite animation, setup sprite.js, main.js, resources.js skeletons
 - Day 3 - Add game elements like grabbing and dropping sushis, player reactions
 - Day 4 - Add game logic so player can win, add difficulty modifiers
+ -more notes here

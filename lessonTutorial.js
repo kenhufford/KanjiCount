@@ -18,7 +18,7 @@ class LessonTutorial {
         this.shuffleButton = new Button([330, 380], 120, 50, 4, 33, "Off", "Shuffle", "", true, 2);
         this.readyButton = new Button([390, 500], 120, 50, 4, 33, "Start", "Start", "", false, 1);
         this.kanjiKountButton = new Button([470, 500], 180, 50, 0, 33, "Play Kirby Kount", "Play", "", false, 1);
-        this.studySessionButton = new Button([270, 500], 180, 50, 0, 33, "Study Session", "Study", "", false, 1);
+        this.studySessionButton = new Button([270, 500], 180, 50, 9, 33, "Study Session", "Study", "", false, 1);
         this.background = new Entity([0, 0], backgroundSprite(), backgroundSpriteURL, backgroundSprite);
         this.lesson1buttons = {
             kanjiKountButton: this.kanjiKountButton,
@@ -108,7 +108,6 @@ class LessonTutorial {
 
     loop() {
         if (this.lessonTutorialPhase === "stopLessonTutorial") return null;
-        
         this.now = Date.now();
         this.dt = (this.now - this.lastTime) / 1000.0;
         this.lastTime = this.now;

@@ -75,6 +75,6 @@ homeLink.addEventListener('click', () => {
 
 setTimeout(() => {
     if (resources.isReady()) {
-        splash.newLesson();;
+        splash.newLesson();
     };
-}, 500)
+}, 1000)

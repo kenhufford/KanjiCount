@@ -19,20 +19,23 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid white;
   margin-bottom: 10px;
+  background-color: #c411ff;
 }
 
 .header p{
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
+  color:#fcbdc5;
 }
 
 .header a{
   font-size: 40px;
+  font-weight: 700;
   text-decoration: none;
-  color: #c411ff;
+  color:#fcbdc5;
 }
 
 .body{
