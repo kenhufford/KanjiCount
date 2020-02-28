@@ -225,7 +225,6 @@ class Game{
         order.height = 100;
         this.orderIndex+= 1;
         this.orders.push(order);
-        console.log(order)
     }
 
 

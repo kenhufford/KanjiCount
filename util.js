@@ -19,7 +19,6 @@ let playSound = (key, language) => {
 
 let playNumberSound = (number, language) => {
     let audioArray = convertNumberToSoundArray(number, language);
-    console.log(audioArray)
     let newAudio;
 
     let index = -1;
@@ -314,7 +313,6 @@ let convertNumberToSoundArray = (num, language) => {
         }
     };
     if (results.length === 0) results = [0];
-    console.log(results);
     return results;
 };
 

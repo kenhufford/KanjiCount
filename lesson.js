@@ -85,7 +85,6 @@ class Lesson{
     }
 
     nextNum(){
-        console.log(this.number)
         if (this.index === this.finalIndex) {
             this.stopLesson();
             this.splash.newLesson(true);

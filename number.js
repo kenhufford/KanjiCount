@@ -116,7 +116,6 @@ class Number{
             positions[key] = positions[key].sort((a, b) => (0.5 - Math.random() * 1))
         });
         this.positions = positions;
-        console.log(this.positions);
     }
 
     generateCircles(setNum){
