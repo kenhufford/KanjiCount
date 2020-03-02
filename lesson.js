@@ -154,5 +154,6 @@ class Lesson{
         this.canvas.removeEventListener('click', this.mouseClickEvents);
         this.canvas.removeEventListener('mousemove', this.mouseMoveEvents);
         this.lessonPhase = "complete";
+        return;
     }
 }
