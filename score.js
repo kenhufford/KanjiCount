@@ -18,6 +18,5 @@ class Score {
     reset(score){
         this.score = score;
         this.entity.sprite.frames = [this.endScore-this.score];
-        somethjing else
     }
 }
