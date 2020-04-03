@@ -77,4 +77,4 @@ setTimeout(() => {
     if (resources.isReady()) {
         splash.newLesson();
     };
-}, 1000)
+}, 1500)
