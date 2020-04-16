@@ -1,44 +1,20 @@
-# KanjiCount
+# Kirby Kount
 
-##MVPS
-1. Conveyor
-- Has sushi conveyor
-- Sushis spawn, move down the conveyor and leave conveyor
+![Image of Kirby](https://media.giphy.com/media/5ev3alRsskWA0/giphy.gif)
 
-2. Sushi
-- Players can grab and drag sushi
-- Players can feed the sushi to eater
-- Sushi has kanji/character label
+Welcome to Kirby Kount!  Kirby Kount is an educational app created to help anyone learn numbers and characters for numbers up to 10,000 in Mandarin, Cantonese and Japanese!  Kirby Kount current consists of two parts: Study Session and Kirby Kount.  If you want to learn the very basics of pronunciation and the characters, you should head on over to Study Session.
 
+### Study Session Instructions
 
-3. Game
-- Correct sushi number is given either via audio or by display
-- If correct sushi is picked, the eater is pleased
-- Incorrect and eater is displeased
-- If enough incorrect, game will end
-- Game speeds up if correct answers are given
-- Up to a certain num in a row and game is over
+Study session should be pretty straight forward. When you enter Study Session, select a language and lesson type. While in session, click on a bubble and drag it toward the correct answer.  If you have sound on, you'll hear a pronunciation of the word when you get it right.  You can click the arrows on the left and right to move on or back to previous questions.
 
-Bonus MVP
-- Lesson page to teach characters with stroke video, audio of word and mnemonic
-- Add mandarin and cantonese
+### Kirby Kount Instructions
 
-##Wireframe
+![Image of Kirby](https://imgur.com/426ea84d-2fcb-4c09-89cf-bbe2f12b7262)
 
-https://imgur.com/4fC7gBH
+Once you're ready, head over to Kirby Kount.  The options screen lets you select different game modes which include different languages, higher values for numbers and math problems vs number identification.  I'd suggest turning on the tutorial and reading how to play there as it steps through the individual parts of the game.
 
-##Architecture and Tech
+Kirby is hungry.  He wants certain sushis that he will order by number.  You have a certain amount of time to feed Kirby the sushi associated with this number or he will be angry.  If Kirby is angry enough, you will face the wrath of Kirby.  Feed the Kirby.
 
-- JS for game logic
-- Canvas for rendering
-- Sprite.js - handle class for sprites
-- Entity.js - handle class for game objects
-- Resources.js - handles image loading and sounds etc (util)
-- Game.js - main game file
+### 
 
-
-#Timeline
-- Day 1/2 - Learn sprite animation, setup sprite.js, main.js, resources.js skeletons
-- Day 3 - Add game elements like grabbing and dropping sushis, player reactions
-- Day 4 - Add game logic so player can win, add difficulty modifiers
- -more notes here right now
