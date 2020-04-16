@@ -16,7 +16,7 @@ Study session should be pretty straight forward. When you enter Study Session, s
 
 # Kirby Kount Instructions
 
-![Image of Kirby](https://imgur.com/sYvfyCq)
+![Image of Kirby](https://i.imgur.com/sYvfyCq.png)
 
 Once you're ready, head over to Kirby Kount.  The options screen lets you select different game modes which include different languages, higher values for numbers and math problems vs number identification.  I'd suggest turning on the tutorial and reading how to play there as it steps through the individual parts of the game.
 
@@ -24,7 +24,7 @@ Kirby is hungry.  He wants certain sushis that he will order by number.  You hav
 
 # Technology
 
-Kirby Kount is build with Javascript, Canvas, CSS and HTML.  
+Kirby Kount is build with Javascript, Canvas, CSS and HTML.  The main feature for this app is heavy use of OOP in the game logic for the plates, sushis, scores, buttons, arrows, sprites, and game objects.
 
 # Cool Stuff
 
@@ -109,6 +109,7 @@ render(ctx) {
             0, 0,
             this.size[0], this.size[1]);
     }
-    ```
     
-    ###
+```
+    
+
