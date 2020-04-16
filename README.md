@@ -10,11 +10,13 @@ Kirby Kount was an app I had been wanting to make since I had first decided I sh
 
 # Study Session Instructions
 
+![Image of Kirby](https://i.imgur.com/ikHP6Z8.png)
+
 Study session should be pretty straight forward. When you enter Study Session, select a language and lesson type. While in session, click on a bubble and drag it toward the correct answer.  If you have sound on, you'll hear a pronunciation of the word when you get it right.  You can click the arrows on the left and right to move on or back to previous questions.
 
 # Kirby Kount Instructions
 
-![Image of Kirby](https://i.imgur.com/ikHP6Z8.png)
+![Image of Kirby](https://imgur.com/sYvfyCq)
 
 Once you're ready, head over to Kirby Kount.  The options screen lets you select different game modes which include different languages, higher values for numbers and math problems vs number identification.  I'd suggest turning on the tutorial and reading how to play there as it steps through the individual parts of the game.
 
