@@ -10,7 +10,7 @@ Study session should be pretty straight forward. When you enter Study Session, s
 
 ### Kirby Kount Instructions
 
-![Image of Kirby](https://imgur.com/426ea84d-2fcb-4c09-89cf-bbe2f12b7262)
+![Image of Kirby](https://imgur.com/ikHP6Z8)
 
 Once you're ready, head over to Kirby Kount.  The options screen lets you select different game modes which include different languages, higher values for numbers and math problems vs number identification.  I'd suggest turning on the tutorial and reading how to play there as it steps through the individual parts of the game.
 
